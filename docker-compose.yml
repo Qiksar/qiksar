@@ -1,0 +1,67 @@
+version: '3.6'
+
+services:
+
+# Used by Keycloak and GraphQL
+    db:
+        env_file: ./local_secrets.env
+
+        container_name: q_db
+        image: postgres
+
+        volumes:
+            - ./initdb/:/docker-entrypoint-initdb.d/
+
+# Expose the database port so database admin tools can connect, like VSCODE 
+        ports:
+            - '5432:5432'
+
+        restart: always
+
+
+
+# GraphQL interface for the database
+    gql:
+        env_file: ./local_secrets.env
+        
+        image: hasura/graphql-engine:v2.1.0-beta.3
+        container_name: q_gql
+        
+        links: 
+            - db
+
+        ports:
+            - '8092:8080'
+
+        command:
+            - graphql-engine
+            - serve
+
+        restart: always
+
+        
+# Keycloak auth
+    auth:
+        env_file: ./local_secrets.env
+        
+        container_name: q_auth
+        image: wizzn/keycloak:14
+
+        # transfer theme file
+        volumes:
+            - ./kctheme:/opt/jboss/keycloak/themes/qiksar
+
+        links: 
+            - db
+
+        ports:
+            - 8093:8080
+
+        restart: always
+    
+    app:
+        env_file: ./local_secrets.env
+        container_name: q_app
+        image: node:latest
+
+        
