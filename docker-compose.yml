@@ -59,9 +59,7 @@ services:
 
         restart: always
     
-    app:
-        env_file: ./local_secrets.env
-        container_name: q_app
-        image: node:latest
-
-        
+    #app:
+    #    env_file: ./local_secrets.env
+    #    container_name: q_app
+    #    image: node:latest
