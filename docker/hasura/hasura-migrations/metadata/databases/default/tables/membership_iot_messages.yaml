@@ -1,0 +1,36 @@
+table:
+  name: iot_messages
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: iot_messages
+  custom_root_fields: {}
+object_relationships:
+- name: device
+  using:
+    manual_configuration:
+      column_mapping:
+        device_id: device_id
+      insertion_order: null
+      remote_table:
+        name: iot_devices
+        schema: membership
+array_relationships:
+- name: iot_environment
+  using:
+    manual_configuration:
+      column_mapping:
+        message_id: message_id
+      insertion_order: null
+      remote_table:
+        name: iot_environment
+        schema: membership
+- name: iot_smart_watch
+  using:
+    manual_configuration:
+      column_mapping:
+        message_id: message_id
+      insertion_order: null
+      remote_table:
+        name: iot_smart_watch
+        schema: membership

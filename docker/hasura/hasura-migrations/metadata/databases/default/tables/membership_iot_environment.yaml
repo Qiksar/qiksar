@@ -1,0 +1,17 @@
+table:
+  name: iot_environment
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: iot_environment
+  custom_root_fields: {}
+object_relationships:
+- name: message
+  using:
+    manual_configuration:
+      column_mapping:
+        message_id: message_id
+      insertion_order: null
+      remote_table:
+        name: iot_messages
+        schema: membership

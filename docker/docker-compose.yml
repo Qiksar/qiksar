@@ -4,7 +4,7 @@ services:
 
 # Used by Keycloak and GraphQL
     db:
-        env_file: ./local_secrets.env
+        env_file: local.env
 
         container_name: q_db
         image: postgres
@@ -22,8 +22,8 @@ services:
 
 # GraphQL interface for the database
     gql:
-        env_file: ./local_secrets.env
-        
+        env_file: local.env
+
         image: hasura/graphql-engine:v2.1.0-beta.3
         container_name: q_gql
         
@@ -42,14 +42,15 @@ services:
         
 # Keycloak auth
     auth:
-        env_file: ./local_secrets.env
-        
+        env_file: local.env
+
         container_name: q_auth
         image: wizzn/keycloak:14
 
-        # transfer theme file
+        # mount configuration files
         volumes:
-            - ./kctheme:/opt/jboss/keycloak/themes/qiksar
+            - ./initkc:/docker-entrypoint-initdb.d/
+            - ./initkc/kctheme:/opt/jboss/keycloak/themes/qiksar
 
         links: 
             - db
@@ -59,7 +60,24 @@ services:
 
         restart: always
     
+    qt:
+        env_file: local.env
+        
+        container_name: qiktrak
+        image: registry.digitalocean.com/sndk8/qiktrak:latest
+
+        volumes:
+            - ./qiktrak:/qiktrak
+
+        links:
+            - db
+            - gql
+
+        command:
+            - node
+            - qik-trak-cli.js
+
     #app:
-    #    env_file: ./local_secrets.env
+    #    env_file: local.env
     #    container_name: q_app
     #    image: node:latest

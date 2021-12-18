@@ -1,0 +1,36 @@
+table:
+  name: iot_devices
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: iot_devices
+  custom_root_fields: {}
+object_relationships:
+- name: device_type
+  using:
+    manual_configuration:
+      column_mapping:
+        device_type_id: name
+      insertion_order: null
+      remote_table:
+        name: iot_device_types
+        schema: membership
+- name: member
+  using:
+    manual_configuration:
+      column_mapping:
+        member_id: member_id
+      insertion_order: null
+      remote_table:
+        name: members
+        schema: membership
+array_relationships:
+- name: iot_messages
+  using:
+    manual_configuration:
+      column_mapping:
+        device_id: device_id
+      insertion_order: null
+      remote_table:
+        name: iot_messages
+        schema: membership

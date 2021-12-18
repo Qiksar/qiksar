@@ -1,0 +1,105 @@
+table:
+  name: members
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: members
+  custom_root_fields: {}
+object_relationships:
+- name: group
+  using:
+    manual_configuration:
+      column_mapping:
+        group_id: group_id
+      insertion_order: null
+      remote_table:
+        name: groups
+        schema: membership
+- name: role
+  using:
+    foreign_key_constraint_on: role_id
+- name: status
+  using:
+    foreign_key_constraint_on: status_id
+array_relationships:
+- name: groups
+  using:
+    manual_configuration:
+      column_mapping:
+        member_id: leader_id
+      insertion_order: null
+      remote_table:
+        name: groups
+        schema: membership
+- name: iot_devices
+  using:
+    manual_configuration:
+      column_mapping:
+        member_id: member_id
+      insertion_order: null
+      remote_table:
+        name: iot_devices
+        schema: membership
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - about_me
+    - company
+    - created_at
+    - email
+    - firstname
+    - group_id
+    - lastname
+    - member_id
+    - mobile
+    - photo
+    - rating
+    - role_id
+    - status_id
+    - updated_at
+  role: member
+select_permissions:
+- permission:
+    columns:
+    - about_me
+    - company
+    - created_at
+    - email
+    - firstname
+    - group_id
+    - lastname
+    - member_id
+    - mobile
+    - photo
+    - rating
+    - role_id
+    - status_id
+    - updated_at
+    filter: {}
+  role: member
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - group_id
+    - member_id
+    - rating
+    - role_id
+    - status_id
+    - about_me
+    - company
+    - email
+    - firstname
+    - lastname
+    - mobile
+    - photo
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+delete_permissions:
+- permission:
+    filter: {}
+  role: member

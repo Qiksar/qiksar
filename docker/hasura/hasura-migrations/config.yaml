@@ -1,0 +1,7 @@
+version: 3
+endpoint: http://localhost:7001
+metadata_directory: metadata
+admin_secret: sndk8
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: http://localhost:3000

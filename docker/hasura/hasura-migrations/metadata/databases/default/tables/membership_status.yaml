@@ -1,0 +1,25 @@
+table:
+  name: status
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: status
+  custom_root_fields: {}
+array_relationships:
+- name: members
+  using:
+    manual_configuration:
+      column_mapping:
+        name: status_id
+      insertion_order: null
+      remote_table:
+        name: members
+        schema: membership
+select_permissions:
+- permission:
+    columns:
+    - comment
+    - name
+    - status_id
+    filter: {}
+  role: member

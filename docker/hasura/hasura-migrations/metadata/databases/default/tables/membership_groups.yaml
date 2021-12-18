@@ -1,0 +1,54 @@
+table:
+  name: groups
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: groups
+  custom_root_fields: {}
+object_relationships:
+- name: leader
+  using:
+    manual_configuration:
+      column_mapping:
+        leader_id: member_id
+      insertion_order: null
+      remote_table:
+        name: members
+        schema: membership
+array_relationships:
+- name: members
+  using:
+    manual_configuration:
+      column_mapping:
+        group_id: group_id
+      insertion_order: null
+      remote_table:
+        name: members
+        schema: membership
+select_permissions:
+- permission:
+    columns:
+    - group_id
+    - leader_id
+    - state
+    - name
+    - meeting_day
+    - group_news
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - group_id
+    - leader_id
+    - state
+    - name
+    - meeting_day
+    - group_news
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
