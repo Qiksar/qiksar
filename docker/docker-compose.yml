@@ -60,11 +60,11 @@ services:
 
         restart: always
     
-    qt:
+    qiktrak:
         env_file: local.env
         
         container_name: qiktrak
-        image: registry.digitalocean.com/sndk8/qiktrak:latest
+        image: namsource/qiktrak:latest
 
         volumes:
             - ./qiktrak:/qiktrak

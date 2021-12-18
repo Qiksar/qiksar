@@ -27,15 +27,15 @@ export REALM_ID=sndk8
 export REALM_NAME=Sndk8 App
 export CLIENT=${REALM_ID}-app
 
-export REALM_ADMIN=adm@DOMAIN
+export REALM_ADMIN=adm@${DOMAIN}
 export REALM_ADMIN_ROLE=tenant_admin
 export USER_PW=password
 
-export REALM_USER=usr@DOMAIN
+export REALM_USER=usr@${DOMAIN}
 export DEFAULT_ROLE=member
 
 export SMTP_PASSWORD=member
-export SMTP_SENDER_NAME=sender@{DOMAIN}
+export SMTP_SENDER_NAME=sender@${DOMAIN}
 
 echo
 echo "Login to Keycloak..."
