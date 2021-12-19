@@ -3,5 +3,5 @@ metadata_directory: metadata
 actions:
   kind: synchronous
   handler_webhook_baseurl: http://localhost:3000
-endpoint: http://localhost:8092
-admin_secret: hasura
+endpoint: {{HASURA_GRAPHQL_CONSOLE}}
+admin_secret: {{HASURA_GRAPHQL_ADMIN_SECRET}}

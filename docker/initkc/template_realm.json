@@ -1,8 +1,8 @@
 {
-    "id": "{{realm_id}}",
-    "realm": "{{realm_id}}",
-    "displayName": "{{realm_name}}",
-    "displayNameHtml": "<h1>{{realm_name}}</h1>",
+    "id": "{{REALM_ID}}",
+    "realm": "{{REALM_ID}}",
+    "displayName": "{{REALM_NAME}}",
+    "displayNameHtml": "<h1>{{REALM_NAME}}</h1>",
     "notBefore": 0,
     "defaultSignatureAlgorithm": "RS256",
     "revokeRefreshToken": false,
@@ -52,7 +52,7 @@
                 "name": "member",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "{{realm_id}}",
+                "containerId": "{{REALM_ID}}",
                 "attributes": {}
             },
             {
@@ -60,7 +60,7 @@
                 "name": "admin",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "{{realm_id}}",
+                "containerId": "{{REALM_ID}}",
                 "attributes": {}
             },
             {
@@ -80,7 +80,7 @@
                     }
                 },
                 "clientRole": false,
-                "containerId": "{{realm_id}}",
+                "containerId": "{{REALM_ID}}",
                 "attributes": {}
             }
         ],
@@ -400,7 +400,7 @@
         "description": "${role_default-roles-realm}",
         "composite": true,
         "clientRole": false,
-        "containerId": "{{realm_id}}"
+        "containerId": "{{REALM_ID}}"
     },
     "requiredCredentials": [
         "password"
@@ -1348,22 +1348,22 @@
         "strictTransportSecurity": "max-age=31536000; includeSubDomains"
     },
     "smtpServer": {
-        "password": "{{smtp_password}}",
-        "replyToDisplayName": "{{realm_id}}",
+        "password": "{{SMTP_PASSWORD}}",
+        "replyToDisplayName": "{{REALM_ID}}",
         "starttls": "true",
         "auth": "true",
         "port": "587",
         "host": "smtp.sendgrid.net",
-        "replyTo": "{{smtp_email_address}}",
-        "from": "{{smtp_email_address}}",
-        "fromDisplayName": "{{realm_name}}",
+        "replyTo": "{{SMTP_EMAIL_ADDRESS}}",
+        "from": "{{SMTP_EMAIL_ADDRESS}}",
+        "fromDisplayName": "{{REALM_NAME}}",
         "ssl": "false",
         "user": "apikey"
     },
-    "loginTheme": "{{realm_id}}",
+    "loginTheme": "{{REALM_ID}}",
     "accountTheme": "keycloak",
     "adminTheme": "keycloak",
-    "emailTheme": "{{realm_id}}",
+    "emailTheme": "{{REALM_ID}}",
     "eventsEnabled": false,
     "eventsListeners": [
         "jboss-logging"

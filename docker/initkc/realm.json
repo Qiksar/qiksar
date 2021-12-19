@@ -1,8 +1,8 @@
 {
     "id": "sndk8",
     "realm": "sndk8",
-    "displayName": "{{realm_name}}",
-    "displayNameHtml": "<h1>{{realm_name}}</h1>",
+    "displayName": "Sndk8 App",
+    "displayNameHtml": "<h1>Sndk8 App</h1>",
     "notBefore": 0,
     "defaultSignatureAlgorithm": "RS256",
     "revokeRefreshToken": false,
@@ -1348,15 +1348,15 @@
         "strictTransportSecurity": "max-age=31536000; includeSubDomains"
     },
     "smtpServer": {
-        "password": "{{smtp_password}}",
+        "password": "member",
         "replyToDisplayName": "sndk8",
         "starttls": "true",
         "auth": "true",
         "port": "587",
         "host": "smtp.sendgrid.net",
-        "replyTo": "{{smtp_email_address}}",
-        "from": "{{smtp_email_address}}",
-        "fromDisplayName": "{{realm_name}}",
+        "replyTo": "{{SMTP_EMAIL_ADDRESS}}",
+        "from": "{{SMTP_EMAIL_ADDRESS}}",
+        "fromDisplayName": "Sndk8 App",
         "ssl": "false",
         "user": "apikey"
     },
