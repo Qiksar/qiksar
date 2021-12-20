@@ -1,3 +1,4 @@
+#!/bin/bash
 clear
 
 # Setup all the environment variables in the env file
@@ -26,7 +27,6 @@ echo "Start database and authentication containers"
 docker compose up db auth -d
 
 echo "Wait for containers to stabilise"
-sleep 15
 echo
 
 # Initialise the keycloak environment
@@ -39,7 +39,6 @@ echo
 # then give it time to settle
 echo "Start Hasura GraphQL container"
 docker compose up gql -d
-sleep 5
 echo
 
 # Start the qiktrak container which will configure Hasura GraphQL

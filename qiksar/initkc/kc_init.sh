@@ -8,6 +8,8 @@ echo KEYCLOAK INITIALISATION SCRIPT
 echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
+echo "Waiting for containers to stabilise after startup..."
+sleep 15
 
 echo
 echo "Install JSON Query..."

@@ -45,7 +45,7 @@ services:
         env_file: local.env
 
         container_name: q_auth
-        image: wizzn/keycloak:14
+        image: openremote/keycloak
 
         # mount configuration files
         volumes:
