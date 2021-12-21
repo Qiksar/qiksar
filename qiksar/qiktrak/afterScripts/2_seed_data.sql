@@ -73,3 +73,29 @@ VALUES
 (2, '{ "temp": 29.5, "humidity": 55, "dust": 200 }'),
 (2, '{ "temp": 27.5, "humidity": 68, "dust": 200 }')
 ;
+
+INSERT INTO membership.tags
+("tag")
+VALUES
+('technology'),
+('business'),
+('health'),
+('innovation');
+
+INSERT INTO membership.articles
+("article", "created_by")
+VALUES
+('technology article', 1),
+('business article', 1),
+('health article', 2),
+('innovation article', 3);
+
+INSERT INTO membership.article_tags
+("article_id", "tag_id")
+VALUES
+(1,1),
+(1,2),
+(1,3),
+(2,2),
+(3,2),
+(3,3);

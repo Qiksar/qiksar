@@ -1,27 +1,26 @@
 table:
-  name: groups
+  name: article_tags
   schema: membership
 configuration:
   custom_column_names: {}
-  custom_name: groups
+  custom_name: article_tags
   custom_root_fields: {}
 object_relationships:
-- name: leader
+- name: article
   using:
     manual_configuration:
       column_mapping:
-        leader_id: member_id
+        article_id: article_id
       insertion_order: null
       remote_table:
-        name: members
+        name: articles
         schema: membership
-array_relationships:
-- name: members
+- name: tag
   using:
     manual_configuration:
       column_mapping:
-        group_id: group_id
+        tag_id: tag_id
       insertion_order: null
       remote_table:
-        name: members
+        name: tags
         schema: membership

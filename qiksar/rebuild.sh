@@ -54,7 +54,7 @@ echo
 
 echo
 echo "Applying custom metadata to Hasura"
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_GRAPHQL_CONSOLE} metadata apply
+#hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_GRAPHQL_CONSOLE} metadata apply
 
 echo
 echo "Listing any metadata inconsistencies..."

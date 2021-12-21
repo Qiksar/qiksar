@@ -17,11 +17,32 @@ object_relationships:
         schema: membership
 - name: role
   using:
-    foreign_key_constraint_on: role_id
+    manual_configuration:
+      column_mapping:
+        role_id: role_id
+      insertion_order: null
+      remote_table:
+        name: roles
+        schema: membership
 - name: status
   using:
-    foreign_key_constraint_on: status_id
+    manual_configuration:
+      column_mapping:
+        status_id: status_id
+      insertion_order: null
+      remote_table:
+        name: status
+        schema: membership
 array_relationships:
+- name: articles
+  using:
+    manual_configuration:
+      column_mapping:
+        member_id: created_by
+      insertion_order: null
+      remote_table:
+        name: articles
+        schema: membership
 - name: groups
   using:
     manual_configuration:
@@ -40,66 +61,3 @@ array_relationships:
       remote_table:
         name: iot_devices
         schema: membership
-insert_permissions:
-- permission:
-    backend_only: false
-    check: {}
-    columns:
-    - about_me
-    - company
-    - created_at
-    - email
-    - firstname
-    - group_id
-    - lastname
-    - member_id
-    - mobile
-    - photo
-    - rating
-    - role_id
-    - status_id
-    - updated_at
-  role: member
-select_permissions:
-- permission:
-    columns:
-    - about_me
-    - company
-    - created_at
-    - email
-    - firstname
-    - group_id
-    - lastname
-    - member_id
-    - mobile
-    - photo
-    - rating
-    - role_id
-    - status_id
-    - updated_at
-    filter: {}
-  role: member
-update_permissions:
-- permission:
-    check: null
-    columns:
-    - group_id
-    - member_id
-    - rating
-    - role_id
-    - status_id
-    - about_me
-    - company
-    - email
-    - firstname
-    - lastname
-    - mobile
-    - photo
-    - created_at
-    - updated_at
-    filter: {}
-  role: member
-delete_permissions:
-- permission:
-    filter: {}
-  role: member

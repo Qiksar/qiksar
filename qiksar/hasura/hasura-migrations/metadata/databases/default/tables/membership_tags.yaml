@@ -1,17 +1,17 @@
 table:
-  name: status
+  name: tags
   schema: membership
 configuration:
   custom_column_names: {}
-  custom_name: status
+  custom_name: tags
   custom_root_fields: {}
 array_relationships:
-- name: members
+- name: article_tags
   using:
     manual_configuration:
       column_mapping:
-        status_id: status_id
+        tag_id: tag_id
       insertion_order: null
       remote_table:
-        name: members
+        name: article_tags
         schema: membership

@@ -50,6 +50,28 @@
 
     ALTER TABLE membership.groups ADD CONSTRAINT group_leader FOREIGN KEY (leader_id) REFERENCES membership.members (member_id);
 
+    CREATE TABLE membership.articles (
+        article_id SERIAL PRIMARY KEY,
+        article text NOT NULL,
+        created_by integer NOT NULL REFERENCES membership.members,
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
+    );
+
+    CREATE TABLE membership.tags (
+        tag_id SERIAL PRIMARY KEY,
+        tag text NOT NULL,
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
+    );
+
+    CREATE TABLE membership.article_tags (
+        row_id SERIAL PRIMARY KEY,
+        article_id integer NOT NULL REFERENCES membership.articles,
+        tag_id integer NOT NULL REFERENCES membership.tags,
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
+    );
 
     ---
     --- IOT sample data

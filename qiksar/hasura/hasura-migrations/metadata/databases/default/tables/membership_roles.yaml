@@ -10,15 +10,8 @@ array_relationships:
   using:
     manual_configuration:
       column_mapping:
-        name: role_id
+        role_id: role_id
       insertion_order: null
       remote_table:
         name: members
         schema: membership
-select_permissions:
-- permission:
-    columns:
-    - comment
-    - name
-    filter: {}
-  role: member

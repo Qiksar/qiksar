@@ -1,3 +1,5 @@
+- "!include membership_article_tags.yaml"
+- "!include membership_articles.yaml"
 - "!include membership_groups.yaml"
 - "!include membership_iot_device_types.yaml"
 - "!include membership_iot_devices.yaml"
@@ -7,3 +9,4 @@
 - "!include membership_members.yaml"
 - "!include membership_roles.yaml"
 - "!include membership_status.yaml"
+- "!include membership_tags.yaml"
