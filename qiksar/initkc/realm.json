@@ -1,8 +1,8 @@
 {
-    "id": "sndk8",
-    "realm": "sndk8",
-    "displayName": "Sndk8 App",
-    "displayNameHtml": "<h1>Sndk8 App</h1>",
+    "id": "qiksar",
+    "realm": "qiksar",
+    "displayName": "qiksar App",
+    "displayNameHtml": "<h1>qiksar App</h1>",
     "notBefore": 0,
     "defaultSignatureAlgorithm": "RS256",
     "revokeRefreshToken": false,
@@ -52,7 +52,7 @@
                 "name": "member",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "sndk8",
+                "containerId": "qiksar",
                 "attributes": {}
             },
             {
@@ -60,7 +60,7 @@
                 "name": "admin",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "sndk8",
+                "containerId": "qiksar",
                 "attributes": {}
             },
             {
@@ -80,7 +80,7 @@
                     }
                 },
                 "clientRole": false,
-                "containerId": "sndk8",
+                "containerId": "qiksar",
                 "attributes": {}
             }
         ],
@@ -400,7 +400,7 @@
         "description": "${role_default-roles-realm}",
         "composite": true,
         "clientRole": false,
-        "containerId": "sndk8"
+        "containerId": "qiksar"
     },
     "requiredCredentials": [
         "password"
@@ -1349,21 +1349,21 @@
     },
     "smtpServer": {
         "password": "member",
-        "replyToDisplayName": "sndk8",
+        "replyToDisplayName": "qiksar",
         "starttls": "true",
         "auth": "true",
         "port": "587",
         "host": "smtp.sendgrid.net",
         "replyTo": "{{SMTP_EMAIL_ADDRESS}}",
         "from": "{{SMTP_EMAIL_ADDRESS}}",
-        "fromDisplayName": "Sndk8 App",
+        "fromDisplayName": "qiksar App",
         "ssl": "false",
         "user": "apikey"
     },
-    "loginTheme": "sndk8",
+    "loginTheme": "qiksar",
     "accountTheme": "keycloak",
     "adminTheme": "keycloak",
-    "emailTheme": "sndk8",
+    "emailTheme": "qiksar",
     "eventsEnabled": false,
     "eventsListeners": [
         "jboss-logging"

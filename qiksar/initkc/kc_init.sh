@@ -1,6 +1,3 @@
-# docker exec -u 0 -it sndk8_auth bash
-
-#install jq for JSON querying
 echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
@@ -9,10 +6,11 @@ echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
 echo "Waiting for containers to stabilise after startup..."
-sleep 15
+sleep 10
 
 echo
 echo "Install JSON Query..."
+#install jq for JSON querying
 microdnf install jq > /dev/null
 
 PATH=$PATH:/opt/jboss/keycloak/bin
@@ -43,6 +41,7 @@ echo
 echo "Create tenant admin user: "${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
+
 echo "Assign admin and tenant_admin roles: "${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename "admin" 
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE}  
