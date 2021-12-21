@@ -49,6 +49,8 @@ echo
 # Start the qiktrak container which will configure Hasura GraphQL
 # The configuration is done according to the contents of the docker/qiktrak folder 
 echo "Execute qiktrak..."
+echo "Allow Hasura container to stabilise"
+sleep 10
 docker compose up qiktrak 
 echo
 
