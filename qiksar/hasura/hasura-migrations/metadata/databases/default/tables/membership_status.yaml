@@ -20,6 +20,5 @@ select_permissions:
     columns:
     - comment
     - name
-    - status_id
     filter: {}
   role: member
