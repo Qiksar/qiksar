@@ -1,3 +1,6 @@
+# Ignore the app being created by the template kit
+app/
+
 # Logs
 logs
 *.log
