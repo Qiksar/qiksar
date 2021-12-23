@@ -1,4 +1,4 @@
-import { GetAuthToken } from './../boot/keycloak';
+import { GetAuthToken } from '../boot/keycloak';
 import {
 	ApolloClient,
 	ApolloLink,
