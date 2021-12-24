@@ -1,13 +1,34 @@
 #!/bin/bash
 clear
 
+echo "Build environment started"
+date +"%T"
+echo
+
 # Setup all the environment variables in the env file
 echo "Import environment variables from 'local.env'"
 export $(cat local.env | xargs)
 echo
 
-
 # Create the config file for the Hasura
+echo "Create nginx config"
+cat initnginx/app.conf.template \
+    | sed "s|{{DOMAIN}}|$DOMAIN|" \
+    | sed "s|{{AUTH_CONTAINER}}|$AUTH_CONTAINER|" \
+    | sed "s|{{AUTH_SERVER}}|$AUTH_SERVER|" \
+    | sed "s|{{AUTH_PORT}}|$AUTH_PORT|" \
+    | sed "s|{{AUTH_PORT_PUBLIC}}|$AUTH_PORT_PUBLIC|" \
+    | sed "s|{{APP_CONTAINER}}|$APP_CONTAINER|" \
+    | sed "s|{{APP_SERVER}}|$APP_SERVER|" \
+    | sed "s|{{APP_PORT}}|$APP_PORT|" \
+    | sed "s|{{APP_PORT_PUBLIC}}|$APP_PORT_PUBLIC|" \
+    | sed "s|{{GQL_CONTAINER}}|$GQL_CONTAINER|"\
+    | sed "s|{{GQL_SERVER}}|$GQL_SERVER|"\
+    | sed "s|{{GQL_PORT}}|$GQL_PORT|" \
+    | sed "s|{{GQL_PORT_PUBLIC}}|$GQL_PORT_PUBLIC|" > initnginx/conf.d/app.conf
+echo
+
+# Create the config file for Hasura
 echo "Create Hasura console config"
 cat hasura/hasura-migrations/config.template | sed "s|{{HASURA_GRAPHQL_CONSOLE}}|$HASURA_GRAPHQL_CONSOLE|" | sed "s|{{HASURA_GRAPHQL_ADMIN_SECRET}}|$HASURA_GRAPHQL_ADMIN_SECRET|" > hasura/hasura-migrations/config.yaml
 echo
@@ -21,7 +42,7 @@ echo
 
 
 echo "Start database and authentication containers"
-docker compose up db auth -d
+docker compose up proxy db auth -d
 echo
 
 
@@ -60,7 +81,11 @@ echo "Applying custom metadata to Hasura"
 
 echo
 echo "Listing any metadata inconsistencies..."
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_GRAPHQL_CONSOLE} metadata ic list
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} metadata ic list
 
-echo
-echo "Build process finished. Check the above output for warnings and errors"
+
+echo 
+echo "Build environment finished."
+date +"%T"
+echo 
+echo "Check the above output for warnings and errors"
