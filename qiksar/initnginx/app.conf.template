@@ -1,10 +1,9 @@
-# app service
+#server {
+    
+#    listen {{APP_PORT_PUBLIC}};
+#    listen 443;
 
-server {
-    listen {{APP_PORT_PUBLIC}};
-    listen 443;
-
-    server_name {{DOMAIN}};
+#    server_name app.{{DOMAIN}};
 
 #    location / {
 #            proxy_set_header Host $host;
@@ -14,6 +13,15 @@ server {
 #
 #            proxy_pass http://{{APP_CONTAINER}}:{{APP_PORT}};
 #    }
+
+#}
+
+server {
+    
+    listen {{APP_PORT_PUBLIC}};
+    listen 443;
+
+    server_name {{DOMAIN}};
 
     location /gql {
         proxy_pass http://{{GQL_CONTAINER}}:{{GQL_PORT}}/;

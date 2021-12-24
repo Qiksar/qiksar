@@ -6,8 +6,8 @@
 
 import { boot } from 'quasar/wrappers';
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
-import { userStore } from 'src/boot/pinia';
-import User from 'src/domain/qikflow/store/types/user';
+import { userStore } from './pinia';
+import User from '../domain/qikflow/store/types/user';
 
 // Get the full host URL and append the destination path in order to form a redirect URI
 const getRedirectTarget = function(path:string):string {
@@ -35,9 +35,9 @@ export const GetAuthToken = function ():string {
 
 // Configuration details for REALM and CLIENT
 const kc_config: Keycloak.KeycloakConfig = {
-  url: process.env.KC_AUTH_URL || 'KC_AUTH_URL is undefined',        // ERROR!!! process is undefined
-  realm: process.env.KC_AUTH_REALM || 'KC_AUTH_REALM is undefined',
-  clientId: process.env.KC_AUTH_CLIENT || 'KC_AUTH_CLIENT is undefined'
+  url: 'http://localhost:8080/auth',
+  realm: 'app',
+  clientId: 'app-client'
 }
 
 // Initialisation options

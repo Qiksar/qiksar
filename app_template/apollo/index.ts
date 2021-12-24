@@ -14,7 +14,7 @@ import { SubscriptionClient, ConnectionParams } from 'subscriptions-transport-ws
 import { getMainDefinition } from '@apollo/client/utilities';
 import Query from 'src/domain/qikflow/base/Query'
 
-const httpURI = process.env.HASURA_GRAPHQL_URL ?? '';
+const httpURI = 'http://localhost:8080/gql';
 const protocol = httpURI.includes('localhost') ? 'ws://' : 'wss://';
 const wsURI = httpURI.replace(/http(s)?:\/\//, protocol);
 

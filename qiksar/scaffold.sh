@@ -1,8 +1,7 @@
 # create an empty app
-quasar create app
+cd ..
 
-#copy template files
-cp -R ./app_template ../app 
+quasar create app
 cd app
 
 # check for quasar upgrades then install default packages
@@ -10,8 +9,6 @@ yarn install
 
 # Important for Quasar 2/Vue3
 quasar ext add @quasar/apollo@next
-
-
 quasar upgrade
 
 # install dev dependencies
@@ -25,3 +22,7 @@ yarn add subscriptions-transport-ws
 yarn add flatted
 yarn add keycloak-js
 yarn add pinia
+
+#copy template files
+cd ..
+cp -R app_template app 

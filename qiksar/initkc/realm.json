@@ -1,8 +1,8 @@
 {
     "id": "qiksar",
     "realm": "qiksar",
-    "displayName": "qiksar App",
-    "displayNameHtml": "<h1>qiksar App</h1>",
+    "displayName": "Qiksar",
+    "displayNameHtml": "<h1>Qiksar</h1>",
     "notBefore": 0,
     "defaultSignatureAlgorithm": "RS256",
     "revokeRefreshToken": false,
@@ -65,8 +65,8 @@
             },
             {
                 "id": "e24e1d8f-65fe-4049-ae1f-c54c61dd5d3e",
-                "name": "default-roles-sndk8",
-                "description": "${role_default-roles-sndk8}",
+                "name": "default-roles-app",
+                "description": "${role_default-roles-app}",
                 "composite": true,
                 "composites": {
                     "realm": [
@@ -297,7 +297,7 @@
                     "attributes": {}
                 }
             ],
-            "sndk8-app": [],
+            "qiksar-app": [],
             "security-admin-console": [],
             "admin-cli": [],
             "account-console": [],
@@ -455,14 +455,14 @@
             "clientId": "account",
             "name": "${client_account}",
             "rootUrl": "${authBaseUrl}",
-            "baseUrl": "/realms/sndk8/account/",
+            "baseUrl": "/realms/qiksar/account/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/realms/sndk8/account/*"
+                "/realms/qiksar/account/*"
             ],
             "webOrigins": [],
             "notBefore": 0,
@@ -497,14 +497,14 @@
             "clientId": "account-console",
             "name": "${client_account-console}",
             "rootUrl": "${authBaseUrl}",
-            "baseUrl": "/realms/sndk8/account/",
+            "baseUrl": "/realms/qiksar/account/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/realms/sndk8/account/*"
+                "/realms/qiksar/account/*"
             ],
             "webOrigins": [],
             "notBefore": 0,
@@ -665,14 +665,14 @@
             "clientId": "security-admin-console",
             "name": "${client_security-admin-console}",
             "rootUrl": "${authAdminUrl}",
-            "baseUrl": "/admin/sndk8/console/",
+            "baseUrl": "/admin/qiksar/console/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/admin/sndk8/console/*"
+                "/admin/qiksar/console/*"
             ],
             "webOrigins": [
                 "+"
@@ -725,10 +725,10 @@
         },
         {
             "id": "412d7b89-d51c-4525-9cf5-abb01db09db5",
-            "clientId": "sndk8-app",
-            "name": "sndk8 App",
+            "clientId": "qiksar-app",
+            "name": "Qiksar App",
             "rootUrl": "http://localhost:8080",
-            "adminUrl": "http://localhost:8093/auth",
+            "adminUrl": "http://localhost:8080/auth",
             "baseUrl": "http://localhost:8080/",
             "surrogateAuthRequired": false,
             "enabled": true,
@@ -1356,7 +1356,7 @@
         "host": "smtp.sendgrid.net",
         "replyTo": "{{SMTP_EMAIL_ADDRESS}}",
         "from": "{{SMTP_EMAIL_ADDRESS}}",
-        "fromDisplayName": "qiksar App",
+        "fromDisplayName": "Qiksar",
         "ssl": "false",
         "user": "apikey"
     },
