@@ -36,8 +36,8 @@ export const GetAuthToken = function ():string {
 // Configuration details for REALM and CLIENT
 const kc_config: Keycloak.KeycloakConfig = {
   url: 'http://localhost:8080/auth',
-  realm: 'app',
-  clientId: 'app-client'
+  realm: 'qiksar',
+  clientId: 'qiksar-client'
 }
 
 // Initialisation options
