@@ -12,17 +12,11 @@ quasar ext add @quasar/apollo@next
 quasar upgrade
 
 # install dev dependencies
-yarn add jest
-yarn add ts-jest
-yarn add @types/jest
+yarn add jest ts-jest @types/jest -D
 
 # install package dependencies
-yarn add apollo-link-ws
-yarn add subscriptions-transport-ws
-yarn add flatted
-yarn add keycloak-js
-yarn add pinia
+yarn add apollo-link-ws subscriptions-transport-ws  flatted  keycloak-js pinia
 
 #copy template files
 cd ..
-cp -R app_template app 
+cp -R app_template/* app 

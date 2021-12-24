@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { boot } from 'quasar/wrappers';
 import { createPinia } from 'pinia';
-import useUserStore from 'src/domain/qikflow/store/userStore';
+import useUserStore from '../domain/qikflow/store/userStore';
 
 const pinia = createPinia();
 export let userStore = {} as any;

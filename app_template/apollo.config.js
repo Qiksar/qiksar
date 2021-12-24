@@ -3,8 +3,8 @@
 module.exports = {
   client: {
     service: {
-      name: 'my-service',
-      url: 'http://localhost:3000/graphql',
+      name: 'app-graphql',
+      url: 'http://localhost:8080/gql/graphql',
     },
     // Files processed by the extension
     includes: ['src/**/*.vue', 'src/**/*.js', 'src/**/*.ts'],
