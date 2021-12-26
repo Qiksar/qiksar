@@ -15,3 +15,44 @@ array_relationships:
       remote_table:
         name: article_tags
         schema: membership
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - tag_id
+    - tag
+    - created_at
+    - updated_at
+  role: tenant_admin
+select_permissions:
+- permission:
+    columns:
+    - tag_id
+    - tag
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+- permission:
+    columns:
+    - tag_id
+    - tag
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - tag_id
+    - tag
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin
+delete_permissions:
+- permission:
+    filter: {}
+  role: tenant_admin

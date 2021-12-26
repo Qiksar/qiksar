@@ -25,3 +25,60 @@ array_relationships:
       remote_table:
         name: members
         schema: membership
+insert_permissions:
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - group_id
+    - leader_id
+    - group_news
+    - meeting_day
+    - name
+    - state
+    - created_at
+    - updated_at
+  role: tenant_admin
+select_permissions:
+- permission:
+    columns:
+    - group_id
+    - leader_id
+    - group_news
+    - meeting_day
+    - name
+    - state
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+- permission:
+    columns:
+    - group_id
+    - leader_id
+    - group_news
+    - meeting_day
+    - name
+    - state
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin
+update_permissions:
+- permission:
+    check: null
+    columns:
+    - group_id
+    - leader_id
+    - group_news
+    - meeting_day
+    - name
+    - state
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin
+delete_permissions:
+- permission:
+    filter: {}
+  role: tenant_admin

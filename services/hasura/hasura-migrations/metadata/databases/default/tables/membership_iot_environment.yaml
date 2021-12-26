@@ -15,3 +15,22 @@ object_relationships:
       remote_table:
         name: iot_messages
         schema: membership
+select_permissions:
+- permission:
+    columns:
+    - temperature
+    - dust_ppm
+    - humidity_percentage
+    - message_id
+    - created_at
+    filter: {}
+  role: member
+- permission:
+    columns:
+    - temperature
+    - dust_ppm
+    - humidity_percentage
+    - message_id
+    - created_at
+    filter: {}
+  role: tenant_admin
