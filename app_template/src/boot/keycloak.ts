@@ -6,8 +6,8 @@
 
 import { boot } from 'quasar/wrappers';
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
-import { userStore } from './pinia';
-import User from '../domain/qikflow/store/types/user';
+import { userStore } from 'src/boot/pinia';
+import User from 'src/domain/qikflow/store/types/user';
 
 // Get the full host URL and append the destination path in order to form a redirect URI
 const getRedirectTarget = function(path:string):string {
@@ -33,11 +33,21 @@ export const GetAuthToken = function ():string {
   return keycloak.token ?? 'unauthenticated';
 }
 
+if (!process.env.KEYCLOAK_AUTH_ENDPOINT) 
+  throw 'KEYCLOAK_AUTH_ENDPOINT is not defined';
+
+const [ , , subdomain] = window.location.hostname.split('.').reverse();
+
+if(!subdomain || subdomain.length == 0)
+  subdomain='app';
+
+console.log('Subdomain: >' + subdomain + '<');
+
 // Configuration details for REALM and CLIENT
 const kc_config: Keycloak.KeycloakConfig = {
-  url: 'http://localhost:8080/auth',
-  realm: 'qiksar',
-  clientId: 'qiksar-client'
+  url: process.env.KEYCLOAK_AUTH_ENDPOINT || 'KC_AUTH_URL is undefined',
+  realm: subdomain,
+  clientId: 'app-client'
 }
 
 // Initialisation options

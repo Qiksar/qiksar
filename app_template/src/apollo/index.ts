@@ -1,4 +1,4 @@
-import { GetAuthToken } from '../boot/keycloak';
+import { GetAuthToken } from './../boot/keycloak';
 import {
 	ApolloClient,
 	ApolloLink,
@@ -12,11 +12,19 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient, ConnectionParams } from 'subscriptions-transport-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import Query from '../domain/qikflow/base/Query'
+import Query from 'src/domain/qikflow/base/Query'
 
-const httpURI = 'http://localhost:8080/gql';
+
+// Determinte the websocket URI
+if (!process.env.HASURA_METADATA_ENDPOINT) 
+  throw 'HASURA_METADATA_ENDPOINT is undefined';    
+
+  const httpURI = process.env.HASURA_METADATA_ENDPOINT;
+
 const protocol = httpURI.includes('localhost') ? 'ws://' : 'wss://';
 const wsURI = httpURI.replace(/http(s)?:\/\//, protocol);
+
+
 
 function getConnectionParams(): ConnectionParams {
 	const accessToken = GetAuthToken();

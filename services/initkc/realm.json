@@ -1,8 +1,8 @@
 {
-    "id": "{{REALM_ID}}",
-    "realm": "{{REALM_ID}}",
-    "displayName": "{{REALM_NAME}}",
-    "displayNameHtml": "<h1>{{REALM_NAME}}</h1>",
+    "id": "app",
+    "realm": "app",
+    "displayName": "app",
+    "displayNameHtml": "<h1>app</h1>",
     "notBefore": 0,
     "defaultSignatureAlgorithm": "RS256",
     "revokeRefreshToken": false,
@@ -21,10 +21,10 @@
     "clientOfflineSessionIdleTimeout": 0,
     "clientOfflineSessionMaxLifespan": 0,
     "accessCodeLifespan": 60,
-    "accessCodeLifespanUserAction": 300,
+    "accessCodeLifespanUserAction": 300000,
     "accessCodeLifespanLogin": 1800,
     "actionTokenGeneratedByAdminLifespan": 43200,
-    "actionTokenGeneratedByUserLifespan": 300,
+    "actionTokenGeneratedByUserLifespan": 300000,
     "oauth2DeviceCodeLifespan": 600,
     "oauth2DevicePollingInterval": 600,
     "enabled": true,
@@ -52,7 +52,7 @@
                 "name": "member",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "{{REALM_ID}}",
+                "containerId": "app",
                 "attributes": {}
             },
             {
@@ -60,7 +60,7 @@
                 "name": "admin",
                 "composite": false,
                 "clientRole": false,
-                "containerId": "{{REALM_ID}}",
+                "containerId": "app",
                 "attributes": {}
             },
             {
@@ -80,7 +80,7 @@
                     }
                 },
                 "clientRole": false,
-                "containerId": "{{REALM_ID}}",
+                "containerId": "app",
                 "attributes": {}
             }
         ],
@@ -297,7 +297,7 @@
                     "attributes": {}
                 }
             ],
-            "qiksar-app": [],
+            "app-client": [],
             "security-admin-console": [],
             "admin-cli": [],
             "account-console": [],
@@ -400,7 +400,7 @@
         "description": "${role_default-roles-realm}",
         "composite": true,
         "clientRole": false,
-        "containerId": "{{REALM_ID}}"
+        "containerId": "app"
     },
     "requiredCredentials": [
         "password"
@@ -455,14 +455,14 @@
             "clientId": "account",
             "name": "${client_account}",
             "rootUrl": "${authBaseUrl}",
-            "baseUrl": "/realms/qiksar/account/",
+            "baseUrl": "/realms/app/account/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/realms/qiksar/account/*"
+                "/realms/app/account/*"
             ],
             "webOrigins": [],
             "notBefore": 0,
@@ -497,14 +497,14 @@
             "clientId": "account-console",
             "name": "${client_account-console}",
             "rootUrl": "${authBaseUrl}",
-            "baseUrl": "/realms/qiksar/account/",
+            "baseUrl": "/realms/app/account/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/realms/qiksar/account/*"
+                "/realms/app/account/*"
             ],
             "webOrigins": [],
             "notBefore": 0,
@@ -665,14 +665,14 @@
             "clientId": "security-admin-console",
             "name": "${client_security-admin-console}",
             "rootUrl": "${authAdminUrl}",
-            "baseUrl": "/admin/qiksar/console/",
+            "baseUrl": "/admin/app/console/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "secret": "**********",
             "redirectUris": [
-                "/admin/qiksar/console/*"
+                "/admin/app/console/*"
             ],
             "webOrigins": [
                 "+"
@@ -725,17 +725,17 @@
         },
         {
             "id": "412d7b89-d51c-4525-9cf5-abb01db09db5",
-            "clientId": "qiksar-app",
-            "name": "Qiksar App",
-            "rootUrl": "http://localhost:8080",
-            "adminUrl": "http://localhost:8080/auth",
-            "baseUrl": "http://localhost:8080/",
+            "clientId": "app-client",
+            "name": "app client",
+            "rootUrl": "https://localhost:8080",
+            "adminUrl": "https://localhost:8080/auth",
+            "baseUrl": "https://localhost:8080/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "redirectUris": [
-                "http://localhost:8080/*"
+                "https://localhost:8080/*"
             ],
             "webOrigins": [
                 "*"
@@ -1348,22 +1348,22 @@
         "strictTransportSecurity": "max-age=31536000; includeSubDomains"
     },
     "smtpServer": {
-        "password": "{{SMTP_PASSWORD}}",
-        "replyToDisplayName": "{{REALM_ID}}",
+        "password": "member",
+        "replyToDisplayName": "app",
         "starttls": "true",
         "auth": "true",
         "port": "587",
         "host": "smtp.sendgrid.net",
         "replyTo": "{{SMTP_EMAIL_ADDRESS}}",
         "from": "{{SMTP_EMAIL_ADDRESS}}",
-        "fromDisplayName": "{{REALM_NAME}}",
+        "fromDisplayName": "app",
         "ssl": "false",
         "user": "apikey"
     },
-    "loginTheme": "{{REALM_ID}}",
+    "loginTheme": "app",
     "accountTheme": "keycloak",
     "adminTheme": "keycloak",
-    "emailTheme": "{{REALM_ID}}",
+    "emailTheme": "app",
     "eventsEnabled": false,
     "eventsListeners": [
         "jboss-logging"
@@ -2213,7 +2213,7 @@
         "oauth2DeviceCodeLifespan": "600",
         "clientSessionMaxLifespan": "0",
         "parRequestUriLifespan": "60",
-        "frontendUrl": "http://localhost:8093/auth"
+        "frontendUrl": "https://localhost:8093/auth"
     },
     "keycloakVersion": "15.0.0",
     "userManagedAccessAllowed": false,

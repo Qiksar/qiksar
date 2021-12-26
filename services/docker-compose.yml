@@ -4,7 +4,7 @@ services:
 
 # Used by Keycloak and GraphQL
     db:
-        env_file: local.env
+        env_file: .env
 
         container_name: q_db
         image: postgres
@@ -22,7 +22,9 @@ services:
 
 # GraphQL interface for the database
     gql:
-        env_file: local.env
+        env_file: 
+            - .env
+            - initkc/private_data/token.env
 
         image: hasura/graphql-engine:v2.1.0-beta.3
         container_name: q_gql
@@ -42,7 +44,7 @@ services:
         
 # Keycloak auth
     auth:
-        env_file: local.env
+        env_file: .env
 
         container_name: q_auth
         image: openremote/keycloak
@@ -61,7 +63,7 @@ services:
         restart: always
     
     qiktrak:
-        env_file: local.env
+        env_file: .env
         
         container_name: qiktrak
         image: namsource/qiktrak:latest
@@ -78,14 +80,14 @@ services:
             - qik-trak-cli.js
 
     #app:
-    #    env_file: local.env
+    #    env_file: .env
     #    container_name: q_app
     #    image: node:latest
 
 
 # nginx proxy
     proxy:
-        env_file: local.env
+        env_file: .env
         
         container_name: q_proxy
         image: nginx
@@ -96,6 +98,7 @@ services:
         
         ports:
             - 80:80
+            - 443:443
             - 8080:8080
 
         links:

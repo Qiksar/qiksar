@@ -7,7 +7,7 @@ echo
 
 # Setup all the environment variables in the env file
 echo "Import environment variables from 'local.env'"
-export $(cat local.env | xargs)
+export $(cat .env | xargs)
 echo
 
 # Create the config file for the Hasura
@@ -25,12 +25,16 @@ cat initnginx/app.conf.template \
     | sed "s|{{GQL_CONTAINER}}|$GQL_CONTAINER|"\
     | sed "s|{{GQL_SERVER}}|$GQL_SERVER|"\
     | sed "s|{{GQL_PORT}}|$GQL_PORT|" \
-    | sed "s|{{GQL_PORT_PUBLIC}}|$GQL_PORT_PUBLIC|" > initnginx/conf.d/app.conf
+    | sed "s|{{GQL_PORT_PUBLIC}}|$GQL_PORT_PUBLIC|" \
+    > initnginx/conf.d/app.conf
 echo
 
 # Create the config file for Hasura
 echo "Create Hasura console config"
-cat hasura/hasura-migrations/config.template | sed "s|{{HASURA_GRAPHQL_CONSOLE}}|$HASURA_GRAPHQL_CONSOLE|" | sed "s|{{HASURA_GRAPHQL_ADMIN_SECRET}}|$HASURA_GRAPHQL_ADMIN_SECRET|" > hasura/hasura-migrations/config.yaml
+cat hasura/hasura-migrations/config.template \
+    | sed "s|{{HASURA_METADATA_ENDPOINT}}|$HASURA_METADATA_ENDPOINT|" \
+    | sed "s|{{HASURA_GRAPHQL_ADMIN_SECRET}}|$HASURA_GRAPHQL_ADMIN_SECRET|" \
+    > hasura/hasura-migrations/config.yaml
 echo
 
 
@@ -74,10 +78,12 @@ echo "Allow Hasura container to stabilise"
 sleep 10
 docker compose up qiktrak 
 echo
+echo "Removing qiktrak container"
+docker container rm qiktrak
 
 echo
 echo "Applying custom metadata to Hasura"
-#hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_GRAPHQL_CONSOLE} metadata apply
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} metadata apply
 
 echo
 echo "Listing any metadata inconsistencies..."
