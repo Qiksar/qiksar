@@ -45,7 +45,7 @@ if(!subdomain || subdomain.length == 0)
 else
   realm=subdomain;
 
-console.log('Subdomain: >' + realm + '<');
+console.log('Realm: >' + realm + '<');
 
 // Configuration details for REALM and CLIENT
 const kc_config: Keycloak.KeycloakConfig = {
@@ -78,8 +78,6 @@ const GetUserProfile = async () => {
 // Keycloak instance
 const keycloak:Keycloak.KeycloakInstance = Keycloak(kc_config);
 
-
-
 // Check for token refresh 
 const kc_token_check_seconds = (30*1000);
 
@@ -91,12 +89,16 @@ let tokenRefresh: any;
 
 // Tests if the current user has a secified role
 export const HasRealmRole = function(roleName:string | undefined): boolean {
-  console.log('HasRealmRole ' + (roleName ?? 'none'));
-  return keycloak.hasRealmRole(roleName ?? '');
+  const hasRole = keycloak.hasRealmRole(roleName ?? '');
+  
+  console.log('HasRealmRole ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
+  
+  return hasRole;
 }
 
 // Triggered when authentication is completed
-const AuthComplete = async (auth: boolean) => { // If authentication was required then capture the token
+const AuthComplete = async (auth: boolean) => { 
+  // If authentication was required then capture the token
   const profile = await GetUserProfile();
   
   const  userDetails: User = {
@@ -117,11 +119,12 @@ const AuthComplete = async (auth: boolean) => { // If authentication was require
 
     tokenRefresh = setInterval(() => {
 
-    keycloak.updateToken(kc_min_validity_seconds)
-      .catch(e => {
-        console.error('Token refresh failed');
-        console.error('Exception: ' + JSON.stringify(e));
-      });
+      keycloak.updateToken(kc_min_validity_seconds)
+        .catch(e => {
+          console.error('Token refresh failed');
+          console.error('Exception: ' + JSON.stringify(e));
+        });
+        
     }, kc_token_check_seconds);}
   }
 

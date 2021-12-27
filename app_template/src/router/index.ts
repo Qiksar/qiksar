@@ -30,7 +30,7 @@ const createHistory = process.env.SERVER
 
 export let Router = {} as vueRouter;
 
-export const createRouter = async(): Promise<vueRouter> => {
+const createRouter = async(): Promise<vueRouter> => {
 	
 	// create the apollo client, which creates TypePolicies according to the views registered above
 	Query.Apollo = CreateApolloClient();	

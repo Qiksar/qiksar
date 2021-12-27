@@ -14,8 +14,8 @@ export default function mainRoutes(): RouteRecordRaw[]  {
   },
 
   {
+    meta: { anonymous: true },
     path: '/unauthorized',
-    meta: { anonymous: false },
     component: () => import('pages/Unauthorized.vue'),
   },
 
