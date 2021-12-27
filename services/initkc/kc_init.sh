@@ -30,16 +30,16 @@ echo
 echo "Create the realm: "${REALM_ID}
 kcadm.sh create realms -s realm=${REALM_ID} -s enabled=true
 kcadm.sh create partialImport -r ${REALM_ID} -s ifResourceExists=SKIP -f ${REALM_JSON}
-kcadm.sh create roles -r ${REALM_ID} -s name=${APP_ADMIN_ROLE} -s description='Tenant admin can manage users within the realm'
-
-# Set the default role assigned to all users
 echo
-echo "Create the default role for the realm: "${DEFAULT_ROLE}
-kcadm.sh add-roles    -r ${REALM_ID} --rname default-roles-${REALM_ID} --rolename ${DEFAULT_ROLE}
+
+echo "Create API user: "${description}" with password: "${API_PASSWORD}
+kcadm.sh create users -r ${REALM_ID} -s username=${API_USER} -s enabled=true -s "attributes.tenant_role=tenant_admin"
+kcadm.sh set-password -r ${REALM_ID} --username=${API_USER} --new-password ${API_PASSWORD}
+
 
 echo
 echo "Create tenant admin user: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=tenant_admin"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: "${APP_ADMIN}" with password: "${USER_PW}
@@ -48,7 +48,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_A
 
 echo
 echo "Create realm test user: "${APP_USER}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_USER} --new-password ${USER_PW}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
 

@@ -12,7 +12,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient, ConnectionParams } from 'subscriptions-transport-ws';
 import { getMainDefinition } from '@apollo/client/utilities';
-import Query from 'src/domain/qikflow/base/Query'
+import Query from '../domain/qikflow/base/Query'
 
 
 // Determinte the websocket URI

@@ -78,8 +78,14 @@ echo "Allow Hasura container to stabilise"
 sleep 10
 docker compose up qiktrak 
 echo
+
 echo "Removing qiktrak container"
 docker container rm qiktrak
+
+
+echo
+echo "Applying database migrations"
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} migrate apply
 
 echo
 echo "Applying custom metadata to Hasura"

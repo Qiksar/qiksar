@@ -56,6 +56,36 @@
                 "attributes": {}
             },
             {
+                "id": "0aa8585f-553e-4bed-b1ab-de08e20e0068",
+                "name": "tenant_admin",
+                "composite": true,
+                "composites": {
+                  "client": {
+                    "realm-management": [
+                      "query-users",
+                      "manage-users",
+                      "view-users"
+                    ]
+                  }
+                },
+                "clientRole": false,
+                "containerId": "{{REALM_ID}}",
+                "attributes": {}
+              },
+            {
+                "id": "c84ef29e-6a24-404e-84ef-f348acadc58c",
+                "name": "API",
+                "composite": true,
+                "composites": {
+                  "realm": [
+                    "tenant_admin"
+                  ]
+                },
+                "clientRole": false,
+                "containerId": "{{REALM_ID}}",
+                "attributes": {}
+              },
+            {
                 "id": "dea43af3-e34e-44ac-b023-76c7dae18ede",
                 "name": "admin",
                 "composite": false,
@@ -779,52 +809,82 @@
             "nodeReRegistrationTimeout": -1,
             "protocolMappers": [
                 {
-                    "id": "4f6f2b20-fce9-4f08-8873-072e039935ed",
-                    "name": "x-hasura-default-role",
-                    "protocol": "openid-connect",
-                    "protocolMapper": "oidc-hardcoded-claim-mapper",
-                    "consentRequired": false,
-                    "config": {
-                        "claim.value": "member",
-                        "userinfo.token.claim": "true",
-                        "id.token.claim": "true",
-                        "access.token.claim": "true",
-                        "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-default-role",
-                        "jsonType.label": "String",
-                        "access.tokenResponse.claim": "false"
-                    }
+                  "id": "0544de4c-a680-481c-9bb1-6bc26a3af178",
+                  "name": "x-hasura-tenant",
+                  "protocol": "openid-connect",
+                  "protocolMapper": "oidc-hardcoded-claim-mapper",
+                  "consentRequired": false,
+                  "config": {
+                    "claim.value": "{{REALM_ID}}",
+                    "userinfo.token.claim": "true",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-tenant",
+                    "jsonType.label": "String",
+                    "access.tokenResponse.claim": "false"
+                  }
                 },
                 {
-                    "id": "6b146d3a-4d83-4fb0-a569-e94fff266d48",
-                    "name": "x-hasura-allowed-roles",
-                    "protocol": "openid-connect",
-                    "protocolMapper": "oidc-usermodel-realm-role-mapper",
-                    "consentRequired": false,
-                    "config": {
-                        "multivalued": "true",
-                        "userinfo.token.claim": "true",
-                        "id.token.claim": "true",
-                        "access.token.claim": "true",
-                        "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-allowed-roles",
-                        "jsonType.label": "String"
-                    }
+                  "id": "7eaa9029-9e71-4b3b-9efa-bdbc28952d1d",
+                  "name": "x-hasura-role",
+                  "protocol": "openid-connect",
+                  "protocolMapper": "oidc-usermodel-attribute-mapper",
+                  "consentRequired": false,
+                  "config": {
+                    "userinfo.token.claim": "true",
+                    "user.attribute": "tenant_role",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-role",
+                    "jsonType.label": "String"
+                  }
                 },
                 {
-                    "id": "46f941ad-b0fd-414e-801e-4db75ce612de",
-                    "name": "x-hasura-user-id",
-                    "protocol": "openid-connect",
-                    "protocolMapper": "oidc-usermodel-property-mapper",
-                    "consentRequired": false,
-                    "config": {
-                        "userinfo.token.claim": "true",
-                        "user.attribute": "id",
-                        "id.token.claim": "true",
-                        "access.token.claim": "true",
-                        "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-user-id",
-                        "jsonType.label": "String"
-                    }
+                  "id": "a2e31686-aa96-4613-a2ef-23dece8d812e",
+                  "name": "x-hasura-default-role",
+                  "protocol": "openid-connect",
+                  "protocolMapper": "oidc-usermodel-attribute-mapper",
+                  "consentRequired": false,
+                  "config": {
+                    "userinfo.token.claim": "true",
+                    "user.attribute": "tenant_role",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-default-role",
+                    "jsonType.label": "String"
+                  }
+                },
+                {
+                  "id": "d9e09905-a1b5-4789-b15e-94cc460acf5b",
+                  "name": "x-hasura-allowed-roles",
+                  "protocol": "openid-connect",
+                  "protocolMapper": "oidc-usermodel-realm-role-mapper",
+                  "consentRequired": false,
+                  "config": {
+                    "multivalued": "true",
+                    "userinfo.token.claim": "true",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-allowed-roles",
+                    "jsonType.label": "String"
+                  }
+                },
+                {
+                  "id": "326e62cd-4768-478c-bfac-df2e0323436f",
+                  "name": "x-hasura-user-id",
+                  "protocol": "openid-connect",
+                  "protocolMapper": "oidc-usermodel-property-mapper",
+                  "consentRequired": false,
+                  "config": {
+                    "userinfo.token.claim": "true",
+                    "user.attribute": "id",
+                    "id.token.claim": "true",
+                    "access.token.claim": "true",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-user-id",
+                    "jsonType.label": "String"
+                  }
                 }
-            ],
+              ],
             "defaultClientScopes": [
                 "web-origins",
                 "roles",

@@ -57,7 +57,13 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       // Import environment variables
-      env: require('dotenv').config().parsed,
+      //env: require('dotenv').config().parsed,
+
+      env :{
+        'HASURA_METADATA_ENDPOINT':'http://localhost:8092/v1/graphql',
+        'KEYCLOAK_AUTH_ENDPOINT':'http://localhost:8093/auth',
+        'I18N_WARNINGS': false
+      },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
 

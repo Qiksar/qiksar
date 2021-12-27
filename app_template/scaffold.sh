@@ -25,6 +25,7 @@ yarn add apollo-link-ws subscriptions-transport-ws  flatted  keycloak-js pinia
 #copy template files
 cd ..
 cp -R app_template/* app 
+rm app/src/boot/apollo.ts
 
 # Create the config file for Hasura
 echo "Create Hasura console config"

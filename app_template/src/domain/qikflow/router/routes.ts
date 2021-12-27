@@ -39,7 +39,7 @@ export default function getDomainRoutes(): RouteRecordRaw[] {
 	const routes: RouteRecordRaw[] = [];
 	
 	EntitySchema.Schemas.map((s: EntitySchema) => {
-		routes.push(getEntityRoutes(s.EntityType, 'member'));
+		routes.push(getEntityRoutes(s.EntityType, 'tenant_admin'));
 	});
 	
 	return routes;

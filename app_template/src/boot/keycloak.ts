@@ -38,15 +38,19 @@ if (!process.env.KEYCLOAK_AUTH_ENDPOINT)
 
 const [ , , subdomain] = window.location.hostname.split('.').reverse();
 
-if(!subdomain || subdomain.length == 0)
-  subdomain='app';
+let realm='none specified';
 
-console.log('Subdomain: >' + subdomain + '<');
+if(!subdomain || subdomain.length == 0)
+  realm='app';
+else
+  realm=subdomain;
+
+console.log('Subdomain: >' + realm + '<');
 
 // Configuration details for REALM and CLIENT
 const kc_config: Keycloak.KeycloakConfig = {
   url: process.env.KEYCLOAK_AUTH_ENDPOINT || 'KC_AUTH_URL is undefined',
-  realm: subdomain,
+  realm: realm,
   clientId: 'app-client'
 }
 
@@ -87,6 +91,7 @@ let tokenRefresh: any;
 
 // Tests if the current user has a secified role
 export const HasRealmRole = function(roleName:string | undefined): boolean {
+  console.log('HasRealmRole ' + (roleName ?? 'none'));
   return keycloak.hasRealmRole(roleName ?? '');
 }
 
