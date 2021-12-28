@@ -1,5 +1,5 @@
 # qiksar
-Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak
+Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.
 
 # Pre-requisites
 
