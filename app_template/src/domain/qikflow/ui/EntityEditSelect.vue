@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 
 import EntityField from '../base/EntityField';
-import { GqlRecord, GqlRecords } from '../base/Query';
+import { GqlRecord, GqlRecords } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
 

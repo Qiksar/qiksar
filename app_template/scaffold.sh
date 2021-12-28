@@ -1,5 +1,3 @@
-cd ..
-
 # Setup all the environment variables in the env file
 echo "Import environment variables from 'local.env'"
 export $(cat services/.env | xargs)
@@ -24,7 +22,8 @@ yarn add apollo-link-ws subscriptions-transport-ws  flatted  keycloak-js pinia
 
 #copy template files
 cd ..
-cp -Ra app_template/*  app 
+cp -R app_template/* app 
+cp -Ra app_template/.devcontainer app 
 rm app/src/boot/apollo.ts
 
 # Create the config file for Hasura

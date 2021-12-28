@@ -13,7 +13,7 @@
 
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/Query';
+import { GqlRecord } from '../base/GqlTypes';
 
 const props = defineProps<{
   field: EntityField,

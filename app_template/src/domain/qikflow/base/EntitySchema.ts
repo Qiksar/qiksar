@@ -1,4 +1,5 @@
 import EntityField, {defaultFieldOptions, hiddenFieldOptions, defaultEnumOptions, fieldOptions, defaultIntFieldOptions, IFieldDefinition } from './EntityField';
+import { TranslateRecord } from './GqlTypes';
 import Query, { defaultFetchMode, fetchMode } from './Query'
 
 interface IInclude {
@@ -15,10 +16,17 @@ export default class EntitySchema {
     private _key: string;
     private _is_enum: boolean;
     private _includes: IInclude[];
+	private _createSelection: TranslateRecord;
 
     private static _schemas:Array<EntitySchema> = [];
     static get Schemas(): Array<EntitySchema> { return this._schemas; } 
 
+    get SelectionTranslator(): TranslateRecord { return this._createSelection; }
+    ToSelection(f:TranslateRecord):EntitySchema {
+        this._createSelection = f;
+        return this;
+    }
+    
     constructor(entityType: string, key:string, description: string, isEnum = false) {
         this._entityType = entityType.toLowerCase();
         this._key = key;
@@ -26,6 +34,7 @@ export default class EntitySchema {
         this._fields = new Array<EntityField>();
         this._is_enum = isEnum;
         this._includes = [];
+        this._createSelection = ({}) => { return { id: 'Use ToSelection', Description:''} };
     }
 
     static ResolveReferences():void {
@@ -227,7 +236,7 @@ export default class EntitySchema {
         return this.AddField(def);
     }
 
-    Flatten(path: string, label: string, options = defaultEnumOptions):EntitySchema{
+    Flatten(path: string, label: string, options = defaultEnumOptions):EntitySchema {
         const name=path;
         const def = {
             name,

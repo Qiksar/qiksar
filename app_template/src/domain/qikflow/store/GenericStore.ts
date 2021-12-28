@@ -1,5 +1,6 @@
-import Query, { defaultFetchMode, GqlRecord, GqlRecords } from 'src/domain/qikflow/base/Query'
+import Query, { defaultFetchMode } from 'src/domain/qikflow/base/Query'
 import { defineStore } from 'pinia';
+import { GqlRecords, GqlRecord } from '../base/GqlTypes';
 
 export function CreateStore<Id extends string>(name: Id) {
   const createStore = defineStore(name, {
@@ -34,7 +35,10 @@ export function CreateStore<Id extends string>(name: Id) {
         if (state.Rows.length == 0)
           console.log('Unable to build Enum Selections from empty dataset: ' + state.view.Schema.EntityType);
 
-        return state.view.SelectionsFunction(state.Rows);
+          const selections = [] as GqlRecords;
+          state.Rows.map(r => selections.push(state.view.Schema.SelectionTranslator(r)));
+      
+          return selections;
       },
 
       NewRecord: (state): GqlRecord => {
@@ -103,7 +107,7 @@ export function CreateStore<Id extends string>(name: Id) {
         const diff = {} as GqlRecord;
 
         // Get the primary key
-        diff[this.view.Schema.Key] = this.CurrentRecord[this.view.Schema.Key];
+        diff[this.view.Schema.Key] = this.CurrentRecord[this.view.Schema.Key] as string;
 
         // Get only the fields which have changed value
         Object.keys(current).map((k: string) => {

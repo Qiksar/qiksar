@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/Query';
+import { GqlRecord } from '../base/GqlTypes';
 import { computed } from 'vue';
 
 const props = defineProps<{

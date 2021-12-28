@@ -4,13 +4,20 @@ import EntitySchema from '../qikflow/base/EntitySchema';
 class RoleView extends Query {
     constructor(sort_by: string|undefined = undefined, asc = true, limit:number|undefined = undefined) {
        
-        const schema: EntitySchema = EntitySchema
-        .CreateEnum('roles', 'role_id', 'Role')
-  
-        super(schema, true, sort_by, asc, limit)
+        const schema: EntitySchema = EntitySchema.CreateEnum(
+            'roles', 
+            'role_id', 
+            'Role'
+            )
+            .ToSelection((r) => { 
+                    return {
+                        id: r[this.Schema.Key] as number,
+                        label: r.name as string,
+                        description: r.comment as string,
+                    }
+                });
 
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        super.SelectionsFunction = super.GetEnumSelections;    
+        super(schema, true, sort_by, asc, limit)
     }
 } 
 

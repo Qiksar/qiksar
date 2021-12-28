@@ -1,4 +1,4 @@
-import Query, { GqlRecord, GqlRecords } from '../qikflow/base/Query'
+import Query from '../qikflow/base/Query'
 import EntitySchema from '../qikflow/base/EntitySchema';
 
 class MemberView extends Query {
@@ -11,7 +11,7 @@ class MemberView extends Query {
 			'members',
 			'member_id',
 			'Member'
-		)
+			)
 			.Field('firstname', 'First Name', 'text')
 			.Field('lastname', 'Surame')
 			.Field('email', 'Email Address', 'email')
@@ -22,24 +22,17 @@ class MemberView extends Query {
 			.Flatten('group.name', 'Group')
 			.Flatten('group.state', 'State')
 			.UseEnum('roles', 'role_id', 'role')
-			.UseEnum('status', 'status_id', 'status');
+			.UseEnum('status', 'status_id', 'status')
+			.ToSelection((r) => { 
+					return {
+						id: r.member_id as number, 
+						label: (r.firstname as string) + ' ' + (r.lastname as string), 
+						description: (r.firstname as string) + ' ' + (r.lastname as string) 
+						}
+					}
+				);
 
 		super(schema, false, sort_by, asc, limit);
-		// eslint-disable-next-line @typescript-eslint/unbound-method
-		super.SelectionsFunction = this.GetSelections;
-	}
-
-	GetSelections(rows: GqlRecords): GqlRecords {
-		const selections = [] as GqlRecords;
-		rows.map((r: GqlRecord) => {
-			selections.push({
-				id: r.member_id as number,
-				label: (r.firstname as string) + ' ' + (r.lastname as string),
-				description: (r.firstname as string) + ' ' + (r.lastname as string),
-			});
-		});
-
-		return selections;
 	}
 }
 

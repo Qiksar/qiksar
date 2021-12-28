@@ -9,10 +9,7 @@ import EntitySchema from './EntitySchema';
 import { TypePolicies } from '@apollo/client/core';
 import { t } from 'src/boot/i18n';
 import { fromJSON, toJSON } from 'flatted';
-
-export type Dictionary = Record<string, unknown>;
-export type GqlRecord = Record<string, unknown>;
-export type GqlRecords = GqlRecord[];
+import { GqlRecord, GqlRecords } from './GqlTypes';
 
 export type fetchMode = 'heavy' | 'light' | 'grid';
 export const defaultFetchMode: fetchMode = 'heavy';
@@ -44,8 +41,6 @@ export default class Query {
 
 		return Query._apollo; 
 	}
-
-	private _createSelections: (rows: GqlRecords) => GqlRecords;
 
 	//#endregion
 
@@ -123,32 +118,6 @@ export default class Query {
 
 	//#endregion
 
-	//#region convert data for dropdown selectors
-
-	set SelectionsFunction(f: (rows: GqlRecords) => GqlRecords) {
-		this._createSelections = f;
-	}
-	get SelectionsFunction(): (rows: GqlRecords) => GqlRecords {
-		return this._createSelections;
-	}
-
-	GetEnumSelections(rows: GqlRecords): GqlRecords {
-		const selections = [] as GqlRecords;
-		const key = this.Schema.Key;
-		rows.map((r: GqlRecord) => {
-			selections.push({
-				id: r[key] as number,
-				label: r.name,
-				description: r.comment,
-			});
-		});
-
-		//console.log(JSON.stringify(selections))
-
-		return selections;
-	}
-	//#endregion
-
 	//#region select fields by editable status or data type
 
 	get EditableFields(): Record<string, EntityField> {
@@ -205,15 +174,6 @@ export default class Query {
 		this._fetch_mode = defaultFetchMode;
 		this._auto_fetch = autoFetch;
 
-		this._createSelections = () => {
-			return [
-				{
-					id: 'No selector function defined',
-					Label: 'No selector function defined',
-				},
-			];
-		};
-
 		Query._views.push(this);
 	}
 
@@ -222,6 +182,7 @@ export default class Query {
 	//#region query builder
 
 	// Build a GrapQL query based on the schema
+	
 	private BuildQuery(
 		where: string | undefined,
 		fm: fetchMode = defaultFetchMode,

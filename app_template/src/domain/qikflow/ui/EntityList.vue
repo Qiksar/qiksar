@@ -22,7 +22,7 @@
 <script lang="ts" setup>
 
 import { onBeforeMount } from 'vue';
-import { GqlRecord } from 'src/domain/qikflow/base/Query';
+import { GqlRecord } from 'src/domain/qikflow/base/GqlTypes';
 import { CreateStore } from 'src/domain/qikflow/store/GenericStore';
 import { Router } from 'src/router'
 
