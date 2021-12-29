@@ -28,26 +28,211 @@ Refer to: https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-c
 
 curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
-# Build 
+# Build Process for Windows
 
-## Windows
+Open WSL2 and ensure you are in your home folder:
 
-The most efficient way to have a clean development environment is to use WSL2.
+```
+cd ~
+```
 
-Start WSL2 and in your home folder create a dev folder in which your app repos can reside.
+or...
 
-git clone your repo
+If you prefer all of your projects to be in a dev folder:
 
-Launch code from within WSL2. The benefit is that the source is located on the WSL2 filesystem and will work much faster.
+```
+cd ~
+mkdir dev
+cd dev
+```
 
-Launch a terminal in VS Code whilst connected to WSL2, and execute the ```rebuild.sh``` command which will launch and configure
-the relevant containers.
+## Clone the Qiksar repository from github
+```
+git clone git@github.com:chrisnurse/qiksar.git 
+```
 
-Once vs code is running, you can then launch the remote dev container. 
-Execute the ```scaffold.sh``` command to create a new quasar app, and then overwrite the default files with template files from qiksar.
+As the source code is now in the WSL filesystem, VS Code will be extremely quick when using remote dev containers.
 
-The app can be launched with ```quasar dev```
+## Launch VS CODE in WSL
+cd qiksar
+code .
 
-NOTE: .gitignore is configured to not commit the app folder, as this is not an asset of qiksar, rather a means of testing the
-qiksar scaffold process.
+We are now in VS CODE with a remote connection to WSL filesystem where our code is located. 
+This means, the entire project structure and build tools work the same on Mac and Windows. So you can also do cross-platform development on any computer you prefer.
 
+The qiksar project is maintained directly whilst using VSCODE in WSL as this has access to the repo via SSH, as this is how the source code was cloned from GitHub.
+
+## Build the supporting services for Data and Auth
+
+In VS CODE, open a terminal and ensure you are in the root of the qiksar project and can see a folder called
+services. Now build the services (Docker containers), which includes postgreSQL, Hasura GraphQL and Keycloak:
+
+```
+cd services
+chmod u+x ./rebuild.sh
+./rebuild.sh
+```
+
+Note: In the above commands, we use chmod to ensure that the shell script is executable.
+
+## SCAFFOLD A NEW APP
+
+Once the services are rebuilt, we now need to open the project as a remote container in VS CODE. Doing so, creates a docker image with Quasar and Cordova installed.
+A number of useful VS Code plugins are also installed.
+
+In the bottom left corner, we can click on the green container box which currently shows WSL, and opens the command palette.
+Select "Reopen in Container (Remote-Containers)"
+
+The first time this is done, the container will be built. 
+
+If the ```devcontainer.json``` file is ever modified, or is out of sync with the current container image for any reason, VS CODE will offer you the option to rebuild the container. 
+
+Note: Be cautious in case there are any unsaved changes to your source code which might be at risk. This shouldn't be the case, but better to be safe than sorry, and make sure you preserve any changes.
+
+## Use the Qiksar Scaffold process to allow us to use our containerised services
+Once the remote container has launched, in the VS Code Explorer, you will see the app_template folder and the scaffold.sh script.
+
+Open a terminal and ensure you are in the root of the qiksar project and can see the script file:
+scaffold.sh
+
+It may also be necessary to ensure that there is no current "app" folder, which would be the case if you have execute the scaffold process previously. 
+If you wish to re-scaffold a clean app, simply remove or rename the folder so you can use your preferred app name
+
+## Ensure the SCAFFOLD script has execute permission, then run it
+chmod u+x scaffold.sh
+scaffold.sh
+
+The QUASAR CLI will execute and require some inputs:
+
+Note: Before proceeding, inside WSL, you may also prefer to configure your git options with your default name and email address:
+
+```
+git config --global user.name "My Name"
+git config --global user.email "my.name@emailaddress.com"
+```
+
+Quasar CLI will require the following inputs...
+
+**Project name** : enter your preferred project name
+**Project product** : enter your preferred project name
+**Project description** : enter a meaningful description of your project
+**Author** : enter your email address, or accept the one recovered from your git configuration
+
+**Pick your CSS preprocessor** : SCSS
+**Check the features for your project** : ESLINT, TypeScript, Axios and vue-i18n - DO NOT SELECT Vuex because we use Pinia by default
+**Select Comoposition API**
+**Select Prettier**
+**Select Yarn**
+
+Quasar will now create the default APP template and the neccessary packages will be installed
+You can safely ignore any warnings about dependencies and versions, for now.
+
+When asked, Does your app have typescript support? input Y and press enter
+
+## Vulnerability Scan
+It is always a good idea to scan packages for vulnerabilities that might cause concern for your and your users.
+
+After a few moments the scaffold script will conclude by automatically scanning for vulnerabilities in any of the packages used.
+
+This is done by executing:
+
+```
+yarn audit
+```
+
+So you can do this at any time in the future.
+
+Note any vulnerabilities, they do occur from time to time and you will have to determine your response to them.
+
+## Prepare to run the new QUASAR APP
+
+At this point the app folder contains a fully functioning Quasar App, and the services for the database, graphql and login are all running.
+
+### Check the docker container services are running
+To confirm, as we are currently in WSL, where we executed the services rebuild.sh script, you can enter:
+docker ps
+
+The status column for q_gql, q_auth and q_db will all show as "UP".
+
+### Move the scaffolded app folder
+
+At this point it is probably most wise to close VSCODE, and then just run WSL in Windows, because we now need to move the folder container the app code, out to its own isolated location.
+
+In WSL change to the location of the folder where we cloned the github repo:
+cd ~/qiksar
+
+Check the app folder exists:
+ls app
+
+Return to the root folder in which the qiksar folder is located
+cd ~
+
+Move the app folder to the same level:
+mv qiksar/app .
+
+## Open the app code in a remote container
+
+Launch VS CODE
+
+```
+cd app
+code .
+```
+
+VS CODE will see the presence of the .devcontainer folder, and automatically ask if you wish to reopen the folder in a remote container:
+Click "Reopen in Container"
+
+If an error occurs, click MORE ACTIONS and select "Rebuild Container"
+
+VSCODE is now running and is attached to a Docker image, which is now our source folder and development environment. VS Code has a number of useful extensions installed.
+
+### Serve and test the app
+
+Open a terminal which will now show the working folder as:
+/workspaces/app
+
+Start serving the Quasar App:
+```
+quasar dev
+```
+
+### Compiler error
+
+There is currently an issue in ```.quasar/client-entry.js``` which needs to be fixed manually. I'm investigating the cause of this minor issue.
+
+This needs to be fixed manually at the moment, else the app doesn't compile:
+.quasar/client-entry.js need to be fixed for SCSS
+
+**change**
+```import 'src/css/app.sass'```
+
+to
+
+```import 'src/css/app.scss'```
+
+### Bypass SSL security warnings in development mode 
+
+When the app launches, in Chrome, if you see "Your connection is not private", use the ADVANCED button and select "Proceed to localhost (unsafe)".
+The error appears because of the need for valid SSL certificates, but we are in developer mode, so this is less important.
+
+In your browser, the app is running and connected to the service containers:
+
+```
+https://localhost:8080/ 
+```
+
+Click the **LOGIN** BUTTON
+
+Login with:
+
+```
+app_admin@localhost
+Password: password
+```
+
+Use the follwing buttons on the home screen to maintain the different types of data:
+
+* Maintain Members
+* Maintain Groups
+* Maintain Roles
+* Maintain Status
