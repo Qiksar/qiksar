@@ -1,14 +1,27 @@
 # Qiksar - Connecting a Quasar App with Keycloak, PostgreSQL, Hasura GraphQL, Apollo, Pinia, 
 
-Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.
+**Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.**
 
-# Pre-requisites
+## Introduction
 
-## Docker
+### Motivation
 
-Install docker and ensure that the docker engine runs when the user logs in
+The motiviation for this project was to be able to rapidly create a Quasar development environment, with related data and authentication services. It was also highly desirable to have no external dependencies on Cloud based services, e.g. Firebase. Everything will run on your computer, and everything will run identically on Windows or Mac development platforms.
 
-## VS Code
+### Example of the Objective
+
+Once the detailed instructions below have been followed to completion, you will be able to use your browser to use a Quasar App which manages an imaginary organisation which has a number of members, where the members are placed in specified groups. You can maintain the groups, assign members to groups and maintain the status of members. 
+
+![image](https://user-images.githubusercontent.com/45703746/147625282-fe470734-7933-40ff-be9f-532b0811c7a7.png)
+
+
+### Pre-requisites
+
+#### Docker
+
+Install docker and ensure that the docker engine runs when the user logs in.
+
+#### VS Code
 
 Install VS Code
 
