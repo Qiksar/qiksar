@@ -1,4 +1,4 @@
-# qiksar
+# Qiksar - Connecting a Quasar App with Keycloak, PostgreSQL, Hasura GraphQL, Apollo, Pinia, 
 
 Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.
 
@@ -11,6 +11,10 @@ Install docker and ensure that the docker engine runs when the user logs in
 ## VS Code
 
 Install VS Code
+
+# Build Process for Mac
+
+The process is identical to the windows build process described below, simply ignore any references to the Windows Subsystem for Linux (WSL).
 
 # Build Process for Windows
 
