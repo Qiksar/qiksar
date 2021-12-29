@@ -1,36 +1,35 @@
 # qiksar
+
 Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.
 
 # Pre-requisites
 
 ## Docker
+
 Install docker and ensure that the docker engine runs when the user logs in
 
 ## VS Code
+
 Install VS Code
-
-### VS Code - Install useful extensions
-#### GitHub
-Work with code repositories
-
-#### Docker
-Manage the docker environment from within VS Code
-
-#### Remote - Containers
-Build your app in a development containers
-
-#### Markdown All in One
-Tools for building and reading markdown documentation
-
-## Hasura CLI
-
-Refer to: https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli.html
-
-curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
 # Build Process for Windows
 
-Open WSL2 and ensure you are in your home folder:
+Open WSL2 and install the Hasura CLI...
+
+## Insatall Hasura CLI
+
+For further information, refer to: 
+https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli.html
+
+To install, execute the following command...
+
+```
+curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+```
+
+## Check the location where you will close the Qiksar Repo
+
+Ensure you are in your home folder:
 
 ```
 cd ~
@@ -44,9 +43,11 @@ If you prefer all of your projects to be in a dev folder:
 cd ~
 mkdir dev
 cd dev
+
 ```
 
 ## Clone the Qiksar repository from github
+
 ```
 git clone git@github.com:chrisnurse/qiksar.git 
 ```
@@ -54,6 +55,7 @@ git clone git@github.com:chrisnurse/qiksar.git
 As the source code is now in the WSL filesystem, VS Code will be extremely quick when using remote dev containers.
 
 ## Launch VS CODE in WSL
+
 cd qiksar
 code .
 
@@ -149,6 +151,7 @@ Note any vulnerabilities, they do occur from time to time and you will have to d
 At this point the app folder contains a fully functioning Quasar App, and the services for the database, graphql and login are all running.
 
 ### Check the docker container services are running
+
 To confirm, as we are currently in WSL, where we executed the services rebuild.sh script, you can enter:
 docker ps
 
