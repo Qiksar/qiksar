@@ -5,24 +5,22 @@ echo
 
 # create an empty app
 quasar create app
-cd app
 
 # check for quasar upgrades then install default packages
+cd app
 yarn install
 
 # Important for Quasar 2/Vue3
 quasar ext add @quasar/apollo@next
-quasar upgrade
 
-# install dev dependencies
+# install dependencies
 yarn add dotenv jest ts-jest @types/jest -D
-
-# install package dependencies
 yarn add apollo-link-ws subscriptions-transport-ws  flatted  keycloak-js pinia
 
-#copy template files
+# copy template files
 cd ..
 cp -R app_template/* app 
+cp -Ra app_template/.quasar app 
 cp -Ra app_template/.devcontainer app 
 rm app/src/boot/apollo.ts
 
