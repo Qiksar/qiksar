@@ -31,3 +31,6 @@ cat app_template/.env.template \
     | sed "s|{{KEYCLOAK_AUTH_ENDPOINT}}|$KEYCLOAK_AUTH_ENDPOINT|" \
     > app/.env
 echo
+
+echo "Scan packages for vulnerabilities"
+yarn audit

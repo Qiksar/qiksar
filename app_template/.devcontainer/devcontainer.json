@@ -15,6 +15,7 @@
 
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"ms-vscode.test-adapter-converter",
 		"dbaeumer.vscode-eslint",
 		"orta.vscode-jest",
 		"kavod-io.vscode-jest-test-adapter",

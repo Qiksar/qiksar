@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>SNDK8</q-toolbar-title>
+        <q-toolbar-title>QIKSAR</q-toolbar-title>
 
         <q-btn-dropdown
           v-if="userStore.loggedIn"
