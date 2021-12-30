@@ -1,6 +1,9 @@
 #!/bin/bash
 clear
 
+mkdir -p initkc/private_data
+echo "" > initkc/private_data/token.env
+
 echo "Build environment started"
 date +"%T"
 echo
