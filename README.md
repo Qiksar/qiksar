@@ -2,7 +2,7 @@
 
 # WELCOME TO QIKSAR
 
-** Quasar Apps powered by Postgres, Hasura GraphQL, Keycloak and Pinia **
+**Quasar Apps powered by Postgres, Hasura GraphQL, Keycloak and Pinia**
 
 Qiksar supports learning, helping you to build Quasar apps faster, securely connected to data through a moden GraphQL interface with minimal code.
 
