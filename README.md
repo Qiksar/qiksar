@@ -1,4 +1,5 @@
-![image](https://user-images.githubusercontent.com/45703746/147714180-bae5812a-c884-4c73-9c94-ba8511d9b7d4.png)
+![image](https://user-images.githubusercontent.com/45703746/147714202-b593e55e-7782-4dd2-9833-5823ef1bed07.png)
+
 
 # Qiksar - Connecting a Quasar App with Keycloak, PostgreSQL, Hasura GraphQL, Apollo, Pinia, 
 
