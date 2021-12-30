@@ -15,7 +15,7 @@ quasar ext add @quasar/apollo@next
 
 # install dependencies
 yarn add dotenv jest ts-jest @types/jest -D
-yarn add apollo-link-ws subscriptions-transport-ws  flatted  keycloak-js pinia
+yarn add apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia
 
 # copy template files
 cd ..
@@ -33,4 +33,6 @@ cat app_template/.env.template \
 echo
 
 echo "Scan packages for vulnerabilities"
+cd app
 yarn audit
+cd ..

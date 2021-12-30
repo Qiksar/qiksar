@@ -23,7 +23,8 @@
 		"yzhang.markdown-all-in-one",
 		"bierner.markdown-mermaid",
 		"gruntfuggly.todo-tree",
-		"johnsoncodehk.volar"
+		"johnsoncodehk.volar",
+		"esbenp.prettier-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
