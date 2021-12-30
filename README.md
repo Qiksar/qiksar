@@ -1,9 +1,10 @@
-![image](https://user-images.githubusercontent.com/45703746/147714202-b593e55e-7782-4dd2-9833-5823ef1bed07.png)
 
 
-# Qiksar - Connecting a Quasar App with Keycloak, PostgreSQL, Hasura GraphQL, Apollo, Pinia, 
+| ![image](https://user-images.githubusercontent.com/45703746/147714202-b593e55e-7782-4dd2-9833-5823ef1bed07.png) | ** Qiksar - Quasar Apps powered by Postgres, Hasura GraphQL, Keycloak and Pinia ** |
 
-**Quick start for new Quasar apps with Hasura, PostgreSQL and Keycloak, using Pinia to support low-code data persistence based on Apollo.**
+# QIKSAR
+
+Qiksar provides an opportunity to learn how you might quickly connect your Quasar apps to data, through a moden GraphQL interface, securely and with minimal code.
 
 ## Introduction
 
