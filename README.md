@@ -6,7 +6,15 @@
 
 Qiksar supports learning, helping you to build Quasar apps faster, securely connected to data through a moden GraphQL interface with minimal code.
 
-Watch the video here: https://www.youtube.com/watch?v=ti72vq3aqZw
+## Getting Started Videos
+
+Introduction - https://www.youtube.com/watch?v=ti72vq3aqZw 
+Building a fully functioning prototype app with login, and data storage
+
+
+Smart Data   - https://www.youtube.com/watch?v=GLBG6BNlRqc
+How Qiksar dynamically builds the user interface, and even translates data to foreign languages
+
 
 ## Introduction
 
