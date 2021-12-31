@@ -163,7 +163,7 @@ export default class Query {
 		autoFetch = false,
 		sort_by: string | undefined = undefined,
 		asc = true,
-		limit: number | undefined
+		limit: number | undefined = undefined
 	) {
 		this._schema = schema;
 		this._sort_by = sort_by ?? schema.Key;

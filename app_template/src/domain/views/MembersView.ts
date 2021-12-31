@@ -2,11 +2,7 @@ import Query from '../qikflow/base/Query'
 import EntitySchema from '../qikflow/base/EntitySchema';
 
 class MemberView extends Query {
-	constructor(
-		sort_by: string | undefined = undefined,
-		asc = true,
-		limit: number | undefined = undefined
-	) {
+	constructor() {
 		const schema: EntitySchema = EntitySchema.Create(
 			'members',
 			'member_id',
@@ -32,7 +28,7 @@ class MemberView extends Query {
 					}
 				);
 
-		super(schema, false, sort_by, asc, limit);
+		super(schema);
 	}
 }
 

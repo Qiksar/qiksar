@@ -1,4 +1,6 @@
-export default async function InitialiseDomain(views:string[], path:string): Promise<void>{
+export default async function InitialiseDomain(path:string): Promise<void>{
+	
+	const views = ['RolesView', 'StatusView', 'GroupsView', 'MembersView'];
 	
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const imports: Promise<unknown>[] = [];

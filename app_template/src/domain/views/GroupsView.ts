@@ -2,7 +2,7 @@ import Query from '../qikflow/base/Query'
 import EntitySchema from '../qikflow/base/EntitySchema';
 
 class GroupsView extends Query {
-    constructor(sort_by: string | undefined = undefined, asc = true, limit: number | undefined = undefined) {
+    constructor() {
 
         const schema: EntitySchema = EntitySchema.Create(
             'groups', 
@@ -21,10 +21,8 @@ class GroupsView extends Query {
                     }
                 });
 
-        super(schema, true, sort_by, asc, limit)
+        super(schema, true)
     }
-
-	
 }
 
 const view = new GroupsView();

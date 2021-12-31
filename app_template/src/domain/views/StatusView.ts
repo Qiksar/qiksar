@@ -2,7 +2,7 @@ import Query from '../qikflow/base/Query'
 import EntitySchema from '../qikflow/base/EntitySchema';
 
  class StatusView extends Query {
-    constructor(sort_by: string|undefined = undefined, asc = true, limit:number|undefined = undefined) {
+    constructor() {
        
         const schema: EntitySchema = EntitySchema.CreateEnum(
             'status', 
@@ -17,7 +17,7 @@ import EntitySchema from '../qikflow/base/EntitySchema';
                     }
                 });
   
-        super(schema, true, sort_by, asc, limit)
+        super(schema, true)
     }
 } 
 
