@@ -35,8 +35,7 @@ const createRouter = async(): Promise<vueRouter> => {
 	// create the apollo client, which creates TypePolicies according to the views registered above
 	Query.Apollo = CreateApolloClient();	
 
-	const views = ['RolesView', 'StatusView', 'GroupsView', 'MembersView'];
-	await InitialiseDomain(views, './views/');
+	await InitialiseDomain('./views/');
 	EntitySchema.ResolveReferences();
 	
 	//console.log('domain init complete')
