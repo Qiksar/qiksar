@@ -1,4 +1,4 @@
-import { GetAuthToken } from './../boot/keycloak';
+import { AuthWrapper } from './../boot/keycloak';
 import {
 	ApolloClient,
 	ApolloLink,
@@ -19,22 +19,21 @@ import Query from '../domain/qikflow/base/Query'
 if (!process.env.HASURA_METADATA_ENDPOINT) 
   throw 'HASURA_METADATA_ENDPOINT is undefined';    
 
-  const httpURI = process.env.HASURA_METADATA_ENDPOINT;
+const httpURI = process.env.HASURA_METADATA_ENDPOINT;
 
 const protocol = httpURI.includes('localhost') ? 'ws://' : 'wss://';
 const wsURI = httpURI.replace(/http(s)?:\/\//, protocol);
 
 
-
 function getConnectionParams(): ConnectionParams {
-	const accessToken = GetAuthToken();
+	const accessToken = AuthWrapper.GetAuthToken();
 	return accessToken ? { bearer: accessToken } : {};
 }
 
 const authLink = setContext((_, { headers }) => {
 	// get the authentication token from local storage if it exists
 	// return the headers to the context so httpLink can read them
-	const token = GetAuthToken();
+	const token = AuthWrapper.GetAuthToken();
 
 	return {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title>QIKSAR</q-toolbar-title>
+        <q-toolbar-title>SNDK8</q-toolbar-title>
 
         <q-btn-dropdown
           v-if="userStore.loggedIn"
@@ -53,7 +53,7 @@
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
 import { defineComponent, ref } from 'vue'
-import { Login, Logout } from 'src/boot/keycloak';
+import { AuthWrapper } from 'src/boot/keycloak';
 import { userStore } from 'src/boot/pinia';
 
 const linksList = [
@@ -117,10 +117,10 @@ export default defineComponent({
         // console.log('Clicked on an Item')
       },
       onLogInClick() {
-        Login('/');
+        AuthWrapper.Login('/');
       },
       onLogoutClick() {
-        Logout();
+        AuthWrapper.Logout();
       },
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       userStore,

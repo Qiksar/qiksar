@@ -6,7 +6,7 @@ import {
 	createWebHistory,
 } from 'vue-router';
 
-import { Login, IsAuthenticated, HasRealmRole } from 'boot/keycloak';
+import { AuthWrapper } from 'boot/keycloak';
 import { CreateApolloClient } from 'src/apollo';
 import InitialiseDomain from 'src/domain/init_domain';
 import Query from 'src/domain/qikflow/base/Query';
@@ -35,7 +35,8 @@ const createRouter = async(): Promise<vueRouter> => {
 	// create the apollo client, which creates TypePolicies according to the views registered above
 	Query.Apollo = CreateApolloClient();	
 
-	await InitialiseDomain('./views/');
+	const views = ['RolesView', 'StatusView', 'GroupsView', 'MembersView'];
+	await InitialiseDomain(views, './views/');
 	EntitySchema.ResolveReferences();
 	
 	//console.log('domain init complete')
@@ -62,10 +63,10 @@ const createRouter = async(): Promise<vueRouter> => {
 		if (allow_anonymous) {
 			// Page doesn't require auth
 			next();
-		} else if (!IsAuthenticated()) {
+		} else if (!AuthWrapper.IsAuthenticated()) {
 			// User must be logged in
-			Login(to.path);
-		} else if (HasRealmRole(required_role)) {
+			AuthWrapper.Login(to.path);
+		} else if (AuthWrapper.HasRealmRole(required_role)) {
 			// User must have at least the default role
 			next();
 		} else {

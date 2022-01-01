@@ -46,14 +46,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Logout } from 'boot/keycloak';
+import { AuthWrapper } from 'boot/keycloak';
 
 export default defineComponent({
   name: 'PageIndex',
   components: {},
   setup() {
     return {
-      logout: () => { void Logout() },
+      logout: () => { void AuthWrapper.Logout() },
     };
   }
 });
