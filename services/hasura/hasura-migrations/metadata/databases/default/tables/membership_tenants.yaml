@@ -1,50 +1,56 @@
 table:
-  name: articles
+  name: tenants
   schema: membership
 configuration:
   custom_column_names: {}
-  custom_name: articles
+  custom_name: tenants
   custom_root_fields: {}
-object_relationships:
-- name: member
-  using:
-    foreign_key_constraint_on: created_by
 array_relationships:
-- name: article_tags
+- name: groups
   using:
-    manual_configuration:
-      column_mapping:
-        article_id: article_id
-      insertion_order: null
-      remote_table:
-        name: article_tags
+    foreign_key_constraint_on:
+      column: tenant_id
+      table:
+        name: groups
+        schema: membership
+- name: members
+  using:
+    foreign_key_constraint_on:
+      column: tenant_id
+      table:
+        name: members
         schema: membership
 insert_permissions:
 - permission:
     backend_only: false
     check: {}
     columns:
-    - article_id
-    - created_by
-    - article
+    - active
+    - tenant_id
+    - comment
+    - name
     - created_at
     - updated_at
+    set:
+      tenant_id: x-hasura-tenant-id
   role: tenant_admin
 select_permissions:
 - permission:
     columns:
-    - article_id
-    - created_by
-    - article
+    - active
+    - tenant_id
+    - comment
+    - name
     - created_at
     - updated_at
     filter: {}
   role: member
 - permission:
     columns:
-    - article_id
-    - created_by
-    - article
+    - active
+    - tenant_id
+    - comment
+    - name
     - created_at
     - updated_at
     filter: {}
@@ -53,9 +59,10 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - article_id
-    - created_by
-    - article
+    - active
+    - tenant_id
+    - comment
+    - name
     - created_at
     - updated_at
     filter: {}

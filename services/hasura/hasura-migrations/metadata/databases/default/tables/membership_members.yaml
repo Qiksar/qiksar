@@ -33,6 +33,9 @@ object_relationships:
       remote_table:
         name: status
         schema: membership
+- name: tenant
+  using:
+    foreign_key_constraint_on: tenant_id
 array_relationships:
 - name: articles
   using:
@@ -65,16 +68,34 @@ insert_permissions:
 - permission:
     backend_only: false
     check: {}
-    columns: []
+    columns:
+    - active
+    - group_id
+    - member_id
+    - rating
+    - role_id
+    - status_id
+    - tenant_id
+    - user_id
+    - about_me
+    - company
+    - email
+    - firstname
+    - lastname
+    - mobile
+    - photo
+    - created_at
+    - updated_at
     set:
-      user_tenant: x-hasura-tenant
+      tenant_id: x-hasura-tenant-id
   role: tenant_admin
 select_permissions:
 - permission:
     columns:
     - member_id
+    - tenant_id
+    - active
     - user_id
-    - user_tenant
     - email
     - mobile
     - firstname
@@ -92,11 +113,12 @@ select_permissions:
   role: member
 - permission:
     columns:
-    - group_id
     - member_id
+    - group_id
+    - tenant_id
+    - active
     - rating
     - user_id
-    - user_tenant
     - role_id
     - status_id
     - about_me
@@ -114,11 +136,12 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - group_id
     - member_id
+    - group_id
+    - tenant_id
+    - active
     - rating
     - user_id
-    - user_tenant
     - role_id
     - status_id
     - about_me

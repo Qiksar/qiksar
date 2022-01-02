@@ -10,3 +10,4 @@
 - "!include membership_roles.yaml"
 - "!include membership_status.yaml"
 - "!include membership_tags.yaml"
+- "!include membership_tenants.yaml"

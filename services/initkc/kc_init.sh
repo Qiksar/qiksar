@@ -37,14 +37,35 @@ kcadm.sh create users -r ${REALM_ID} -s username=${API_USER} -s enabled=true -s 
 kcadm.sh set-password -r ${REALM_ID} --username=${API_USER} --new-password ${API_PASSWORD}
 
 
+
 echo
-echo "Create tenant admin user: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=tenant_admin"
+echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=tenant_admin" -s "attributes.tenant_id=1"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename "admin" 
-kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE}  
+kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
+
+
+echo
+echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=3"
+kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
+
+echo "Assign admin and tenant_admin roles: oz_"${APP_ADMIN}" with password: "${USER_PW}
+kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+
+
+echo
+echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=3"
+kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
+
+echo "Assign admin and tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
+kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_$"{APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+
+
+
 
 echo
 echo "Create realm test user: "${APP_USER}" with password: "${USER_PW}

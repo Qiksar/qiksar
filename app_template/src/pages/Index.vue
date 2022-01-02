@@ -4,6 +4,14 @@
       class="q-mt-xl"
       color="white"
       text-color="blue"
+      to="/tenants"
+      label="Maintain Tenants"
+      no-caps
+    />
+    <q-btn
+      class="q-mt-xl"
+      color="white"
+      text-color="blue"
       to="/members"
       label="Maintain Members"
       no-caps
@@ -46,15 +54,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import  {AuthWrapper} from 'src/boot/auth';
+import { AuthWrapper } from 'src/boot/auth';
 
 export default defineComponent({
   name: 'PageIndex',
   components: {},
   setup() {
     return {
-      logout: () => { void AuthWrapper.Logout() },
+      logout: () => {
+        void AuthWrapper.Logout();
+      },
     };
-  }
+  },
 });
 </script>

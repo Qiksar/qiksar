@@ -3,6 +3,12 @@
 -- TEST DATA
 --
 --
+INSERT INTO membership.tenants ("name", "comment")
+VALUES 
+    ('admin', 'Tenant administrator'),
+    ('Perth Kangaroo Society', 'Hopping mad people'),
+    ('Arbroath Cathedral Builders', 'Scotlands foremost clinic');
+
 INSERT INTO membership.roles ("name", "comment")
 VALUES 
     ('admin', 'Tenant administrator'),
@@ -14,32 +20,75 @@ VALUES
     ('active', 'Membership active'),
     ('cancelled', 'Membership cancelled');
 
-INSERT INTO membership.groups ("name", "state", "meeting_day", "group_news")
+
+
+--
+-- AUSTRALIAN GROUPS and MEMBERS
+--
+
+INSERT INTO membership.groups ("tenant_id", "name", "state", "meeting_day", "group_news")
 VALUES 
     (
-        'Group 1',
+        2,
+        'Aussie Group 1',
         'WA',
         'Every Monday',
         'Please remember to keep your password safe'
     ),
     (
-        'Group 2',
+        2,
+        'Aussie Group 2',
         'NSW',
         'Every Thursday',
-        'Sheila is preseting on Friday evening at the Town Hall'
+        'Sheila is presenting on Friday about Quasar'
     );
 
-INSERT INTO membership.members ("group_id","firstname","lastname","company","email","mobile","status_id","role_id")
+
+INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
 VALUES
-('1','Jack',  'Valley', 'Megacorp',       'am@madeupemail.com.au','0400 111 222','1','2'),
-('1','Jill',  'Hill',   'StartsUp',       'bm@madeupemail.com.au','0400 211 222','1','2'),
-('1','Barry', 'Clyde',  'Fast cars Inc',  'cm@madeupemail.com.au','0400 311 222','1','2'),
-('2','Sheila','jones',  'Rest-a-while',   'dm@madeupemail.com.au','0400 411 222','1','2'),
-('2','Angela','Smith',  'Angies Plumbers','em@madeupemail.com.au','0400 511 222','1','2'),
-('2','Ben',   'Masters','Finance Wizards','fm@madeupemail.com.au','0400 611 222','1','2');
+(2, '1','Barry', 'Perth',     'Megacorp',        'am@ozemail.com.au', '0400 111 222','1','2'),
+(2, '1','Bob',   'Sydney',    'StartsUp',        'bm@ozemail.com.au', '0400 211 222','1','2'),
+(2, '1','Helen', 'Hobart',    'Fast cars Inc',   'cm@ozemail.com.au', '0400 311 222','1','2'),
+(2, '2','Sheila','Melbourne', 'Rest-a-while',    'dm@ozemail.com.au', '0400 411 222','1','2'),
+(2, '2','Angela','Adelaide',  'Angies Plumbers', 'em@ozemail.com.au', '0400 511 222','1','2'),
+(2, '2','Ben',   'Darwin',    'Finance Wizards', 'fm@ozemail.com.au', '0400 611 222','1','2');
 
 UPDATE membership.groups SET leader_id=1 WHERE group_id = 1;
 UPDATE membership.groups SET leader_id=4 WHERE group_id = 2;
+
+
+--
+-- SCOTTISH GROUPS and MEMBERS
+--
+
+INSERT INTO membership.groups ("tenant_id", "name", "state", "meeting_day", "group_news")
+VALUES 
+    (
+        3,
+        'Scotland Group 1',
+        'Angus',
+        'Every Tuesday',
+        'Welcome all members from Glencoe and surrounds'
+    ),
+    (
+        3,
+        'Scotland Group 2',
+        'Cook',
+        'Every Friday',
+        'Sheila is giving a talk on Wednesday'
+    );
+
+INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
+VALUES
+(3, '3','Robert',  'Bruce',           'CaveCorp',            'robert@scotmail.com.au',  '0500 111 222','1','2'),
+(3, '3','William', 'Wallace',         'Bottoms Up',          'william@scotmail.com.au', '0500 211 222','1','2'),
+(3, '3','Billy',   'Connoly',         'Jokes On You',        'billy@scotmail.com.au',   '0500 311 222','1','2'),
+(3, '4','Mairi',   'Chisholm',        'Ambulance on Call',   'mairi@scotmail.com.au',   '0500 411 222','1','2'),
+(3, '4','Alexander Graham',   'Bell', 'Dial a Pizza',        'alex@scotmail.com.au',    '0500 511 222','1','2'),
+(3, '4','Mary Queen', 'Of Scots',     'Royal Tea',           'mary@scotmail.com.au',    '0500 611 222','1','2');
+
+UPDATE membership.groups SET leader_id=7 WHERE group_id = 3;
+UPDATE membership.groups SET leader_id=10 WHERE group_id = 4;
 
 
 ---

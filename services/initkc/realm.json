@@ -810,7 +810,7 @@
             "protocolMappers": [
                 {
                   "id": "0544de4c-a680-481c-9bb1-6bc26a3af178",
-                  "name": "x-hasura-tenant",
+                  "name": "x-hasura-realm",
                   "protocol": "openid-connect",
                   "protocolMapper": "oidc-hardcoded-claim-mapper",
                   "consentRequired": false,
@@ -819,7 +819,7 @@
                     "userinfo.token.claim": "true",
                     "id.token.claim": "true",
                     "access.token.claim": "true",
-                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-tenant",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-tenant-id",
                     "jsonType.label": "String",
                     "access.tokenResponse.claim": "false"
                   }
@@ -839,6 +839,21 @@
                     "jsonType.label": "String"
                   }
                 },
+                {
+                    "id": "7eaa9029-9e71-4b3b-9efa-bdbc28952d1d",
+                    "name": "x-hasura-tenant-id",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-attribute-mapper",
+                    "consentRequired": false,
+                    "config": {
+                      "userinfo.token.claim": "true",
+                      "user.attribute": "tenant_id",
+                      "id.token.claim": "true",
+                      "access.token.claim": "true",
+                      "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-tenant-id",
+                      "jsonType.label": "String"
+                    }
+                  },
                 {
                   "id": "a2e31686-aa96-4613-a2ef-23dece8d812e",
                   "name": "x-hasura-default-role",

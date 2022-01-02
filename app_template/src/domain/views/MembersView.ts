@@ -8,6 +8,10 @@ class MemberView extends Query {
 			'member_id',
 			'Member'
 			)
+
+			.Include('tenants', 'tenant_id', 'tenant', 'tenant_id name')
+			.Flatten('tenant.name', 'Tenant')
+
 			.Field('firstname', 'First Name', 'text')
 			.Field('lastname', 'Surame')
 			.Field('email', 'Email Address', 'email')
