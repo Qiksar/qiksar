@@ -13,7 +13,7 @@ date +"%T"
 echo
 
 # Setup all the environment variables in the env file
-echo "Import environment variables from 'local.env'"
+echo "Import environment variables from './.env'"
 export $(cat .env | xargs)
 echo
 
