@@ -49,7 +49,6 @@
         member_id SERIAL PRIMARY KEY,
         tenant_id integer NOT NULL REFERENCES membership.tenants,
         user_id integer NULL UNIQUE,
-        active BOOLEAN default true,
         
         group_id integer NULL REFERENCES membership.groups,
         status_id integer NOT NULL REFERENCES membership.status,

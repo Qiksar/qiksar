@@ -69,7 +69,6 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - active
     - group_id
     - member_id
     - rating
@@ -94,7 +93,6 @@ select_permissions:
     columns:
     - member_id
     - tenant_id
-    - active
     - user_id
     - email
     - mobile
@@ -116,7 +114,6 @@ select_permissions:
     - member_id
     - group_id
     - tenant_id
-    - active
     - rating
     - user_id
     - role_id
@@ -139,7 +136,6 @@ update_permissions:
     - member_id
     - group_id
     - tenant_id
-    - active
     - rating
     - user_id
     - role_id
