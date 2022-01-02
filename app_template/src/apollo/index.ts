@@ -1,4 +1,4 @@
-import { AuthWrapper } from './../boot/keycloak';
+import { AuthWrapper } from '../boot/auth';
 import {
 	ApolloClient,
 	ApolloLink,

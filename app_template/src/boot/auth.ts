@@ -9,22 +9,33 @@ import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { userStore } from 'src/boot/pinia';
 import User from 'src/domain/qikflow/store/types/user';
 
-class QiksarKeycloakWrapper {
+interface QiksarAuthWrapper {
+
+  Init():Promise<void>;
+  GetAuthToken():string;
+  Login(route:string):void;
+  Logout():void;
+  IsAuthenticated():boolean;
+  HasRealmRole(role:string):boolean;
+  GetUserRoles():string[];
+}
+
+class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
   // actual instance of keycloak
-  keycloak:Keycloak.KeycloakInstance;
+  private keycloak:Keycloak.KeycloakInstance;
 
   // The realm detected at login
-  realm = 'none specified';
+  private realm = 'none specified';
   
   // Check for token refresh every 30 seconds
-  kc_token_check_seconds = (30*1000);
+  private kc_token_check_seconds = (30*1000);
 
   // When token is checked, it must be valid for at least this amount of time, else it will be refreshed
-  kc_min_validity_seconds = 60;
+  private kc_min_validity_seconds = 60;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tokenRefresh: any = null;
+  private tokenRefresh: any = null;
 
 
   constructor () {
@@ -50,10 +61,13 @@ class QiksarKeycloakWrapper {
 
     // Create a keycloak instance
      this.keycloak = Keycloak(kc_config);
+
+     if(!this.keycloak)
+      throw 'Qiksar Initialisation Error: Keycloak did not initialise';
   }
   
   // Get the full host URL and append the destination path in order to form a redirect URI
-  public getRedirectTarget(path:string):string {
+  private getRedirectTarget(path:string):string {
     let basePath:string = window.location.toString();
     let index:number = basePath.indexOf('//') + 2;
   
@@ -69,16 +83,24 @@ class QiksarKeycloakWrapper {
   async GetUserProfile():Promise<KeycloakProfile> {
     let profile: KeycloakProfile = {};
 
-    await this.keycloak.loadUserProfile()
+    if (this.IsAuthenticated()) {
+      await this
+      .keycloak
+      .loadUserProfile()
       .then((p: KeycloakProfile) => {
-        profile = p;
-      })
+          profile = p;
+        })
       .catch((e) => {
-        console.error('!!!! Failed to load user profile');
-        console.error(JSON.stringify(e));
-      });
+          console.error('!!!! Failed to load user profile');
+          console.error(JSON.stringify(e));
+        });
+    }
 
-      return profile;
+    return profile;
+  }
+
+  GetUserRoles():string[] {
+    return this.keycloak.realmAccess?.roles ?? []
   }
 
   // Triggered when authentication is completed
@@ -87,15 +109,18 @@ class QiksarKeycloakWrapper {
     // If authentication was required then capture the token
   const profile = await this.GetUserProfile();
   
-  const  userDetails: User = {
+  const userDetails: User = {
     realm: this.realm,
     username: profile.username ?? '',
     email: profile.email ?? '',
     firstname: profile.firstName ?? '',
     lastname: profile.lastName ?? '',
-    roles: AuthWrapper.keycloak.realmAccess?.roles ?? [],
+    roles: [],
     lastLogin: ''
   };
+
+  if (profile)
+    userDetails.roles = this.GetUserRoles();
 
   userStore.setUser(userDetails);
   userStore.setLoggedIn(this.IsAuthenticated());
@@ -104,18 +129,20 @@ class QiksarKeycloakWrapper {
     if(this.tokenRefresh)
       clearTimeout(this.tokenRefresh);
 
-    this.tokenRefresh = setInterval(() => {
-      AuthWrapper
-      .keycloak
-      .updateToken(this.kc_min_validity_seconds)
-      .catch(e => {
-        console.error('Token refresh failed');
-        console.error('Exception: ' + JSON.stringify(e));
-      });
-      
-      },
+    this.tokenRefresh = setInterval(
+      () => {
+        if(this.keycloak) {
+            this
+            .keycloak
+            .updateToken(this.kc_min_validity_seconds)
+            .catch(e => {
+              console.error('Token refresh failed');
+              console.error('Exception: ' + JSON.stringify(e));
+            });
+          }
+        },
+
       this.kc_token_check_seconds);
-    
     }
   }
 
@@ -127,12 +154,12 @@ class QiksarKeycloakWrapper {
   // Get authorisation token from keycloak
   GetAuthToken():string {
     //console.log(keycloak.token);
-    return AuthWrapper.keycloak.token ?? 'unauthenticated';
+    return this.keycloak.token ?? 'unauthenticated';
   }
 
   // Test if the  user has a specified role
   HasRealmRole(roleName:string | undefined): boolean {
-    const hasRole = AuthWrapper.keycloak.hasRealmRole(roleName ?? '');
+    const hasRole = this.keycloak.hasRealmRole(roleName ?? '');
     console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
   
     return hasRole;
@@ -140,12 +167,12 @@ class QiksarKeycloakWrapper {
   
   // The login flow is executed
   Login(path: string): void {
-    const redirectUri= AuthWrapper.getRedirectTarget(path);
+    const redirectUri= this.getRedirectTarget(path);
     const options: Keycloak.KeycloakLoginOptions = { redirectUri }
   
-    void AuthWrapper
+    void this
       .keycloak
-      .login( options)
+      .login(options)
       .then(async () => { await this.AuthComplete(true) });
   }
 
@@ -163,17 +190,17 @@ class QiksarKeycloakWrapper {
       checkLoginIframe: false 
     }
 
-    await AuthWrapper
+    await this
           .keycloak
           .init(kc_init_options)
-          .then(async (auth_result) => { await AuthWrapper.AuthComplete(auth_result); }) 
+          .then(async (auth_result) => { await this.AuthComplete(auth_result); }) 
   }
 }
 
-export const AuthWrapper = new QiksarKeycloakWrapper();
+export const AuthWrapper:QiksarAuthWrapper = new QiksarKeycloakWrapper();
 
 // Trigger Keycloak initialisation
-export default boot(async () => {
-  await AuthWrapper.Init();  
-  }
-);
+export default boot(async () => { 
+  await AuthWrapper.Init();
+  console.log('Qiksar auth boot complete');
+ });

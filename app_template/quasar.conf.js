@@ -31,7 +31,7 @@ module.exports = configure(function (ctx) {
     boot: [
       'i18n',
       'pinia',
-      'keycloak',
+      'auth',
       'axios',
     ],
 

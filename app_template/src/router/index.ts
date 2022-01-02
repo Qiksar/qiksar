@@ -6,7 +6,7 @@ import {
 	createWebHistory,
 } from 'vue-router';
 
-import { AuthWrapper } from 'boot/keycloak';
+import { AuthWrapper } from 'boot/auth';
 import { CreateApolloClient } from 'src/apollo';
 import InitialiseDomain from 'src/domain/init_domain';
 import Query from 'src/domain/qikflow/base/Query';

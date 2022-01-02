@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { AuthWrapper } from 'boot/keycloak';
+import { AuthWrapper } from 'boot/auth';
 
 export default defineComponent({
   name: 'PageIndex',
