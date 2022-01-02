@@ -40,15 +40,6 @@
       label="Maintain Status"
       no-caps
     />
-    <q-btn
-      @click="logout()"
-      class="q-mt-xl"
-      color="white"
-      text-color="blue"
-      unelevated
-      label="Logout"
-      no-caps
-    />
   </q-page>
 </template>
 

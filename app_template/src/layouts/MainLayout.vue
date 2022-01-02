@@ -10,7 +10,7 @@
           v-if="userStore.loggedIn"
           color="primary"
           icon="account_circle"
-          :label="userStore.user.firstname + ' ' + userStore.user.lastname"
+          :label="userStore.user.username"
         >
           <q-list>
             <q-item clickable v-close-popup @click="onUserDropdownClick">

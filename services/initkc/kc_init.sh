@@ -62,7 +62,7 @@ kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_$"{APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 
