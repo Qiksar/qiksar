@@ -53,7 +53,7 @@
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue'
 import { defineComponent, ref } from 'vue'
-import { AuthWrapper } from 'src/boot/auth';
+import  {AuthWrapper} from 'src/boot/auth';
 import { userStore } from 'src/boot/pinia';
 
 const linksList = [
@@ -100,7 +100,6 @@ const linksList = [
     link: 'https://awesome.quasar.dev'
   }
 ];
-
 
 export default defineComponent({
   name: 'MainLayout',

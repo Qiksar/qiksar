@@ -1,4 +1,3 @@
-import { AuthWrapper } from '../boot/auth';
 import {
 	ApolloClient,
 	ApolloLink,
@@ -8,11 +7,13 @@ import {
 	NormalizedCacheObject,
 } from '@apollo/client/core';
 
+import { getMainDefinition } from '@apollo/client/utilities';
 import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient, ConnectionParams } from 'subscriptions-transport-ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+
 import Query from '../domain/qikflow/base/Query'
+import  {AuthWrapper} from 'src/boot/auth';
 
 
 // Determinte the websocket URI
