@@ -3,8 +3,8 @@ clear
 
 # Create the prive_data folder in which Keycloak configuration can store sensitive data.
 # private_data folders are not committed to the repo.
-[ -d "initkc/private_data" ] && mkdir -p initkc/private_data
-rm -f initkc/private_data/token.env
+[ ! -d "initkc/private_data" ] && mkdir -p initkc/private_data
+[ -f "initkc/private_data/token.env" ] && rm -f initkc/private_data/token.env
 
 echo "" > initkc/private_data/token.env
 
