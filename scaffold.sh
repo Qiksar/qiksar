@@ -1,3 +1,6 @@
+#!/bin/bash
+clear
+
 # Setup all the environment variables in the env file
 echo "Import environment variables from 'services/.env'"
 export $(cat services/.env | xargs)
