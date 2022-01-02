@@ -8,7 +8,7 @@
     CREATE SCHEMA membership;
 
     CREATE TABLE membership.tenants (
-        tenant_id SERIAL PRIMARY KEY,
+        tenant_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         name text NOT NULL,
         comment text NOT NULL,
         active BOOLEAN default true,
@@ -18,25 +18,31 @@
     );
 
     CREATE TABLE membership.status (
-        status_id SERIAL PRIMARY KEY,
+        status_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         name text NOT NULL UNIQUE,
-        comment text NOT NULL
+        comment text NOT NULL,
+        
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
     );
 
     CREATE TABLE membership.roles (
-        role_id SERIAL PRIMARY KEY,
+        role_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         name text NOT NULL UNIQUE,
-        comment text NOT NULL
+        comment text NOT NULL,
+        
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
     );
 
     CREATE TABLE membership.groups (
-        group_id SERIAL PRIMARY KEY,
-        tenant_id integer NOT NULL REFERENCES membership.tenants,
+        group_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        tenant_id uuid NOT NULL REFERENCES membership.tenants,
 
         name text NOT NULL,
         state text NOT NULL,
 
-        leader_id integer NULL,
+        leader_id uuid NULL,
         meeting_day text NOT NULL,
         group_news text NULL,
         
@@ -46,13 +52,13 @@
     
 
     CREATE TABLE membership.members (
-        member_id SERIAL PRIMARY KEY,
-        tenant_id integer NOT NULL REFERENCES membership.tenants,
-        user_id integer NULL UNIQUE,
+        member_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        tenant_id uuid NOT NULL REFERENCES membership.tenants,
+        user_id uuid NULL UNIQUE,
         
-        group_id integer NULL REFERENCES membership.groups,
-        status_id integer NOT NULL REFERENCES membership.status,
-        role_id integer NOT NULL REFERENCES membership.roles,
+        group_id uuid NULL REFERENCES membership.groups,
+        status_id uuid NOT NULL REFERENCES membership.status,
+        role_id uuid NOT NULL REFERENCES membership.roles,
         
         firstname text NOT NULL,
         lastname text NOT NULL,
@@ -70,27 +76,31 @@
     ALTER TABLE membership.groups ADD CONSTRAINT group_leader FOREIGN KEY (leader_id) REFERENCES membership.members (member_id);
 
     CREATE TABLE membership.articles (
-        article_id SERIAL PRIMARY KEY,
+        article_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         article text NOT NULL,
-        created_by integer NOT NULL REFERENCES membership.members,
+        created_by uuid NOT NULL REFERENCES membership.members,
+
         created_at timestamp without time zone DEFAULT now() NOT NULL,
         updated_at timestamp without time zone
     );
 
     CREATE TABLE membership.tags (
-        tag_id SERIAL PRIMARY KEY,
+        tag_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         tag text NOT NULL,
+
         created_at timestamp without time zone DEFAULT now() NOT NULL,
         updated_at timestamp without time zone
     );
 
     CREATE TABLE membership.article_tags (
-        row_id SERIAL PRIMARY KEY,
-        article_id integer NOT NULL REFERENCES membership.articles,
-        tag_id integer NOT NULL REFERENCES membership.tags,
+        row_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        article_id uuid NOT NULL REFERENCES membership.articles,
+        tag_id uuid NOT NULL REFERENCES membership.tags,
+
         created_at timestamp without time zone DEFAULT now() NOT NULL,
         updated_at timestamp without time zone
     );
+
 
     ---
     --- IOT sample data
@@ -106,9 +116,10 @@
 
 
     CREATE TABLE membership.iot_devices (
-        device_id SERIAL PRIMARY KEY,
+        device_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         device_type_id text REFERENCES membership.iot_device_types,
-        member_id integer REFERENCES membership.members,
+        
+        member_id uuid REFERENCES membership.members,
         description text NOT NULL,
         
         created_at timestamp without time zone DEFAULT now() NOT NULL,
@@ -116,8 +127,9 @@
     );
 
     CREATE TABLE membership.iot_messages (
-        message_id SERIAL PRIMARY KEY,
-        device_id integer REFERENCES membership.iot_devices,
+        message_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        device_id uuid REFERENCES membership.iot_devices,
+        
         json_data JSONB NOT NULL,
 
         created_at timestamp without time zone DEFAULT now() NOT NULL,

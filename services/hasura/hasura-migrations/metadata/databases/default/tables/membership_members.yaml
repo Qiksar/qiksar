@@ -107,7 +107,9 @@ select_permissions:
     - rating
     - created_at
     - updated_at
-    filter: {}
+    filter:
+      tenant_id:
+        _eq: x-hasura-tenant-id
   role: member
 - permission:
     columns:
@@ -127,7 +129,9 @@ select_permissions:
     - photo
     - created_at
     - updated_at
-    filter: {}
+    filter:
+      tenant_id:
+        _eq: x-hasura-tenant-id
   role: tenant_admin
 update_permissions:
 - permission:
