@@ -8,8 +8,7 @@
     CREATE SCHEMA membership;
 
     CREATE TABLE membership.tenants (
-        tenant_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-        name text NOT NULL,
+        name text NOT NULL PRIMARY KEY,
         comment text NOT NULL,
         active BOOLEAN default true,
         
@@ -37,7 +36,7 @@
 
     CREATE TABLE membership.groups (
         group_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-        tenant_id uuid NOT NULL REFERENCES membership.tenants,
+        tenant_id varchar NOT NULL REFERENCES membership.tenants,
 
         name text NOT NULL,
         state text NOT NULL,
@@ -53,7 +52,7 @@
 
     CREATE TABLE membership.members (
         member_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
-        tenant_id uuid NOT NULL REFERENCES membership.tenants,
+        tenant_id varchar NOT NULL REFERENCES membership.tenants,
         user_id uuid NULL UNIQUE,
         
         group_id uuid NULL REFERENCES membership.groups,

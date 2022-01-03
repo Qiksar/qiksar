@@ -5,9 +5,9 @@
 --
 INSERT INTO membership.tenants ("name", "comment")
 VALUES 
-    ('admin', 'Tenant administrator'),
-    ('Perth Kangaroo Society', 'Hopping mad people'),
-    ('Arbroath Cathedral Builders', 'Scotlands foremost clinic');
+    ('admin', 'Platform Administrator'),
+    ('perth', 'Hopping mad people'),
+    ('arbroath', 'Scotlands foremost clinic');
 
 INSERT INTO membership.roles ("name", "comment")
 VALUES 
@@ -29,14 +29,14 @@ VALUES
 INSERT INTO membership.groups ("tenant_id", "name", "state", "meeting_day", "group_news")
 VALUES 
     (
-        (SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'),
+        'perth',
         'Aussie Group 1',
         'WA',
         'Every Monday',
         'Please remember to keep your password safe'
     ),
     (
-        (SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'),
+        'perth',
         'Aussie Group 2',
         'NSW',
         'Every Thursday',
@@ -47,35 +47,74 @@ VALUES
 INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
 VALUES
 (
-(SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), 
+'perth',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 1%'),
 'Barry', 
-'Perth',     
+'perth',     
 'Megacorp',        
 'am@ozemail.com.au', 
 '0400 111 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 1%'),'Bob',   'Sydney',    'StartsUp',        'bm@ozemail.com.au', '0400 211 222',
+(
+'perth',
+(SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 1%'),
+'Bob',   
+'Sydney',    
+'StartsUp',        
+'bm@ozemail.com.au', 
+'0400 211 222',
+(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+),
+
+(
+'perth',
+(SELECT group_id FROM "membership"."groups" WHERE name LIKE 
+'%Aussie Group 1%'),
+'Helen', 
+'Hobart',    
+'Fast cars Inc',   
+'cm@ozemail.com.au', 
+'0400 311 222',
+(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+),
+
+(
+'perth',
+(SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),
+'Sheila','Melbourne', 
+'Rest-a-while',    
+'dm@ozemail.com.au', 
+'0400 411 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 1%'),'Helen', 'Hobart',    'Fast cars Inc',   'cm@ozemail.com.au', '0400 311 222',
+(
+'perth',
+(SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),
+'Angela',
+'Adelaide',  
+'Angies Plumbers', 
+'em@ozemail.com.au', 
+'0400 511 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+),
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),'Sheila','Melbourne', 'Rest-a-while',    'dm@ozemail.com.au', '0400 411 222',
+(
+'perth',
+(SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),
+'Ben',   
+'Darwin',    
+'Finance Wizards', 
+'fm@ozemail.com.au', 
+'0400 611 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
-
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),'Angela','Adelaide',  'Angies Plumbers', 'em@ozemail.com.au', '0400 511 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
-
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Perth%'), (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Aussie Group 2%'),'Ben',   'Darwin',    'Finance Wizards', 'fm@ozemail.com.au', '0400 611 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'));
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+);
 
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Barry%') WHERE name = 'Aussie Group 1';
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Sheila%') WHERE name = 'Aussie Group 2';
@@ -88,14 +127,14 @@ UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."memb
 INSERT INTO membership.groups ("tenant_id", "name", "state", "meeting_day", "group_news")
 VALUES 
     (
-        (SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+        'arbroath',
         'Scotland Group 1',
         'Angus',
         'Every Tuesday',
         'Welcome all members from Glencoe and surrounds'
     ),
     (
-        (SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+        'arbroath',
         'Scotland Group 2',
         'Cook',
         'Every Friday',
@@ -104,42 +143,72 @@ VALUES
 
 INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
 VALUES
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 1%'), 
-'Robert',  'Bruce',           'CaveCorp',            'robert@scotmail.com.au',  '0500 111 222',
+'Robert',  
+'Bruce',           
+'CaveCorp',            
+'robert@scotmail.co.uk',  
+'0500 111 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 1%'),  
-'William', 'Wallace',         'Bottoms Up',          'william@scotmail.com.au', '0500 211 222',
+'William', 
+'Wallace',         
+'Bottoms Up',          
+'william@scotmail.co.uk', 
+'0500 211 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 1%'),  
-'Billy',   'Connoly',         'Jokes On You',        'billy@scotmail.com.au',   '0500 311 222',
+'Billy',   
+'Connoly',         
+'Jokes On You',        
+'billy@scotmail.co.uk',   
+'0500 311 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'), 
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 2%'), 
-'Mairi',   'Chisholm',        'Ambulance on Call',   'mairi@scotmail.com.au',   '0500 411 222',
+'Mairi',   
+'Chisholm',        
+'Ambulance on Call',   
+'mairi@scotmail.co.uk',   
+'0500 411 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'),
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 2%'),  
-'Alexander Graham',   'Bell', 'Dial a Pizza',        'alex@scotmail.com.au',    '0500 511 222',
+'Alexander Graham',   
+'Bell', 
+'Dial a Pizza',        
+'alex@scotmail.co.uk',    
+'0500 511 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
 
 
-((SELECT tenant_id FROM "membership"."tenants" WHERE name LIKE '%Arbroath%'), 
+(
+'arbroath',
 (SELECT group_id FROM "membership"."groups" WHERE name LIKE '%Scotland Group 2%'), 
-'Mary Queen', 'Of Scots',     'Royal Tea',           'mary@scotmail.com.au',    '0500 611 222',
+'Mary Queen', 
+'Of Scots',     
+'Royal Tea',           
+'mary@scotmail.co.uk',    
+'0500 611 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
 (SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'));
 

@@ -9,7 +9,7 @@ class MemberView extends Query {
 			'Member'
 			)
 
-			.Include('tenants', 'tenant_id', 'tenant', 'tenant_id name')
+			.Include('tenants', 'tenant_id', 'tenant', 'name comment')
 			.Flatten('tenant.name', 'Tenant')
 
 			.Field('firstname', 'First Name', 'text')

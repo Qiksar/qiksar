@@ -40,7 +40,7 @@ kcadm.sh set-password -r ${REALM_ID} --username=${API_USER} --new-password ${API
 
 echo
 echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=tenant_admin" -s "attributes.tenant_id=1"
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=tenant_admin" -s "attributes.tenant_id=admin"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: "${APP_ADMIN}" with password: "${USER_PW}
@@ -49,7 +49,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_A
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=3"
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"
 kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: oz_"${APP_ADMIN}" with password: "${USER_PW}
@@ -58,18 +58,16 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${
 
 echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=3"
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin and tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
-
-
 echo
 echo "Create realm test user: "${APP_USER}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member"
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_USER} --new-password ${USER_PW}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
 
@@ -84,8 +82,9 @@ echo ${KC_KEY} > ${OUTPUT_PATH}/private_data/token.env
 echo "Captured the realm public key into:"${OUTPUT_PATH}"/private_data/token.env"
 
 # Test login with user credentials
-echo 'Test authentication - request token for: '${APP_ADMIN}
-export AUTH_TOKEN=$(curl -s --request POST --url ${KCSRV}/auth/realms/${REALM_ID}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username=${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
+echo 'Test authentication - request token for: oz_'${APP_ADMIN}
+echo 'Inspect this token by browsing to: https://jwt.io/ and pasting the Bearer token into the debugger'
+export AUTH_TOKEN=$(curl -s --request POST --url ${KCSRV}/auth/realms/${REALM_ID}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username="oz_"${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
 echo "Bearer "${AUTH_TOKEN} > ${OUTPUT_PATH}/private_data/auth_token.json
 
 echo "Bearer token captured into:"${OUTPUT_PATH}"/private_data/auth_token.json"

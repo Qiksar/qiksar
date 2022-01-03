@@ -825,21 +825,6 @@
                   }
                 },
                 {
-                  "id": "7eaa9029-9e71-4b3b-9efa-bdbc28952d1d",
-                  "name": "x-hasura-role",
-                  "protocol": "openid-connect",
-                  "protocolMapper": "oidc-usermodel-attribute-mapper",
-                  "consentRequired": false,
-                  "config": {
-                    "userinfo.token.claim": "true",
-                    "user.attribute": "tenant_role",
-                    "id.token.claim": "true",
-                    "access.token.claim": "true",
-                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-role",
-                    "jsonType.label": "String"
-                  }
-                },
-                {
                     "id": "7eaa9029-9e71-4b3b-9efa-bdbc28952d1d",
                     "name": "x-hasura-tenant-id",
                     "protocol": "openid-connect",

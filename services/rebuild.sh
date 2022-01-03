@@ -53,7 +53,7 @@ echo
 
 
 echo "Start database and authentication containers"
-docker compose up proxy db auth -d
+docker compose up proxy db auth -d --build
 echo
 
 
@@ -74,7 +74,7 @@ echo
 # Start the graphql container
 # then give it time to settle
 echo "Start Hasura GraphQL container"
-docker compose up gql -d
+docker compose up gql -d --build
 echo
 
 

@@ -286,8 +286,12 @@ export default class Query {
 	}
 
 	// Process rows ready to be written to database
+	// Note - the primary key field will be deliberately removed as this can never be updated
 	private PrepareRowForSave(row: GqlRecord): GqlRecord {
 		const output: GqlRecord = { ...row };
+
+		// Remove the primary key so that the mutation does not attempt to update it
+		delete output[this.Schema.Key];
 
 		// import flattened objects from json
 		this.FieldsOfType('json').map((json_field) => {
@@ -432,7 +436,6 @@ export default class Query {
 		fm = defaultFetchMode,
 		store: any
 	): Promise<GqlRecord> {
-		// convert objects to JSON
 		data = this.PrepareRowForSave(data);
 
 		const mutation_name = `insert_${this.Schema.EntityType}`;
@@ -464,9 +467,9 @@ export default class Query {
 
 	// If id is missing, handle as an insert, else do an update
 	async Update(data: GqlRecord, store: any): Promise<GqlRecord> {
-		data = this.PrepareRowForSave(data);
-
 		const id = data[this.Schema.Key] as string;
+
+		data = this.PrepareRowForSave(data);
 
 		if (!id)
 			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = '${id}'`;

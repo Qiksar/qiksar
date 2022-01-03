@@ -89,9 +89,13 @@ update_permissions:
     - state
     - created_at
     - updated_at
-    filter: {}
+    filter:
+      tenant_id:
+        _eq: x-hasura-tenant-id
   role: tenant_admin
 delete_permissions:
 - permission:
-    filter: {}
+    filter:
+      tenant_id:
+        _eq: x-hasura-tenant-id
   role: tenant_admin

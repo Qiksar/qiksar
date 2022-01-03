@@ -4,11 +4,13 @@ import EntitySchema from '../qikflow/base/EntitySchema';
 class TenantsView extends Query {
     constructor() {
        
-        const schema: EntitySchema = EntitySchema.CreateEnum(
+        const schema: EntitySchema = EntitySchema.Create(
             'tenants', 
-            'tenant_id', 
+            'name', 
             'Tenant'
             )
+			.Field('name', 'Tenant ID')
+			.Field('comment', 'Description')
             .ToSelection((r) => { 
                     return {
                         id: r[this.Schema.Key] as number,
