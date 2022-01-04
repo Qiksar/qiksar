@@ -1,5 +1,5 @@
-import Query from '../qikflow/base/Query'
-import EntitySchema from '../qikflow/base/EntitySchema';
+import Query from '../../qiksar/qikflow/base/Query'
+import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
 class GroupsView extends Query {
     constructor() {

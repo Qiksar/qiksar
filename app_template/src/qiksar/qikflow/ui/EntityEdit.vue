@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { onBeforeMount, ref, Ref } from 'vue';
-import { CreateStore } from 'src/domain/qikflow/store/GenericStore';
+import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
 import { Dictionary, GqlRecord } from '../base/GqlTypes';
 
 import EntityField from '../base/EntityField';

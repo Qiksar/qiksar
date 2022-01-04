@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import getDomainRoutes from 'src/domain/qikflow/router/routes';
+import getDomainRoutes from 'src/qiksar/qikflow/router/routes';
 
 export default function mainRoutes(): RouteRecordRaw[]  { 
   return [

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import User from './types/user';
+import User from './user';
 
 
 // main is the name of the store. It is unique across your application

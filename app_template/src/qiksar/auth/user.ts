@@ -4,6 +4,8 @@ export default class User {
     firstname = '';
     lastname = '';
     email = '';
+    emailVerified = false;
     roles:string[] = [];
-    lastLogin= '';
+    lastLogin = '';
+    locale = '';
 }

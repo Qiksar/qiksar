@@ -1,4 +1,4 @@
-import Query, { defaultFetchMode } from 'src/domain/qikflow/base/Query'
+import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query'
 import { defineStore } from 'pinia';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
 

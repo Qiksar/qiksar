@@ -22,8 +22,8 @@
 <script lang="ts" setup>
 
 import { onBeforeMount } from 'vue';
-import { GqlRecord } from 'src/domain/qikflow/base/GqlTypes';
-import { CreateStore } from 'src/domain/qikflow/store/GenericStore';
+import { GqlRecord } from 'src/qiksar/qikflow/base/GqlTypes';
+import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
 import { Router } from 'src/router'
 
 const props = defineProps<{

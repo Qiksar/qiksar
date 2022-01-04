@@ -4,7 +4,7 @@
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import QiksarAuthWrapper from './QiksarAuthWrapper';
 import { userStore } from 'src/boot/pinia';
-import User from 'src/domain/qikflow/store/types/user';
+import User from './user';
 
 export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
@@ -66,23 +66,35 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     }
   
     // Get Keycloak user profile
-    async GetUserProfile():Promise<KeycloakProfile> {
-      let profile: KeycloakProfile = {};
+    async GetUserProfile():Promise<User> {
+      let kc_profile: KeycloakProfile = {};
   
       if (this.IsAuthenticated()) {
         await this
         .keycloak
         .loadUserProfile()
         .then((p: KeycloakProfile) => {
-            profile = p;
+            kc_profile = p;
           })
         .catch((e) => {
             console.error('!!!! Failed to load user profile');
             console.error(JSON.stringify(e));
           });
       }
-  
-      return profile;
+
+      const user_profile: User = {
+        realm: this.realm,
+        username: kc_profile.username ?? '',
+        email: kc_profile.email ?? '',
+        emailVerified: kc_profile.emailVerified ?? false,
+        firstname: kc_profile.firstName ?? '',
+        lastname: kc_profile.lastName ?? '',
+        roles: this.GetUserRoles(),
+        lastLogin: '',
+        locale: ''
+      };
+
+      return user_profile;
     }
   
     GetUserRoles():string[] {
@@ -92,23 +104,8 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     // Triggered when authentication is completed
     async AuthComplete(auth: boolean):Promise<void> { 
     
-      // If authentication was required then capture the token
     const profile = await this.GetUserProfile();
-    
-    const userDetails: User = {
-      realm: this.realm,
-      username: profile.username ?? '',
-      email: profile.email ?? '',
-      firstname: profile.firstName ?? '',
-      lastname: profile.lastName ?? '',
-      roles: [],
-      lastLogin: ''
-    };
-  
-    if (profile)
-      userDetails.roles = this.GetUserRoles();
-  
-    userStore.setUser(userDetails);
+    userStore.setUser(profile);
     userStore.setLoggedIn(this.IsAuthenticated());
   
     if (auth) {

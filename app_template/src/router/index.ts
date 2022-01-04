@@ -9,8 +9,8 @@ import {
 import { AuthWrapper } from 'boot/auth';
 import { CreateApolloClient } from 'src/apollo';
 import InitialiseDomain from 'src/domain/init_domain';
-import Query from 'src/domain/qikflow/base/Query';
-import EntitySchema from 'src/domain/qikflow/base/EntitySchema';
+import Query from 'src/qiksar/qikflow/base/Query';
+import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 import mainRoutes from 'src/router/routes';
 
 /*

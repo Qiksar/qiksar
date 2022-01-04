@@ -6,19 +6,19 @@ import EntitySchema from '../base/EntitySchema';
 const getEntityRoutes = (entityName: string, requiredRole: string) => ({
 	path: `/${entityName}`,
 
-	component: () => import('layouts/MainLayout.vue'),
+	component: () => import('src/layouts/MainLayout.vue'),
 
 	meta: { role: requiredRole },
 
 	children: [
 		{
 			path: '',
-			component: () => import('src/domain/qikflow/ui/EntityList.vue'),
+			component: () => import('../ui/EntityList.vue'),
 			props: { entity_type: entityName },
 		},
 		{
 			path: 'edit/:id',
-			component: () => import('src/domain/qikflow/ui/EntityEdit.vue'),
+			component: () => import('../ui/EntityEdit.vue'),
 			props: (route: any) => {
 				const props = {
 					context: {
