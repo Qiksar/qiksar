@@ -5,7 +5,5 @@ export default {
   failed: 'Ouch cobber',
   success: 'Fair dinkum, it worked!',
   leader: 'Boss',
-  member: 'Member',
-  State: 'State/Territory',
-  Group: 'Group'
+  State: 'State/Territory'
 };

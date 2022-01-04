@@ -2,6 +2,8 @@
 // so you can safely delete all default props below
 
 export default {
-  failed: 'Action failed',
-  success: 'Action was successful'
+  failed: 'Oh dear, I say, it appears to have failed',
+  success: 'Jolly good work!',
+  leader: 'His Majesty',
+  State: 'County'
 };
