@@ -11,7 +11,7 @@ export let userStore = {} as any;
 //
 // BOOT - Pinia
 //
-// Make Pinia available to the app and create the UserStore, which helps the app shares data about 
+// Make Pinia available to the app and create the UserStore, which helps the app share data about 
 // the authenticated user
 //
 

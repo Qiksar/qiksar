@@ -39,3 +39,9 @@ echo "Scan packages for vulnerabilities"
 cd app
 yarn audit
 cd ..
+
+echo
+echo "Scaffolding complete, move the app folder to a new location outside of the qiksar folder"
+echo
+echo "Refer to quasar.conf.js.example for further configuration settings"
+echo

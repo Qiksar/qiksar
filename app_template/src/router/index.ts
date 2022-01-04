@@ -32,11 +32,12 @@ export let Router = {} as vueRouter;
 
 const createRouter = async(): Promise<vueRouter> => {
 	
-	// create the apollo client, which creates TypePolicies according to the views registered above
-	Query.Apollo = CreateApolloClient();	
 
 	await InitialiseDomain('./views/');
 	EntitySchema.ResolveReferences();
+	
+	// create the apollo client, which creates TypePolicies according to the views registered above
+	Query.Apollo = CreateApolloClient();	
 	
 	//console.log('domain init complete')
 

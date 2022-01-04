@@ -1,6 +1,5 @@
 import { boot } from 'quasar/wrappers';
 import QiksarTranslator from 'src/qiksar/i18n/QiksarTranslator'
-import enAU from 'src/i18n/en-AU';
 
 const translator = new QiksarTranslator();
 
@@ -9,12 +8,15 @@ const translator = new QiksarTranslator();
 export function t(txt: string, translate = true): string {
   return translator.translate(txt, translate);
 }
+//----------------------------------------------------------------------------------------------------------------
+//
+// BOOT - Internationalisation
+//
+// Initialise the localisation module with the default locale.
+//
 
+// TODO this import needs to be dynamic
 export default boot(() => {
-  
-  const config = {
-    'en-AU': enAU
-  };
-
-  translator.Init(config);
+  const locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
+  translator.Init(locale);
 });

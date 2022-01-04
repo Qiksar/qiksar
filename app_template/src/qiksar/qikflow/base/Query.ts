@@ -507,13 +507,10 @@ export default class Query {
 		if (!id)
 			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key}`;
 
-		const mutation_name = `delete_${this.Schema.EntityType}_by_pk`;
+		const mutation = `delete_${this.Schema.EntityType}_by_pk(${this.Schema.Key}: "${id}")`;
 		const doc = `
             mutation {
-            ${mutation_name} (where: { ${this.Schema.Key}: {_eq: "${id}"} }
-                ) {
-                    returning { ${this.Schema.Key} }
-                }
+            	${mutation} { ${this.Schema.Key} }
             }`;
 
 		const res = await this.doMutation(doc, 'delete_id', store);

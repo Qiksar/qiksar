@@ -9,8 +9,6 @@ const logWarnings = (process.env.I18N_WARNINGS ?? 'false') === 'true';
 
 export default class QiksarTranslator {
 
-  static DefaultLocale = 'en-AU';
-
   i18n:any;
 
 // The locale can be changed at any time...
@@ -28,9 +26,13 @@ export default class QiksarTranslator {
   
   }
   
-  Init(messages:Record<string, unknown>):void {
- 
-   this.SetLocale(QiksarTranslator.DefaultLocale, messages);
+  Init(locale:string):void {
+    void import('../../i18n/' + locale)
+    .then((module) => {
+      //console.log('Loaded : ' + JSON.stringify(module.default))
+
+      this.SetLocale(locale, module.default);
+    });
   }
   
 // This call permists us to call t('some text, true/false)
@@ -38,6 +40,7 @@ export default class QiksarTranslator {
 // That way we can translate enums and similar data columns on tables
  public translate(txt: string, translate = true): string {
   const trn:string = translate ? this.i18n.global.t(txt, { defaultValue: txt }) : txt;
+
   //console.log(trn);
 
   return trn;

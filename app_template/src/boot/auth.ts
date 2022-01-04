@@ -8,10 +8,16 @@ import { boot } from 'quasar/wrappers';
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 import { QiksarKeycloakWrapper } from 'src/qiksar/auth/QiksarKeycloakWrapper';
 
+// Set the auth wrapper to an instance of the Qiksar Keycloak wrapper
 export const AuthWrapper:QiksarAuthWrapper = new QiksarKeycloakWrapper();
 
-// Trigger Keycloak initialisation
+//----------------------------------------------------------------------------------------------------------------
+//
+// BOOT - Auth
+//
+// Initialise the authentication and authorisation system. This should not trigger a log in as they user
+// may start on a landing page that does not require authentication.
+//
 export default boot(async () => { 
   await AuthWrapper.Init();
-  console.log('Qiksar auth boot complete');
  });
