@@ -77,8 +77,9 @@ function editableFields(): Record<string, EntityField> {
 }
 
 // Extract the ID of the current entity in the store
-function currentRecordId(): number {
-  return (reactive_record.value[store.view.Schema.Key] ?? 0) as number;
+function currentRecordId(): string | undefined{
+  const id = reactive_record.value[store.view.Schema.Key] as string;
+  return id;
 }
 
 async function insertEntity(): Promise<void> {

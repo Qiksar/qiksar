@@ -34,7 +34,7 @@ if (!props.field.ObjectSchema)
 
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: 'update:modelValue', value: number): void
+  (e: 'update:modelValue', value: string): void
 }>();
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -63,7 +63,8 @@ function selectionChanged(value: GqlRecord) {
     return;
 
   selectedObject.value = value;
-  emit('update:modelValue', value['id'] as number);
+  const selectedId = value['id'] as string;
+  emit('update:modelValue', selectedId);
 }
 
 </script>

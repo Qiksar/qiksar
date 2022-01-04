@@ -215,6 +215,7 @@ export default class Query {
 		};
 
 		//console.log(query);
+
 		return doc;
 	}
 
@@ -289,9 +290,6 @@ export default class Query {
 	// Note - the primary key field will be deliberately removed as this can never be updated
 	private PrepareRowForSave(row: GqlRecord): GqlRecord {
 		const output: GqlRecord = { ...row };
-
-		// Remove the primary key so that the mutation does not attempt to update it
-		delete output[this.Schema.Key];
 
 		// import flattened objects from json
 		this.FieldsOfType('json').map((json_field) => {
@@ -389,8 +387,11 @@ export default class Query {
 	): Promise<GqlRecord> {
 		store.SetBusy(true);
 		const query_name = `${this.Schema.EntityType}_by_id`;
+		
+		const q = this.BuildQuery(`${this.Schema.Key}: { _eq: "${id}"}`, fm, query_name);
+
 		const r = await Query.Apollo.query(
-			this.BuildQuery(`${this.Schema.Key}: { _eq: ${id}}`, fm, query_name)
+			q
 		);
 
 		const rows = <[]>r.data[this.Schema.EntityType];
@@ -471,6 +472,9 @@ export default class Query {
 
 		data = this.PrepareRowForSave(data);
 
+		// Remove the primary key so that the mutation does not attempt to update it
+		delete data[this.Schema.Key];
+
 		if (!id)
 			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = '${id}'`;
 
@@ -482,7 +486,7 @@ export default class Query {
             mutation {
                 ${mutation_name} (
                     pk_columns: {
-                        ${this.Schema.Key}: ${id}
+                        ${this.Schema.Key}: "${id}"
                         }, 
                     _set: {
                         ${this.Stringify(data, true)}
