@@ -27,7 +27,7 @@ export default class QiksarTranslator {
   }
   
   Init(locale:string):void {
-    void import('../../i18n/' + locale)
+    void import('../../domain/i18n/' + locale)
     .then((module) => {
       //console.log('Loaded : ' + JSON.stringify(module.default))
 
