@@ -755,7 +755,7 @@
         },
         {
             "id": "412d7b89-d51c-4525-9cf5-abb01db09db5",
-            "clientId": "app-client",
+            "clientId": "{{CLIENT}}",
             "name": "{{REALM_ID}} client",
             "rootUrl": "https://localhost:8080",
             "adminUrl": "https://localhost:8080/auth",

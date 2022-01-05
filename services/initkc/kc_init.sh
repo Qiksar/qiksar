@@ -22,7 +22,13 @@ echo "Login to Keycloak..."
 kcadm.sh config credentials --server "${KCSRV}/auth" --realm master --user ${KEYCLOAK_USER} --password ${KEYCLOAK_PASSWORD} --client admin-cli
 
 # Generate realm template
-cat $OUTPUT_PATH/template_realm.json | sed "s|{{REALM_ID}}|${REALM_ID}|" | sed "s|{{REALM_NAME}}|${REALM_NAME}|" | sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | sed "s|{{SMTP_SENDER_NAME}}|${SMTP_SENDER_NAME}|"  > ${OUTPUT_PATH}/realm.json
+cat $OUTPUT_PATH/template_realm.json |\
+ sed "s|{{CLIENT}}|${CLIENT}|" | \
+ sed "s|{{REALM_ID}}|${REALM_ID}|" | \
+ sed "s|{{REALM_NAME}}|${REALM_NAME}|" | \
+ sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | \
+ sed "s|{{SMTP_SENDER_NAME}}|${SMTP_SENDER_NAME}|"  \
+ > ${OUTPUT_PATH}/realm.json
 
 # Create the realm
 echo

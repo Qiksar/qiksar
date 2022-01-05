@@ -1,6 +1,9 @@
 # Ignore the app being created by the template kit
 app/
 
+#ignore the generated Keycloak realm
+**/initkc/realm.json
+
 # Logs
 logs
 *.log
