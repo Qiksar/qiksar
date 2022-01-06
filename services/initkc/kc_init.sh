@@ -5,11 +5,11 @@ echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
 echo "Waiting for containers to stabilise after startup..."
-sleep 10
+sleep 20
 
 echo
 echo "Install JSON Query..."
-#install jq for JSON querying
+#install jq package for JSON querying
 microdnf install jq > /dev/null
 
 PATH=$PATH:/opt/jboss/keycloak/bin
@@ -19,7 +19,7 @@ echo
 echo "Login to Keycloak..."
 
 # Login
-kcadm.sh config credentials --server "${KCSRV}/auth" --realm master --user ${KEYCLOAK_USER} --password ${KEYCLOAK_PASSWORD} --client admin-cli
+kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user ${KEYCLOAK_USER} --password ${KEYCLOAK_PASSWORD} --client admin-cli
 
 # Generate realm template
 cat $OUTPUT_PATH/template_realm.json |\
@@ -78,9 +78,9 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_USER} --rolename ${DEFAUL
 echo
 echo "Capture the realm public key..."
 #export the public key 
-export KEY_TEXT=$(curl -s --request GET --url ${KCSRV}/auth/realms/${REALM_ID} | jq -r -c .public_key | sed -e 's/"//g')
+export KEY_TEXT=$(curl -s --request GET --url http://localhost:8080/auth/realms/${REALM_ID} | jq -r -c .public_key | sed -e 's/"//g')
 export PUBLIC_KEY='-----BEGIN PUBLIC KEY-----\n'${KEY_TEXT}'\n-----END PUBLIC KEY-----' 
-export KC_KEY='HASURA_GRAPHQL_JWT_SECRET='"'"'{"type": "RS256", "key": "'${PUBLIC_KEY}'"}'"'"
+export KC_KEY='HASURA_GRAPHQL_JWT_SECRET={"type": "RS256", "key": "'${PUBLIC_KEY}'"}'
 
 echo ${KC_KEY} > ${OUTPUT_PATH}/private_data/token.env
 echo "Captured the realm public key into:"${OUTPUT_PATH}"/private_data/token.env"
@@ -88,7 +88,7 @@ echo "Captured the realm public key into:"${OUTPUT_PATH}"/private_data/token.env
 # Test login with user credentials
 echo 'Test authentication - request token for: oz_'${APP_ADMIN}
 echo
-export AUTH_TOKEN=$(curl -s --request POST --url ${KCSRV}/auth/realms/${REALM_ID}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username="oz_"${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
+export AUTH_TOKEN=$(curl -s --request POST --url http://localhost:8080/auth/realms/${REALM_ID}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username="oz_"${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
 echo "Bearer "${AUTH_TOKEN} > ${OUTPUT_PATH}/private_data/auth_token.json
 echo "Bearer token captured into: "${OUTPUT_PATH}"/private_data/auth_token.json"
 echo

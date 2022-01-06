@@ -17,10 +17,10 @@ import  {AuthWrapper} from 'src/boot/auth';
 
 
 // Determinte the websocket URI
-if (!process.env.HASURA_METADATA_ENDPOINT) 
-  throw 'HASURA_METADATA_ENDPOINT is undefined';    
+if (!process.env.PUBLIC_GRAPHQL_ENDPOINT) 
+  throw 'PUBLIC_GRAPHQL_ENDPOINT is undefined';    
 
-const httpURI = process.env.HASURA_METADATA_ENDPOINT;
+const httpURI = process.env.PUBLIC_GRAPHQL_ENDPOINT;
 
 const protocol = httpURI.includes('localhost') ? 'ws://' : 'wss://';
 const wsURI = httpURI.replace(/http(s)?:\/\//, protocol);

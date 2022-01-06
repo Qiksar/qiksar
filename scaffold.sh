@@ -30,8 +30,8 @@ rm app/src/boot/apollo.ts
 # Create the config file for Hasura
 echo "Create Hasura console config"
 cat app_template/.env.template \
-    | sed "s|{{HASURA_METADATA_ENDPOINT}}|$HASURA_METADATA_ENDPOINT|" \
-    | sed "s|{{KEYCLOAK_AUTH_ENDPOINT}}|$KEYCLOAK_AUTH_ENDPOINT|" \
+    | sed "s|{{PUBLIC_GRAPHQL_ENDPOINT}}|$PUBLIC_GRAPHQL_ENDPOINT|" \
+    | sed "s|{{PUBLIC_AUTH_ENDPOINT}}|$PUBLIC_AUTH_ENDPOINT|" \
     > app/.env
 echo
 

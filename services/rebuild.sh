@@ -8,14 +8,36 @@ clear
 
 echo "" > initkc/private_data/token.env
 
+
 echo "Build environment started"
 date +"%T"
 echo
 
+
 # Setup all the environment variables in the env file
+echo "Transform environment variables from './template.env'"
+bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
+
 echo "Import environment variables from './.env'"
 export $(cat .env | xargs)
 echo
+
+
+# Tear down and rebuild the docker containers for the database and authentication
+# then give the containers some time to settle
+echo "Stop containers"
+docker-compose down
+echo
+
+
+#
+# PRE-BUILD SCRIPT - THIS WILL LIKELY ONLY HAVE COMMANDS IN IT THAT ARE TO DO WITH PROVISIONG CLOUD BASED RESOURCES
+#
+echo "Execute the pre-build script"
+chmod u+x ./pre-build.sh
+bash -c ./pre-build.sh
+echo
+
 
 # Create the config file for the Hasura
 echo "Create nginx config"
@@ -39,21 +61,15 @@ echo
 # Create the config file for Hasura
 echo "Create Hasura console config"
 cat hasura/hasura-migrations/config.template \
-    | sed "s|{{HASURA_METADATA_ENDPOINT}}|$HASURA_METADATA_ENDPOINT|" \
+    | sed "s|{{HASURA_CLI_ENDPOINT}}|$HASURA_CLI_ENDPOINT|" \
     | sed "s|{{HASURA_GRAPHQL_ADMIN_SECRET}}|$HASURA_GRAPHQL_ADMIN_SECRET|" \
     > hasura/hasura-migrations/config.yaml
 echo
 
 
-# Tear down and rebuild the docker containers for the database and authentication
-# then give the containers some time to settle
-echo "Stop containers"
-docker compose down
-echo
-
 
 echo "Start database and authentication containers"
-docker compose up proxy db auth -d --build
+docker-compose up -d --build proxy db auth 
 echo
 
 
@@ -67,14 +83,14 @@ echo
 # Initialise the keycloak environment
 # This will create a realm for the app, and create an admin and none admin user
 echo "Configure Keycloak"
-docker exec -u 0 -it q_auth bash -c "chmod a+x /docker-entrypoint-initdb.d/kc_init.sh; /docker-entrypoint-initdb.d/kc_init.sh"
+docker exec -u 0 -it q_auth bash -c "chmod a+x /docker-entrypoint-initdb.d/kc_init.sh; bash -c /docker-entrypoint-initdb.d/kc_init.sh"
 echo
 
 
 # Start the graphql container
 # then give it time to settle
 echo "Start Hasura GraphQL container"
-docker compose up gql -d --build
+docker-compose up -d --build gql
 echo
 
 
@@ -83,7 +99,7 @@ echo
 echo "Execute qiktrak..."
 echo "Allow Hasura container to stabilise"
 sleep 10
-docker compose up qiktrak 
+docker-compose up qiktrak 
 echo
 
 echo "Removing qiktrak container"
@@ -92,15 +108,15 @@ docker container rm qiktrak
 
 echo
 echo "Applying database migrations"
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} migrate apply
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} migrate apply
 
 echo
 echo "Applying custom metadata to Hasura"
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} metadata apply
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} metadata apply
 
 echo
 echo "Listing any metadata inconsistencies..."
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_METADATA_ENDPOINT} metadata ic list
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} metadata ic list
 
 
 echo 

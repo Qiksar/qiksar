@@ -47,7 +47,7 @@ The process is identical to the windows build process described below, simply ig
 
 Open WSL2 and install the Hasura CLI...
 
-## Insatall Hasura CLI
+## Install Hasura CLI
 
 For further information, refer to: 
 https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli.html
@@ -229,20 +229,6 @@ Start serving the Quasar App:
 ```
 quasar dev
 ```
-
-### Compiler error
-
-There is currently an issue in ```.quasar/client-entry.js``` which needs to be fixed manually. I'm investigating the cause of this minor issue.
-
-This needs to be fixed manually at the moment, else the app doesn't compile:
-.quasar/client-entry.js need to be fixed for SCSS
-
-**change**
-```import 'src/css/app.sass'```
-
-to
-
-```import 'src/css/app.scss'```
 
 ### Bypass SSL security warnings in development mode 
 

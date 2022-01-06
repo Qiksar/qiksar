@@ -1,1 +1,1 @@
-CREATE SCHEMA keycloak;
+CREATE SCHEMA IF NOT EXISTS keycloak;

@@ -56,8 +56,16 @@
                 "attributes": {}
             },
             {
-                "id": "0aa8585f-553e-4bed-b1ab-de08e20e0068",
+                "id": "ae3cf8aa-5c3d-59d8-b9f9-2e3a30eae07f",
                 "name": "tenant_admin",
+                "composite": false,
+                "clientRole": false,
+                "containerId": "{{REALM_ID}}",
+                "attributes": {}
+            },
+            {
+                "id": "0aa8585f-553e-4bed-b1ab-de08e20e0068",
+                "name": "app_admin",
                 "composite": true,
                 "composites": {
                   "client": {
