@@ -9,9 +9,6 @@ class MemberView extends Query {
 			'Member'
 			)
 
-			.Include('tenants', 'tenant_id', 'tenant', 'name comment')
-			.Flatten('tenant.name', 'Tenant')
-
 			.Field('firstname', 'First Name', 'text')
 			.Field('lastname', 'Surame')
 			.Field('email', 'Email Address', 'email')
@@ -21,6 +18,7 @@ class MemberView extends Query {
 			.Include('groups', 'group_id', 'group', 'group_id name state')
 			.Flatten('group.name', 'Group')
 			.Flatten('group.state', 'State')
+			.UseEnum('tenants', 'tenant_id', 'tenant')
 			.UseEnum('roles', 'role_id', 'role')
 			.UseEnum('status', 'status_id', 'status')
 			.ToSelection((r) => { 

@@ -64,7 +64,7 @@ module.exports = configure(function (ctx) {
         'PUBLIC_AUTH_ENDPOINT':'http://localhost:8093/auth',
         'I18N_WARNINGS': false,
         'DEFAULT_LOCALE': 'en-AU',
-        'API_PATH': 'localhost:80801/api'
+        'API_PATH': 'localhost:8080/api'
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'

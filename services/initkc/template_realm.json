@@ -827,7 +827,7 @@
                     "userinfo.token.claim": "true",
                     "id.token.claim": "true",
                     "access.token.claim": "true",
-                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-tenant-id",
+                    "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-realm-id",
                     "jsonType.label": "String",
                     "access.tokenResponse.claim": "false"
                   }
