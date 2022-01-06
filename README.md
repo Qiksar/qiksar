@@ -308,6 +308,7 @@ Use the follwing buttons on the home screen to maintain the different types of d
 
 Currently documented for Digital Ocean
 
+* Setup the template.env with the target environment settings and passwords
 * Register a domain
 * Setup DNS
 * Create a Database Cluster
