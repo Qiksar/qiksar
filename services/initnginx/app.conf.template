@@ -1,36 +1,22 @@
-#server {
-#    listen 80;
-#
-#    # SSL configuration
-#    listen 443 ssl;
-#    listen [::]:443 ssl;
-#    ssl_certificate /etc/nginx/ssl/cert.ssl;
-#    ssl_certificate_key /etc/nginx/ssl/key.ssl;
-#
-#    # root /var/www/html;
-#    # index index.html index.htm index.nginx-debian.html;
-#
-#    server_name app.{{DOMAIN}};
-#
-#    location / {
-#        add_header Content-Security-Policy "frame-ancestors 'self' https://login.{{DOMAIN}} https://graphql.{{DOMAIN}};";
-#
-#        proxy_pass http://{{APP_CONTAINER}}:{{APP_PORT}};
-#
-#        proxy_http_version 1.1;
-#        proxy_set_header Host $host;
-#        proxy_set_header X-Real-IP $remote_addr;
-#        proxy_set_header Upgrade $http_upgrade;
-#        proxy_set_header Connection 'upgrade';
-#        proxy_cache_bypass $http_upgrade;
-#    }
-#}
+server {
+    listen 80;
 
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    ssl_certificate /etc/nginx/ssl/cert.ssl;
+    ssl_certificate_key /etc/nginx/ssl/key.ssl;
+
+    server_name app.{{DOMAIN}};
+
+    location / {
+        root /usr/share/nginx/app_root;
+        index index.html;
+    }
+}
 
 server {
     listen 80;
 
-    # SSL configuration
     listen 443 ssl;
     listen [::]:443 ssl;
     ssl_certificate /etc/nginx/ssl/cert.ssl;
@@ -54,7 +40,6 @@ server {
 server {
     listen 80;
 
-    # SSL configuration
     listen 443 ssl;
     listen [::]:443 ssl;
     ssl_certificate /etc/nginx/ssl/cert.ssl;
