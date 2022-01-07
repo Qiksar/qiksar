@@ -492,7 +492,7 @@ export default class Query {
                         ${this.Stringify(data, true)}
                         }
                     ) 
-                    { ${keys} }
+                    { ${this.Schema.Key} ${keys} }
             }`;
 
 		const r = await this.doMutation(doc, 'update', store);
@@ -547,10 +547,10 @@ export default class Query {
 		operation: string,
 		store: any
 	): Promise<GqlRecord> {
+		//console.log('**** mutate input: ' + mutation);
+
 		const doc = { mutation: gql(mutation) };
 		store.SetBusy(true);
-
-		//console.log('**** mutate input: ' + mutation);
 
 		const r = await Query.Apollo.mutate(doc);
 
