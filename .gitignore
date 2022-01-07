@@ -6,6 +6,7 @@ app/
 
 #ignore the generated environment variable file
 **/services/.env 
+**/services/initnginx/conf.d/app.conf
 
 # Logs
 logs
