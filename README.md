@@ -134,6 +134,7 @@ and add the following entries:
 # app development
 127.0.0.1 login.localhost
 127.0.0.1 graphql.localhost
+127.0.0.1 app.localhost
 # end app development
 ```
 
