@@ -214,7 +214,7 @@ VALUES
 
 
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Robert%') WHERE name = 'Scotland Group 1';
-UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Maira%') WHERE name = 'Scotland Group 2';
+UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Mairi%') WHERE name = 'Scotland Group 2';
 
 
 ---

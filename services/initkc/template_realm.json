@@ -765,15 +765,15 @@
             "id": "412d7b89-d51c-4525-9cf5-abb01db09db5",
             "clientId": "{{CLIENT}}",
             "name": "{{REALM_ID}} client",
-            "rootUrl": "https://localhost:8080",
-            "adminUrl": "https://localhost:8080/auth",
-            "baseUrl": "https://localhost:8080/",
+            "rootUrl": "{{APP_URL}}",
+            "adminUrl": "{{PUBLIC_AUTH_ENDPOINT}}",
+            "baseUrl": "{{APP_URL}}/",
             "surrogateAuthRequired": false,
             "enabled": true,
             "alwaysDisplayInConsole": false,
             "clientAuthenticatorType": "client-secret",
             "redirectUris": [
-                "https://localhost:8080/*"
+                "{{APP_URL}}/*"
             ],
             "webOrigins": [
                 "*"
@@ -2281,7 +2281,7 @@
         "oauth2DeviceCodeLifespan": "600",
         "clientSessionMaxLifespan": "0",
         "parRequestUriLifespan": "60",
-        "frontendUrl": "https://localhost:8093/auth"
+        "frontendUrl": "{{PUBLIC_AUTH_ENDPOINT}}"
     },
     "keycloakVersion": "15.0.0",
     "userManagedAccessAllowed": false,

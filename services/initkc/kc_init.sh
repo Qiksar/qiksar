@@ -23,6 +23,8 @@ kcadm.sh config credentials --server http://localhost:8080/auth --realm master -
 
 # Generate realm template
 cat $OUTPUT_PATH/template_realm.json |\
+ sed "s|{{PUBLIC_AUTH_ENDPOINT}}|${PUBLIC_AUTH_ENDPOINT}|" | \
+ sed "s|{{APP_URL}}|${APP_URL}|" | \
  sed "s|{{CLIENT}}|${CLIENT}|" | \
  sed "s|{{REALM_ID}}|${REALM_ID}|" | \
  sed "s|{{REALM_NAME}}|${REALM_NAME}|" | \
