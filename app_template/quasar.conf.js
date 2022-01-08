@@ -60,9 +60,16 @@ module.exports = configure(function (ctx) {
       //env: require('dotenv').config().parsed,
 
       env :{
+        //'PUBLIC_GRAPHQL_ENDPOINT':'https://graphql.qiksar.com/v1/graphql',
+        //'PUBLIC_AUTH_ENDPOINT':'https://login.qiksar.com/auth',
+        //'API_PATH': 'api.qiksar.com',
+
         'PUBLIC_GRAPHQL_ENDPOINT':'http://localhost:8092/v1/graphql',
         'PUBLIC_AUTH_ENDPOINT':'http://localhost:8093/auth',
-        'I18N_WARNINGS': false
+        'API_PATH': 'api.qiksar.com',
+
+        'I18N_WARNINGS': false,
+        'DEFAULT_LOCALE': 'en-AU'
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -94,7 +101,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
       server: {
-        type: 'https'
+        type: 'http'
       },
       port: 8080,
       open: true // opens browser window automatically
@@ -224,7 +231,7 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'demoapp'
+        appId: 'qiksar_demo_app'
       },
 
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain

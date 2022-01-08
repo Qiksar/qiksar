@@ -3,6 +3,7 @@ version: '3.6'
 services:
 
 # Used by Keycloak and GraphQL
+# The db container is only needed if you don't have a cloud based database service. It's ideal for prototyping and local development.
     db:
         env_file: .env
 
@@ -12,12 +13,7 @@ services:
         volumes:
             - ./initdb/:/docker-entrypoint-initdb.d/
 
-# Expose the database port so database admin tools can connect, like VSCODE 
-        ports:
-            - '5432:5432'
-
         restart: always
-
 
 
 # GraphQL interface for the database
@@ -78,11 +74,6 @@ services:
         command:
             - node
             - qik-trak-cli.js
-
-    #app:
-    #    env_file: .env
-    #    container_name: q_app
-    #    image: node:latest
 
 
 # nginx proxy
