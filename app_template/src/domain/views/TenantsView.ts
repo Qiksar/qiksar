@@ -13,7 +13,7 @@ class TenantsView extends Query {
 			.Field('comment', 'Description')
             .ToSelection((r) => { 
                     return {
-                        id: r[this.Schema.Key] as number,
+                        id: r[this.Schema.Key],
                         label: r.name as string,
                         description: r.comment as string,
                     }

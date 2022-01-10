@@ -49,8 +49,9 @@ onBeforeMount(async () => {
   await store.fetchAll()
     .then(() => {
       const fieldName = props.field?.AffectedFieldName ?? '';
-      const fieldValue = props.entity[fieldName] as number;
+      const fieldValue = props.entity[fieldName];
 
+      // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
       options.value = store.GetSelections;
       selectedObject.value = options.value.filter(f => f['id'] == fieldValue)[0];
       

@@ -8,14 +8,7 @@ class RoleView extends Query {
             'roles', 
             'role_id', 
             'Role'
-            )
-            .ToSelection((r) => { 
-                    return {
-                        id: r[this.Schema.Key] as number,
-                        label: r.name as string,
-                        description: r.comment as string,
-                    }
-                });
+            );
 
         super(schema, true)
     }

@@ -75,7 +75,14 @@ export default class EntitySchema {
         return schema
             .SetKey(key, defaultIntFieldOptions)
             .Field('name', 'Code')
-            .Field('comment', 'Description');
+            .Field('comment', 'Description')
+            .ToSelection((r) => { 
+                return {
+                    id: r[key],
+                    label: r.name as string,
+                    description: r.comment as string,
+                }
+            });
     }
 
     get Description(): string { return this._description}

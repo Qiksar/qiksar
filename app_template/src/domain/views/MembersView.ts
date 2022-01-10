@@ -22,7 +22,7 @@ class MemberView extends Query {
 			.UseEnum('status', 'status')
 			.ToSelection((r) => { 
 					return {
-						id: r.member_id as number, 
+						id: r.member_id, 
 						label: (r.firstname as string) + ' ' + (r.lastname as string), 
 						description: (r.firstname as string) + ' ' + (r.lastname as string) 
 						}

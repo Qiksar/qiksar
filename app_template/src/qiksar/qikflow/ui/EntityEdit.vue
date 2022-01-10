@@ -13,8 +13,18 @@
   </div>
 
   <div class="row">
-    <q-btn v-if="!currentRecordId()" @click="insertEntity()" class="q-mt-xl" label="Save" />
-    <q-btn v-if="currentRecordId()" @click="deleteEntity()" class="q-mt-xl" label="Delete" />
+    <q-btn
+      v-if="!currentRecordId()"
+      @click="insertEntity()"
+      class="q-mt-xl"
+      label="Save"
+    />
+    <q-btn
+      v-if="currentRecordId()"
+      @click="deleteEntity()"
+      class="q-mt-xl"
+      label="Delete"
+    />
     <q-btn to="/" class="q-mt-xl" label="Home" />
   </div>
 </template>
@@ -32,15 +42,15 @@ import EntityEditSelect from './EntityEditSelect.vue';
 const components = {
   EntityEditText,
   EntityEditLichert,
-  EntityEditSelect
-} as Dictionary
+  EntityEditSelect,
+} as Dictionary;
 
 const props = defineProps<{
   context: {
-    entity_id: string,
-    entity_type: string,
-    real_time: { type: boolean, default: false }
-  }
+    entity_id: string;
+    entity_type: string;
+    real_time: { type: boolean; default: false };
+  };
 }>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
@@ -60,11 +70,9 @@ function setReactiveRecord(entity: GqlRecord): void {
 // Fetch the entity to edit
 onBeforeMount(async () => {
   if (id && id.length > 0 && id != 'new') {
-    await store
-      .fetchById(id, !store.view.IsEnum)
-      .then(() => {
-        setReactiveRecord(store.CurrentRecord);
-      });
+    await store.fetchById(id, !store.view.IsEnum).then(() => {
+      setReactiveRecord(store.CurrentRecord);
+    });
   } else {
     // prepare a new record for insert
     setReactiveRecord(store.NewRecord);
@@ -77,7 +85,7 @@ function editableFields(): Record<string, EntityField> {
 }
 
 // Extract the ID of the current entity in the store
-function currentRecordId(): string | undefined{
+function currentRecordId(): string | undefined {
   const id = reactive_record.value[store.view.Schema.Key] as string;
   return id;
 }
@@ -91,11 +99,10 @@ function updateEntity(field: EntityField, value: unknown): void {
   store.CurrentRecord[field.AffectedFieldName] = value;
 
   if (props.context.real_time && currentRecordId())
-    void store.update(store.CurrentRecord, original)
+    void store.update(store.CurrentRecord, original);
 }
 
 function deleteEntity() {
-  void store.delete((reactive_record.value[store.view.Schema.Key] as number).toString())
+  void store.delete(reactive_record.value[store.view.Schema.Key]);
 }
-
 </script>

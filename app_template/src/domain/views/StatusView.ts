@@ -11,7 +11,7 @@ import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
             )
             .ToSelection((r) => { 
                     return {
-                        id: r[this.Schema.Key] as number,
+                        id: r[this.Schema.Key],
                         label: r.name as string,
                         description: r.comment as string,
                     }

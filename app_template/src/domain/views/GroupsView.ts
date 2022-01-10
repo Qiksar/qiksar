@@ -20,7 +20,7 @@ class GroupsView extends Query {
 
             .ToSelection((r) => { 
                     return {
-                        id: r.group_id as number,
+                        id: r.group_id,
                         label: r.name,
                         description:r.state
                     }
