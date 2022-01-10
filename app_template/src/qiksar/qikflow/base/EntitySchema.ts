@@ -178,18 +178,18 @@ export default class EntitySchema {
         return this.Field(name, 'ID', 'id', fo);
     }
 
-    UseEnum(view_name:string, key_column_name:string, ref_column_name: string): EntitySchema {
+    UseEnum(view_name:string,  referencing_column_name: string, key_column_name:string|undefined = undefined): EntitySchema {
         const view = Query.GetView(view_name);
         const key_name = key_column_name ?? view.Schema.Key;
         const et = view.Schema.EntityType;
         const desc =view.Schema.Description;
 
-        if(!ref_column_name)
-            ref_column_name = view_name;
+        if(!referencing_column_name)
+            referencing_column_name = view_name;
 
         return this
-            .Include(et, key_name, ref_column_name, `${view.Schema.Key} name comment`)
-            .Flatten(`${ref_column_name}.name`, desc, defaultIntFieldOptions);
+            .Include(et, key_name, referencing_column_name, `${view.Schema.Key} name comment`)
+            .Flatten(`${referencing_column_name}.name`, desc, defaultIntFieldOptions);
     }
 
     Include(schema: string, key_column_name:string, ref_column_name: string, ref_columns:string): EntitySchema {

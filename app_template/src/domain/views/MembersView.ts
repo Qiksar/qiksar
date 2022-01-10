@@ -18,8 +18,8 @@ class MemberView extends Query {
 			.Include('groups', 'group_id', 'group', 'group_id name state')
 			.Flatten('group.name', 'Group')
 			.Flatten('group.state', 'State')
-			.UseEnum('roles', 'role_id', 'role')
-			.UseEnum('status', 'status_id', 'status')
+			.UseEnum('roles', 'role')
+			.UseEnum('status', 'status')
 			.ToSelection((r) => { 
 					return {
 						id: r.member_id as number, 

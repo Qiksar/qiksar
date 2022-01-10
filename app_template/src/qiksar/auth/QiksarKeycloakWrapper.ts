@@ -145,7 +145,8 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     // Test if the  user has a specified role
     HasRealmRole(roleName:string | undefined): boolean {
       const hasRole = this.keycloak.hasRealmRole(roleName ?? '');
-      console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
+      
+      //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
     
       return hasRole;
     }

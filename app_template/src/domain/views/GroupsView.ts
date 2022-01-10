@@ -10,7 +10,7 @@ class GroupsView extends Query {
             'Membership Groups'
             )
             
-            .UseEnum('tenants', 'tenant_id', 'tenant')
+            .UseEnum('tenants', 'tenant')
             
             .Field('name', 'Group Name')
             .Field('state', 'State')
