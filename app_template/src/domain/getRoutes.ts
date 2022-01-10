@@ -1,9 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import getDomainRoutes from 'src/qiksar/qikflow/router/routes';
+import getEntityRoutes from './getEntityRoutes';
+import InitialiseDomain from 'src/domain/InitialiseDomain';
 
-export default function mainRoutes(): RouteRecordRaw[]  { 
+export default async function getRoutes(): Promise<RouteRecordRaw[]>  
+{ 
+  // Build the schemas and view first...
+	await InitialiseDomain();
+
+  //
+  const domainRoutes = getEntityRoutes();
+
   return [
     {
       path: '/',
@@ -33,7 +41,6 @@ export default function mainRoutes(): RouteRecordRaw[]  {
       component: () => import('pages/Error404.vue'),
     },
 
-    ...getDomainRoutes()
-
+    ...domainRoutes
     ] 
 }

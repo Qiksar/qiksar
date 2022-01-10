@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-import Keycloak, { KeycloakProfile } from 'keycloak-js';
+import { Router as vueRouter } from 'vue-router';
+
 import QiksarAuthWrapper from './QiksarAuthWrapper';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import { userStore } from 'src/boot/pinia';
 import User from './user';
 
@@ -177,5 +179,26 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
             .keycloak
             .init(kc_init_options)
             .then(async (auth_result) => { await this.AuthComplete(auth_result); }) 
+    }
+
+    SetupRouterGuards(router: vueRouter):void {
+          
+      router.beforeEach((to, from, next) => {
+        const required_role: string = <string>to.meta.role ?? 'unauthorized';
+        const allow_anonymous: boolean = <boolean>to.meta.anonymous ?? false;
+
+        if (allow_anonymous) {
+          // Page doesn't require auth
+          next();
+        } else if (!this.IsAuthenticated()) {
+          // User must be logged in
+          this.Login(to.path);
+        } else if (this.HasRealmRole(required_role)) {
+          // User must have at least the default role
+          next();
+        } else {
+          next({ path: '/unauthorized' });
+        }
+      });
     }
   }

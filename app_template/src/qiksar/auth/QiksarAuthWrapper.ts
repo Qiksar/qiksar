@@ -1,3 +1,5 @@
+import { Router as vueRouter } from 'vue-router';
+
 export default interface QiksarAuthWrapper {
 
     Init():Promise<void>;
@@ -7,5 +9,5 @@ export default interface QiksarAuthWrapper {
     IsAuthenticated():boolean;
     HasRealmRole(role:string):boolean;
     GetUserRoles():string[];
-
+    SetupRouterGuards(router: vueRouter):void;
   }

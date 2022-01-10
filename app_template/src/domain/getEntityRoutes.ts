@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import EntitySchema from '../base/EntitySchema';
+import EntitySchema from '../qiksar/qikflow/base/EntitySchema';
 
 const getEntityRoutes = (entityName: string, requiredRole: string) => ({
 	path: `/${entityName}`,
@@ -13,12 +13,12 @@ const getEntityRoutes = (entityName: string, requiredRole: string) => ({
 	children: [
 		{
 			path: '',
-			component: () => import('../ui/EntityList.vue'),
+			component: () => import('src/qiksar/qikflow/ui/EntityList.vue'),
 			props: { entity_type: entityName },
 		},
 		{
 			path: 'edit/:id',
-			component: () => import('../ui/EntityEdit.vue'),
+			component: () => import('src/qiksar/qikflow/ui/EntityEdit.vue'),
 			props: (route: any) => {
 				const props = {
 					context: {
