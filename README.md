@@ -8,7 +8,7 @@ Qiksar supports learning, helping you to build Quasar apps faster, securely conn
 
 # WELCOME TO THE QIKSAR DEMO APP
 
-The worlds worst exmample of cyber security!
+The worlds worst example of cyber security!
 
 Here is how to login:
 
