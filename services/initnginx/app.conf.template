@@ -1,14 +1,16 @@
 server {
     listen 443 ssl;
-   
     include /etc/nginx/conf.d/ssl.inc;
-
     server_name app.{{DOMAIN}};
+    
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.html;
 
     location / {
-
-        root /usr/share/nginx/app_root;
-        index index.html;
+        root /usr/share/nginx/app_root/pwa;
         try_files $uri $uri/ /index.html;
 
         include /etc/nginx/conf.d/location.inc;
@@ -17,9 +19,7 @@ server {
 
 server {
     listen 443 ssl;
-
     include /etc/nginx/conf.d/ssl.inc;
-
     server_name login.{{DOMAIN}};
 
     location / {
@@ -28,12 +28,9 @@ server {
     }
 }
 
-
 server {
     listen 443 ssl;
-
     include /etc/nginx/conf.d/ssl.inc;
-
     server_name graphql.{{DOMAIN}};
 
     location / {

@@ -87,7 +87,7 @@ services:
           - ./initnginx/nginx.conf:/etc/nginx/nginx.conf
           - ./initnginx/conf.d:/etc/nginx/conf.d
           - ./initnginx/private_data/ssl:/etc/nginx/ssl
-          - ./app_root/pwa:/usr/share/nginx/app_root
+          - ./app_root/pwa:/usr/share/nginx/app_root/pwa
         
         ports:
             - 80:80
