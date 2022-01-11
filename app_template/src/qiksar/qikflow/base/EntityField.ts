@@ -1,24 +1,12 @@
 import { t } from 'src/boot/i18n';
-
-export type fieldType = 'id' | 'alias' | 'arr' | 'obj' | 'text' | 'number' | 'date' | 'email' | 'mobile' | 'image' | 'json';
-export type fieldOptions = 'heavy' | 'sortable' | 'required' | 'readonly' | 'ontable' | 'isenum' | 'hidden' | 'locale' |
-    'EntityEditText' | 'EntityEditSelect' | 'EntityEditLichert';
+import fieldOptions from './fieldOptions';
+import fieldType from './fieldType';
+import IFieldDefinition from './IFieldDefinition';
 
 export const defaultFieldOptions: fieldOptions[] = ['ontable', 'sortable'];
 export const defaultIntFieldOptions: fieldOptions[] = [...defaultFieldOptions, 'locale'];
 export const defaultEnumOptions: fieldOptions[] = ['ontable', 'sortable', 'readonly', 'EntityEditText'];
 export const hiddenFieldOptions: fieldOptions[] = ['hidden'];
-
-export interface IFieldDefinition {
-    name: string,
-    label: string,
-    type: fieldType,
-    options: fieldOptions[],
-    key_column_name?: string | undefined,
-    object_name?: string | undefined,
-    object_columns?: string | undefined,
-    object_schema?: string | undefined
-}
 
 export default class EntityField {
     private _name: string;

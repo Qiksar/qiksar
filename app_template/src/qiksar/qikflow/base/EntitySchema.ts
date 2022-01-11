@@ -1,6 +1,9 @@
-import EntityField, {defaultFieldOptions, hiddenFieldOptions, defaultEnumOptions, fieldOptions, defaultIntFieldOptions, IFieldDefinition } from './EntityField';
+import EntityField, {defaultFieldOptions, hiddenFieldOptions, defaultEnumOptions, defaultIntFieldOptions } from './EntityField';
+import fieldOptions from './fieldOptions';
+import IFieldDefinition from './IFieldDefinition';
 import { TranslateRecord } from './GqlTypes';
-import Query, { defaultFetchMode, fetchMode } from './Query'
+import Query, { defaultFetchMode } from './Query';
+import fetchMode from './fetchMode';
 
 interface IInclude {
     schema: string

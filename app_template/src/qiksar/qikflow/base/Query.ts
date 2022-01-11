@@ -1,25 +1,22 @@
-import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import gql from 'graphql-tag';
-import EntityField, { fieldType } from './EntityField';
-import EntitySchema from './EntitySchema';
 import { TypePolicies } from '@apollo/client/core';
 import { t } from 'src/boot/i18n';
 import { fromJSON, toJSON } from 'flatted';
+import EntityField from './EntityField';
+import fieldType from './fieldType';
+import EntitySchema from './EntitySchema';
 import { GqlRecord, GqlRecords } from './GqlTypes';
+import ITableColumn from './ITableColumn';
+import  fetchMode from './fetchMode';
 
-export type fetchMode = 'heavy' | 'light' | 'grid';
+
 export const defaultFetchMode: fetchMode = 'heavy';
-export interface ITableColumn {
-	name: string;
-	label: string;
-	field: string;
-	sortable: boolean;
-	align: 'right' | 'left';
-}
 
 export default class Query {
 	//#region instance variables
@@ -214,7 +211,8 @@ export default class Query {
 			query: gql(query),
 		};
 
-		//console.log(query);
+		console.log('*** GRAPHQL QUERY');
+		console.log(query);
 
 		return doc;
 	}
@@ -240,6 +238,27 @@ export default class Query {
 	//#endregion
 
 	//#region Row / Alias processing
+
+	private SetRows(result: GqlRecord, store: any, translate = true) {
+
+		// Get the data object which contains the rows of data
+		const rows = this.ExtractFromPath<GqlRecords>(result, [
+			'data',
+			this.Schema.EntityType,
+		]);
+
+		// Process the rows with translation and insertion of attributes to entites from related entities
+		store.Rows = this.ProcessAllRows(rows, translate);
+		
+		// Update status
+		store.SetBusy(false);
+		store.SetLoaded(true);
+
+		//const first = store.Rows[0] as GqlRecord;
+		//console.log('----------------------------------------------------')
+		//console.log(JSON.stringify(first))
+		//console.log('----------------------------------------------------')
+	}
 
 	// Process all rows to apply aliasing
 	private ProcessAllRows(rows: GqlRecords, translate = true): GqlRecords {
@@ -303,7 +322,7 @@ export default class Query {
 	private GetAliasValue(source: GqlRecord, alias: string): string {
 		if (!alias || alias.length == 0) throw `Invalid alias: ${alias}`;
 
-		const value = this.Extract<string>(source, alias.split('.'));
+		const value = this.ExtractFromPath<string>(source, alias.split('.'));
 		return value ?? '---';
 	}
 
@@ -322,7 +341,7 @@ export default class Query {
 
 	//#endregion
 
-	//#region CRUD
+	//#region FETCH
 
 	// Return result, loading, error to the caller
 	// This enables the query to execute asynchronously, and when loading = false, the result is ready
@@ -409,28 +428,16 @@ export default class Query {
 	}
 
 	// Repeat previous fetch
-	async Refetch(store: any): Promise<void> {
+	async FetchPrevious(store: any): Promise<void> {
 		await this.FetchWhere(this._where, this._fetch_mode, store);
 
 		store.SetBusy(false);
 		store.SetLoaded(true);
 	}
 
-	SetRows(result: GqlRecord, store: any, translate = true) {
-		const rows = this.Extract<GqlRecords>(result, [
-			'data',
-			this.Schema.EntityType,
-		]);
+	//#endregion
 
-		store.Rows = this.ProcessAllRows(rows, translate);
-		store.SetBusy(false);
-		store.SetLoaded(true);
-
-		//const first = store.Rows[0] as GqlRecord;
-		//console.log('----------------------------------------------------')
-		//console.log(JSON.stringify(first))
-		//console.log('----------------------------------------------------')
-	}
+	//#region Insert, Update, Delete
 
 	async Insert(
 		data: GqlRecord,
@@ -450,7 +457,7 @@ export default class Query {
             }`;
 
 		const r: GqlRecord = await this.doMutation(doc, 'insert', store);
-		const id = this.Extract<string>(r, [
+		const id = this.ExtractFromPath<string>(r, [
 			'data',
 			mutation_name,
 			'returning',
@@ -476,7 +483,7 @@ export default class Query {
 		delete data[this.Schema.Key];
 
 		if (!id)
-			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = '${id}'`;
+			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = "${id}"`;
 
 		let keys = '';
 		Object.keys(data).map((k) => (keys += `${k} `));
@@ -555,18 +562,22 @@ export default class Query {
 		const r = await Query.Apollo.mutate(doc);
 
 		//console.log('**** mutate output: ' + JSON.stringify(r));
-		void this.Refetch(store);
+		void this.FetchPrevious(store);
 
 		return r as GqlRecord;
 	}
 
+	//#endregion
+
+	//#region Utilities
+
 	// Given an object, extract a value from a dynamically specified path, e.g. result.data.members[0]
-	Extract<Type>(data: GqlRecord, path: any[]): Type {
+	ExtractFromPath<Type>(data: GqlRecord, path: any[]): Type {
 		let field = data;
 		path.map((p) => (field = field[p] as GqlRecord));
 
 		return field as Type;
 	}
-
+	
 	//#endregion
 }
