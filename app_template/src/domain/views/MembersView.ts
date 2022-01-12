@@ -13,7 +13,7 @@ class MemberView extends Query {
 			.Field('lastname', 'Surame')
 			.Field('email', 'Email Address', 'email')
 			.Field('mobile', 'Mobile Number', 'mobile')
-			.Field('photo', 'Profile Photo', 'image', ['heavy'])
+			.Field('photo', 'Profile Photo', 'image', ['heavy', 'EntityEditImage'])
 			.Field('rating', 'Member Rating', 'number', ['EntityEditLichert'])
 			.Include('groups', 'group_id', 'group', 'group_id name state')
 			.Flatten('group.name', 'Group')

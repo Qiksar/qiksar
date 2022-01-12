@@ -34,15 +34,22 @@ import { onBeforeMount, ref, Ref } from 'vue';
 import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
 import { Dictionary, GqlRecord } from '../base/GqlTypes';
 
-import EntityField from '../base/EntityField';
-import EntityEditText from './EntityEditText.vue';
+import EntityEditImage from './EntityEditImage.vue';
 import EntityEditLichert from './EntityEditLichert.vue';
+import EntityEditMultiCheck from './EntityEditMultiCheck.vue';
 import EntityEditSelect from './EntityEditSelect.vue';
+import EntityEditTags from './EntityEditTags.vue';
+import EntityEditText from './EntityEditText.vue';
+
+import EntityField from '../base/EntityField';
 
 const components = {
-  EntityEditText,
+  EntityEditImage,
   EntityEditLichert,
+  EntityEditMultiCheck,
   EntityEditSelect,
+  EntityEditTags,
+  EntityEditText,
 } as Dictionary;
 
 const props = defineProps<{
