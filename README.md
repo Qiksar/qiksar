@@ -6,8 +6,29 @@
 
 Qiksar supports learning, helping you to build Quasar apps faster, securely connected to data through a moden GraphQL interface with minimal code.
 
+# WELCOME TO THE QIKSAR DEMO APP
+
+The worlds worst example of cyber security!
+
+Here is how to login:
+
+https://app.qiksar.com
+username: **oz_app_admin**
+or
+username: **scot_app_admin**
+
+password: **password**
+
+You can now see the demo app running in the cloud!
+
+Please do the right thing, browse the data, make small edits, create your own records so that you can delete them.
+Don't put any secret information in the worlds worst example of a secure app!!!
+If you destroy the data then you just spoil it for everybody and I will have to lock the app down.
+
 
 ## Getting Started Videos
+
+**The videos are pending an update now that the example app has made signiicant improvements with multi-tenancy and PWA features**
 
 Introduction - https://www.youtube.com/watch?v=ti72vq3aqZw 
 Building a fully functioning prototype app with login, and data storage
