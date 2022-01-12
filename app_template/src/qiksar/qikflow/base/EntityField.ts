@@ -9,6 +9,8 @@ export const defaultEnumOptions: fieldOptions[] = ['ontable', 'sortable', 'reado
 export const hiddenFieldOptions: fieldOptions[] = ['hidden'];
 
 export default class EntityField {
+
+//#region Properties    
     private _name: string;
     private _type: fieldType;
     private _key_column_name: string | undefined = undefined;
@@ -25,6 +27,7 @@ export default class EntityField {
     private _locale: boolean;
     private _options: fieldOptions[];
     private _editor: string;
+//#endregion
 
     constructor(def: IFieldDefinition) {
 

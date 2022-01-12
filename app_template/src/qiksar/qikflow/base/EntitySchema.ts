@@ -4,13 +4,7 @@ import IFieldDefinition from './IFieldDefinition';
 import { TranslateRecord } from './GqlTypes';
 import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
-
-interface IInclude {
-    schema: string
-    key_column_name: string
-    ref_column_name: string
-    ref_columns: string
-}
+import IInclude from './IInclude';
 
 export default class EntitySchema {
     private _description: string;
