@@ -571,10 +571,27 @@ export default class Query {
 
 	//#region Utilities
 
-	// Given an object, extract a value from a dynamically specified path, e.g. result.data.members[0]
-	ExtractFromPath<Type>(data: GqlRecord, path: any[]): Type {
+	/** 
+	 * Given a source GqlRecord compliant type, extract an element from the object graph
+	 * which is specified as the path parameter.
+	 * 
+	 * @param data	 The source GraphQL Record from which an element is to be extracted
+	
+	* @param path	 A string specifying the path to the required element e.g. 'result.data.members[0]', or an array, e.g. ['result', 'data', 'customer', 'name']
+	 
+	* @returns {Type} The extracted element as the specified generic type parameter
+	 * 
+	 * @example
+	 * const fname = ExtractFromPath<string>(CustomerRecord, 'result.data.customer[0].first_name') 
+	 * const lname = ExtractFromPath<string>(CustomerRecord, ['result', 'data', 'customer', 'last_name']) 
+	 * @example
+	 */ 
+	
+	ExtractFromPath<Type>(data: GqlRecord, path: string | any[]): Type {
+		const datapath:any[] = typeof path === 'string' ? path.split('.') : path;
+
 		let field = data;
-		path.map((p) => (field = field[p] as GqlRecord));
+		datapath.map((p) => (field = field[p] as GqlRecord));
 
 		return field as Type;
 	}
