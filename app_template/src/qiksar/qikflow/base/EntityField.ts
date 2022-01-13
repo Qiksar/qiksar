@@ -1,4 +1,5 @@
-import { t } from 'src/boot/i18n';
+import { t } from 'src/qiksar/Translator/Translator';
+
 import fieldOptions from './fieldOptions';
 import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';

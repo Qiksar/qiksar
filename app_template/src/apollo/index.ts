@@ -13,7 +13,7 @@ import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient, ConnectionParams } from 'subscriptions-transport-ws';
 
 import Query from '../qiksar/qikflow/base/Query'
-import  {AuthWrapper} from 'src/boot/auth';
+import  {AuthWrapper} from 'src/boot/qiksar';
 
 
 // Determinte the websocket URI

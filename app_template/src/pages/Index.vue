@@ -45,7 +45,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { AuthWrapper } from 'src/boot/auth';
+import { AuthWrapper } from 'src/boot/qiksar';
 
 export default defineComponent({
   name: 'PageIndex',

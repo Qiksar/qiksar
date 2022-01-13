@@ -1,6 +1,6 @@
 <template>
-  <div class="row q-mt-lg q-mb-lg">
-    <div class="col">
+  <div class='row q-mt-lg q-mb-lg'>
+    <div class='col'>
       <label>
         <b>{{ props.field.Label }}</b>
         <p>Build a multitag selector</p>
@@ -9,11 +9,11 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import EntityField from "../base/EntityField";
-import { GqlRecord, GqlRecords } from "../base/GqlTypes";
-import { CreateStore } from "../store/GenericStore";
-import { ref, onBeforeMount } from "vue";
+<script lang='ts' setup>
+import EntityField from '../base/EntityField';
+import { GqlRecord, GqlRecords } from '../base/GqlTypes';
+import { CreateStore } from '../store/GenericStore';
+import { ref, onBeforeMount } from 'vue';
 
 const props = defineProps<{
   field: EntityField;
@@ -28,7 +28,7 @@ if (!props.field.ObjectSchema)
 
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: "update:modelValue", value: string): void;
+  (e: 'update:modelValue', value: string): void;
 }>();
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -40,12 +40,12 @@ onBeforeMount(async () => {
 
   const store = CreateStore(props.field.ObjectSchema);
   await store.fetchAll().then(() => {
-    const fieldName = props.field?.AffectedFieldName ?? "";
+    const fieldName = props.field?.AffectedFieldName ?? '';
     const fieldValue = props.entity[fieldName];
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
     options.value = store.GetSelections;
-    selectedObject.value = options.value.filter((f) => f["id"] == fieldValue)[0];
+    selectedObject.value = options.value.filter((f:GqlRecord) => f['id'] == fieldValue)[0];
 
     //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
   });
@@ -55,7 +55,7 @@ function selectionChanged(value: GqlRecord) {
   if (!value) return;
 
   selectedObject.value = value;
-  const selectedId = value["id"] as string;
-  emit("update:modelValue", selectedId);
+  const key = value['id'] as string;
+  emit('update:modelValue', key);
 }
 </script>

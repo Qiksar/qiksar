@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import { Router as vueRouter } from 'vue-router';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 
 import QiksarAuthWrapper from './QiksarAuthWrapper';
-import Keycloak, { KeycloakProfile } from 'keycloak-js';
-import { userStore } from 'src/boot/pinia';
 import User from './user';
+import TokenStore from './../Translator/TokenStore';
 
 export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
+
+    //#region Properties
 
     // actual instance of keycloak
     private keycloak:Keycloak.KeycloakInstance;
@@ -25,7 +28,11 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private tokenRefresh: any = null;
   
-  
+    private user:User = new User();
+    private userStore:any;  
+    
+    //#endregion
+
     constructor () {
         
       if (!process.env.PUBLIC_AUTH_ENDPOINT) 
@@ -38,7 +45,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       else
         this.realm=subdomain;
       
-      console.log('Realm: >' + this.realm + '<');
+      //console.log('Realm: >' + this.realm + '<');
   
       // Configuration details for REALM and CLIENT
       const kc_config: Keycloak.KeycloakConfig = {
@@ -54,6 +61,32 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         throw 'Qiksar Initialisation Error: Keycloak did not initialise';
     }
     
+    //#region getters
+
+    get User():User {
+      return this.user;
+    }
+
+    // Check if user is authenticated
+    IsAuthenticated():boolean {
+      return (this.keycloak.authenticated || false) ? true : false;
+    }
+
+    // Get authorisation token from keycloak
+    GetAuthToken():string {
+      //console.log(keycloak.token);
+      return this.keycloak.token ?? 'unauthenticated';
+    }
+  
+    // Test if the  user has a specified role
+    HasRealmRole(roleName:string | undefined): boolean {
+      const hasRole = this.keycloak.hasRealmRole(roleName ?? '');
+      
+      //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
+    
+      return hasRole;
+    }
+
     // Get the full host URL and append the destination path in order to form a redirect URI
     private getRedirectTarget(path:string):string {
       let basePath:string = window.location.toString();
@@ -67,7 +100,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       return basePath;
     }
   
-    // Get Keycloak user profile
+        // Get Keycloak user profile
     async GetUserProfile():Promise<User> {
       let kc_profile: KeycloakProfile = {};
   
@@ -93,7 +126,8 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         lastname: kc_profile.lastName ?? '',
         roles: this.GetUserRoles(),
         lastLogin: '',
-        locale: ''
+        locale: '',
+        TokenStore: new TokenStore()
       };
 
       return user_profile;
@@ -103,54 +137,26 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       return this.keycloak.realmAccess?.roles ?? []
     }
   
-    // Triggered when authentication is completed
-    async AuthComplete(auth: boolean):Promise<void> { 
-    
-    const profile = await this.GetUserProfile();
-    userStore.setUser(profile);
-    userStore.setLoggedIn(this.IsAuthenticated());
-  
-    if (auth) {
-      if(this.tokenRefresh)
-        clearTimeout(this.tokenRefresh);
-  
-      this.tokenRefresh = setInterval(
-        () => {
-          if(this.keycloak) {
-              this
-              .keycloak
-              .updateToken(this.kc_min_validity_seconds)
-              .catch(e => {
-                console.error('Token refresh failed');
-                console.error('Exception: ' + JSON.stringify(e));
-              });
-            }
-          },
-  
-        this.kc_token_check_seconds);
-      }
-    }
-  
-    // Check if user is authenticated
-    IsAuthenticated():boolean {
-      return (this.keycloak.authenticated || false) ? true : false;
-    }
-    
-    // Get authorisation token from keycloak
-    GetAuthToken():string {
-      //console.log(keycloak.token);
-      return this.keycloak.token ?? 'unauthenticated';
-    }
-  
-    // Test if the  user has a specified role
-    HasRealmRole(roleName:string | undefined): boolean {
-      const hasRole = this.keycloak.hasRealmRole(roleName ?? '');
+    //#endregion
+
+    //#region Auth Lifecycle
+
+    async Init(userStore:any):Promise<void> {
       
-      //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
-    
-      return hasRole;
+      this.userStore = userStore;
+
+      // Initialisation options
+      const kc_init_options: Keycloak.KeycloakInitOptions = {
+        // onLoad: 'login-required',
+        checkLoginIframe: false 
+      }
+  
+      await this
+            .keycloak
+            .init(kc_init_options)
+            .then(async (auth_result) => { await this.AuthComplete(auth_result); }) 
     }
-    
+
     // The login flow is executed
     Login(path: string): void {
       const redirectUri= this.getRedirectTarget(path);
@@ -164,23 +170,41 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   
     // The current user will be logged out
     Logout() {
-      userStore.$reset();
+      this.userStore.$reset();
       void this.keycloak.logout();
     }
   
-    async Init():Promise<void> {
-      
-      // Initialisation options
-      const kc_init_options: Keycloak.KeycloakInitOptions = {
-        // onLoad: 'login-required',
-        checkLoginIframe: false 
-      }
-  
-      await this
-            .keycloak
-            .init(kc_init_options)
-            .then(async (auth_result) => { await this.AuthComplete(auth_result); }) 
+    // Triggered when authentication is completed
+    async AuthComplete(auth: boolean):Promise<void> { 
+    
+      const profile = await this.GetUserProfile();
+      this.userStore.setUser(profile);
+      this.userStore.setLoggedIn(this.IsAuthenticated());
+    
+      if (auth) {
+        if(this.tokenRefresh)
+          clearTimeout(this.tokenRefresh);
+    
+        this.tokenRefresh = setInterval(
+          () => {
+            if(this.keycloak) {
+                this
+                .keycloak
+                .updateToken(this.kc_min_validity_seconds)
+                .catch(e => {
+                  console.error('Token refresh failed');
+                  console.error('Exception: ' + JSON.stringify(e));
+                });
+              }
+            },
+    
+          this.kc_token_check_seconds);
+        }
     }
+
+    //#endregion
+
+    //#region Router
 
     SetupRouterGuards(router: vueRouter):void {
           
@@ -202,4 +226,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         }
       });
     }
+
+    //#endregion
+
   }

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { AuthWrapper } from 'src/boot/auth';
+import { AuthWrapper } from 'src/boot/qiksar';
 
 export default {
   name: 'PageLoggedOut',

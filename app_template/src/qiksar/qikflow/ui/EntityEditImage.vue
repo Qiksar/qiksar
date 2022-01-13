@@ -1,6 +1,6 @@
 <template>
-  <div class="row q-mt-lg q-mb-lg">
-    <div class="col">
+  <div class='row q-mt-lg q-mb-lg'>
+    <div class='col'>
       <label>
         <b>{{ props.field.Label }}</b>
         <p>Build an image picker with camera access</p>
@@ -9,9 +9,9 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import EntityField from "../base/EntityField";
-import { GqlRecord } from "../base/GqlTypes";
+<script lang='ts' setup>
+import EntityField from '../base/EntityField';
+import { GqlRecord } from '../base/GqlTypes';
 
 const props = defineProps<{
   field: EntityField;
@@ -19,12 +19,12 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: "update:modelValue", value: string): void;
+  (e: 'update:modelValue', value: string): void;
 }>();
 
 function onUpdate(value: string) {
   if (!value) return;
 
-  emit("update:modelValue", value);
+  emit('update:modelValue', value);
 }
 </script>

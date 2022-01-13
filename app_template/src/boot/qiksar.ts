@@ -5,9 +5,17 @@
 // https://github.com/janhapke/hasura-keycloak
 
 import { boot } from 'quasar/wrappers';
+
+import { Router } from 'src/router';
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 import { QiksarKeycloakWrapper } from 'src/qiksar/auth/QiksarKeycloakWrapper';
-import { Router } from 'src/router';
+import Translator from 'src/qiksar/Translator/Translator';
+
+import { createPinia } from 'pinia';
+import useUserStore from 'src/qiksar/auth/userStore';
+
+const pinia = createPinia();
+export let userStore = {};
 
 // Set the auth wrapper to an instance of the Qiksar Keycloak wrapper
 export const AuthWrapper:QiksarAuthWrapper = new QiksarKeycloakWrapper();
@@ -21,7 +29,18 @@ export const AuthWrapper:QiksarAuthWrapper = new QiksarKeycloakWrapper();
 //
 // Tt is assumed that Quasar has initialised the global Router instance by running createRouter from src/router/index.ts
 //
-export default boot(async () => { 
-  await AuthWrapper.Init();
+export default boot(async ({app}) => { 
+  app.use(pinia);
+  userStore = useUserStore();
+  
+  await AuthWrapper.Init(userStore);
+
+  await import('src/domain/i18n/' + AuthWrapper.User.locale)
+  .then((module) => {
+    //console.log('Loaded : ' + JSON.stringify(module.default))
+    Translator.InitInstance(AuthWrapper.User, module.default);
+  });
+
   AuthWrapper.SetupRouterGuards(Router);
  });
+

@@ -6,7 +6,8 @@
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import gql from 'graphql-tag';
 import { TypePolicies } from '@apollo/client/core';
-import { t } from 'src/boot/i18n';
+import { t } from 'src/qiksar/Translator/Translator';
+
 import { fromJSON, toJSON } from 'flatted';
 import EntityField from './EntityField';
 import fieldType from './fieldType';
@@ -14,6 +15,7 @@ import EntitySchema from './EntitySchema';
 import { GqlRecord, GqlRecords } from './GqlTypes';
 import ITableColumn from './ITableColumn';
 import  fetchMode from './fetchMode';
+import JsonTools from './JsonTools';
 
 
 export const defaultFetchMode: fetchMode = 'heavy';
@@ -211,8 +213,8 @@ export default class Query {
 			query: gql(query),
 		};
 
-		console.log('*** GRAPHQL QUERY');
-		console.log(query);
+		//console.log('*** GRAPHQL QUERY');
+		//console.log(query);
 
 		return doc;
 	}
@@ -242,7 +244,7 @@ export default class Query {
 	private SetRows(result: GqlRecord, store: any, translate = true) {
 
 		// Get the data object which contains the rows of data
-		const rows = this.ExtractFromPath<GqlRecords>(result, [
+		const rows = JsonTools.ExtractFromPath<GqlRecords>(result, [
 			'data',
 			this.Schema.EntityType,
 		]);
@@ -322,7 +324,7 @@ export default class Query {
 	private GetAliasValue(source: GqlRecord, alias: string): string {
 		if (!alias || alias.length == 0) throw `Invalid alias: ${alias}`;
 
-		const value = this.ExtractFromPath<string>(source, alias.split('.'));
+		const value = JsonTools.ExtractFromPath<string>(source, alias.split('.'));
 		return value ?? '---';
 	}
 
@@ -457,7 +459,7 @@ export default class Query {
             }`;
 
 		const r: GqlRecord = await this.doMutation(doc, 'insert', store);
-		const id = this.ExtractFromPath<string>(r, [
+		const id = JsonTools.ExtractFromPath<string>(r, [
 			'data',
 			mutation_name,
 			'returning',
@@ -569,32 +571,4 @@ export default class Query {
 
 	//#endregion
 
-	//#region Utilities
-
-	/** 
-	 * Given a source GqlRecord compliant type, extract an element from the object graph
-	 * which is specified as the path parameter.
-	 * 
-	 * @param data	 The source GraphQL Record from which an element is to be extracted
-	
-	* @param path	 A string specifying the path to the required element e.g. 'result.data.members[0]', or an array, e.g. ['result', 'data', 'customer', 'name']
-	 
-	* @returns {Type} The extracted element as the specified generic type parameter
-	 * 
-	 * @example
-	 * const fname = ExtractFromPath<string>(CustomerRecord, 'result.data.customer[0].first_name') 
-	 * const lname = ExtractFromPath<string>(CustomerRecord, ['result', 'data', 'customer', 'last_name']) 
-	 * @example
-	 */ 
-	
-	ExtractFromPath<Type>(data: GqlRecord, path: string | any[]): Type {
-		const datapath:any[] = typeof path === 'string' ? path.split('.') : path;
-
-		let field = data;
-		datapath.map((p) => (field = field[p] as GqlRecord));
-
-		return field as Type;
-	}
-	
-	//#endregion
 }
