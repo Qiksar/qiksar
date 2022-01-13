@@ -340,3 +340,7 @@ Currently documented for Digital Ocean
 * Put the source on to the server
 * Rebuild the services
   
+# Credits and Recognition
+
+This helped understand how to provide claims to Hasura within a Keycloak token...
+https://github.com/janhapke/hasura-keycloak

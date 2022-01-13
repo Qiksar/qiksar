@@ -18,7 +18,7 @@ quasar ext add @quasar/apollo@next
 
 # install dependencies
 yarn add dotenv jest ts-jest @types/jest -D
-yarn add apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia
+yarn add apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia date-fns
 
 # copy template files
 cd ..

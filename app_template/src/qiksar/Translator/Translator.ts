@@ -5,32 +5,39 @@
 
 import { createI18n } from 'vue-i18n';
 import User from '../auth/user';
+import TokenStore from './TokenStore';
 
 const logWarnings = (process.env.I18N_WARNINGS ?? 'false') === 'true';
 
 // This call permists us to call t('some text', true/false)
 // This makes it possible to call t() whilst processing rows of data where some columns are translated and others are not
 export function t(txt: string, translate = true): string {
-  return Translator.Instance.translate(txt, translate);
+  return Translator.Instance.Translate(txt, translate);
 }
 
 export default class Translator {
 
   private static instance:Translator;
 
-  i18n:any;
+  private i18n:any;
   private user: User;
+  private TokenStore:TokenStore;
 
-  public static InitInstance(user:User, messages: any): void {
-    Translator.instance = new Translator(user, messages);
+  public static InitInstance(user:User, messages: any, tokenStore:TokenStore): void {
+    Translator.instance = new Translator(user, messages, tokenStore);
   }
 
   public static get Instance():Translator {
     return Translator.instance;
   }
 
-  private constructor(user:User, messages:any) {
+  public static TokenStore():TokenStore {
+    return Translator.Instance.TokenStore;
+  }
+
+  private constructor(user:User, messages:any, tokenStore:TokenStore) {
     this.user = user;
+    this.TokenStore = tokenStore;
     this.SetLocale(this.user.locale, messages);
   }
 
@@ -52,9 +59,9 @@ export default class Translator {
   // This call permists us to call t('some text, true/false)
   // It is now possible to call t() with rows of data and have columns optionally translated
   // That way we can translate enums and similar data columns on tables
-  public translate(txt: string, translate = true): string {
-    
-  const detokenised:string = this.user.TokenStore.Expand(txt);
+  public Translate(txt: string, translate = true): string {
+  
+  const detokenised:string = this.TokenStore.Expand(txt);
   const trn:string = translate ? this.i18n.global.t(detokenised, { defaultValue: detokenised }) : detokenised;
 
   //console.log(trn);

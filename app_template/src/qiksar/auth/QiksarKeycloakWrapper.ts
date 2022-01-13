@@ -7,7 +7,6 @@ import Keycloak, { KeycloakProfile } from 'keycloak-js';
 
 import QiksarAuthWrapper from './QiksarAuthWrapper';
 import User from './user';
-import TokenStore from './../Translator/TokenStore';
 
 export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
@@ -127,7 +126,6 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         roles: this.GetUserRoles(),
         lastLogin: '',
         locale: '',
-        TokenStore: new TokenStore()
       };
 
       return user_profile;

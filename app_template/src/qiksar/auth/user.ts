@@ -1,5 +1,3 @@
-import TokenStore from '../Translator/TokenStore';
-
 export default class User {
     realm = '';
     username = '';
@@ -10,5 +8,4 @@ export default class User {
     roles:string[] = [];
     lastLogin = '';
     locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
-    TokenStore = new TokenStore();
 }

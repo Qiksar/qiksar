@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 
-// This helped us understand how to provide claims to Hasura...
-// https://github.com/janhapke/hasura-keycloak
+
 
 import { boot } from 'quasar/wrappers';
 
@@ -13,6 +12,7 @@ import Translator from 'src/qiksar/Translator/Translator';
 
 import { createPinia } from 'pinia';
 import useUserStore from 'src/qiksar/auth/userStore';
+import TokenStore from 'src/qiksar/Translator/TokenStore';
 
 const pinia = createPinia();
 export let userStore = {};
@@ -38,7 +38,7 @@ export default boot(async ({app}) => {
   await import('src/domain/i18n/' + AuthWrapper.User.locale)
   .then((module) => {
     //console.log('Loaded : ' + JSON.stringify(module.default))
-    Translator.InitInstance(AuthWrapper.User, module.default);
+    Translator.InitInstance(AuthWrapper.User, module.default, new TokenStore());
   });
 
   AuthWrapper.SetupRouterGuards(Router);
