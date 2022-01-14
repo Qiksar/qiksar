@@ -20,6 +20,10 @@ VALUES
     ('active', 'Membership active'),
     ('cancelled', 'Membership cancelled');
 
+INSERT INTO membership.locales ("name", "comment")
+VALUES 
+    ('en-AU', 'English - Australia'),
+    ('en-UK', 'English - United Kingdom');
 
 
 --
@@ -44,7 +48,7 @@ VALUES
     );
 
 
-INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
+INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id", "locale_id")
 VALUES
 (
 'perth',
@@ -55,7 +59,9 @@ VALUES
 'am@ozemail.com.au', 
 '0400 111 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+),
 
 (
 'perth',
@@ -66,7 +72,9 @@ VALUES
 'bm@ozemail.com.au', 
 '0400 211 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+
 ),
 
 (
@@ -79,7 +87,9 @@ VALUES
 'cm@ozemail.com.au', 
 '0400 311 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+
 ),
 
 (
@@ -90,7 +100,9 @@ VALUES
 'dm@ozemail.com.au', 
 '0400 411 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+),
 
 (
 'perth',
@@ -101,7 +113,9 @@ VALUES
 'em@ozemail.com.au', 
 '0400 511 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+
 ),
 
 (
@@ -113,7 +127,9 @@ VALUES
 'fm@ozemail.com.au', 
 '0400 611 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-AU'
+
 );
 
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Barry%') WHERE name = 'Aussie Group 1';
@@ -141,7 +157,7 @@ VALUES
         'Sheila is giving a talk on Wednesday'
     );
 
-INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id")
+INSERT INTO membership.members ("tenant_id", "group_id","firstname","lastname","company","email","mobile","status_id","role_id", "locale_id")
 VALUES
 (
 'arbroath',
@@ -152,7 +168,9 @@ VALUES
 'robert@scotmail.co.uk',  
 '0500 111 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+),
 
 (
 'arbroath',
@@ -163,7 +181,9 @@ VALUES
 'william@scotmail.co.uk', 
 '0500 211 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+),
 
 (
 'arbroath',
@@ -174,7 +194,9 @@ VALUES
 'billy@scotmail.co.uk',   
 '0500 311 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+),
 
 
 (
@@ -186,7 +208,9 @@ VALUES
 'mairi@scotmail.co.uk',   
 '0500 411 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+),
 
 
 (
@@ -198,7 +222,9 @@ VALUES
 'alex@scotmail.co.uk',    
 '0500 511 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%')),
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+),
 
 
 (
@@ -210,7 +236,9 @@ VALUES
 'mary@scotmail.co.uk',    
 '0500 611 222',
 (SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'));
+(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'en-UK'
+);
 
 
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Robert%') WHERE name = 'Scotland Group 1';

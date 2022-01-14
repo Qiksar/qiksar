@@ -20,6 +20,7 @@ class MemberView extends Query {
 			.Flatten('group.state', 'State')
 			.UseEnum('roles', 'role')
 			.UseEnum('status', 'status')
+			.UseEnum('locales', 'locale', 'locale_id')
 			.ToSelection((r) => { 
 					return {
 						id: r.member_id, 

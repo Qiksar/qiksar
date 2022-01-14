@@ -16,6 +16,14 @@
         updated_at timestamp without time zone
     );
 
+    CREATE TABLE membership.locales (
+        name text NOT NULL UNIQUE PRIMARY KEY,
+        comment text NOT NULL,
+        
+        created_at timestamp without time zone DEFAULT now() NOT NULL,
+        updated_at timestamp without time zone
+    );
+
     CREATE TABLE membership.status (
         status_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         name text NOT NULL UNIQUE,
@@ -58,6 +66,7 @@
         group_id uuid NULL REFERENCES membership.groups,
         status_id uuid NOT NULL REFERENCES membership.status,
         role_id uuid NOT NULL REFERENCES membership.roles,
+        locale_id text NOT NULL REFERENCES membership.locales,
         
         firstname text NOT NULL,
         lastname text NOT NULL,

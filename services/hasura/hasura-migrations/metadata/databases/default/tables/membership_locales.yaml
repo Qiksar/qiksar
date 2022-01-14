@@ -1,0 +1,32 @@
+table:
+  name: locales
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: locales
+  custom_root_fields: {}
+array_relationships:
+- name: members
+  using:
+    foreign_key_constraint_on:
+      column: locale_id
+      table:
+        name: members
+        schema: membership
+select_permissions:
+- permission:
+    columns:
+    - comment
+    - name
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+- permission:
+    columns:
+    - comment
+    - name
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin

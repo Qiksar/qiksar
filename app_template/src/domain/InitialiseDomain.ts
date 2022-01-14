@@ -7,6 +7,7 @@ export default async function InitialiseDomain(): Promise<void>{
 	const path ='./views/';
 
 	await import(path + 'TenantsView.ts');
+	await import(path + 'LocalesView.ts');
 	await import(path + 'RolesView.ts');
 	await import(path + 'StatusView.ts');
 	await import(path + 'GroupsView.ts');

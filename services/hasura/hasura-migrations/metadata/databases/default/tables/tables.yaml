@@ -6,6 +6,7 @@
 - "!include membership_iot_environment.yaml"
 - "!include membership_iot_messages.yaml"
 - "!include membership_iot_smart_watch.yaml"
+- "!include membership_locales.yaml"
 - "!include membership_members.yaml"
 - "!include membership_roles.yaml"
 - "!include membership_status.yaml"
