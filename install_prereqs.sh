@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# Install pre-requisites if you are not using a VSCODE remote container as your development environment
+
 clear
 
 echo "1. You must have NODE installed"
