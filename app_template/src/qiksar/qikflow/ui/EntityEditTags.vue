@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 <template>
   <div class='row q-mt-lg q-mb-lg'>
     <div class='col'>

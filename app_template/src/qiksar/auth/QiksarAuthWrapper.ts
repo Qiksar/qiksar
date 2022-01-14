@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { Router as vueRouter } from 'vue-router';
 import User from './user';
 

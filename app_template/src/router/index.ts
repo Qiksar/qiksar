@@ -6,11 +6,11 @@ import {
 	createWebHistory,
 } from 'vue-router';
 
-import getRoutes from 'src/domain/getRoutes';
+import getRoutes from 'src/domain/GetRoutes';
 
 export let Router = {} as vueRouter;
 
-export default async function createRouter(): Promise<vueRouter> 
+export default async function createRouter(): Promise<vueRouter>
 {
 	const routes = await getRoutes();
 

@@ -1,16 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import getEntityRoutes from './getEntityRoutes';
-import InitialiseDomain from 'src/domain/InitialiseDomain';
+import getEntityRoutes from './GetEntityRoutes';
+import InitialiseDomain from './InitialiseDomain';
 
-export default async function getRoutes(): Promise<RouteRecordRaw[]>  
+export default async function getRoutes(): Promise<RouteRecordRaw[]>
 { 
-  // Build the schemas and view first...
-	await InitialiseDomain();
+  // Pre-load all the views for the domain
+	await InitialiseDomain(
+    [
+    'TenantsView', 
+    'LocalesView', 
+    'RolesView', 
+    'StatusView', 
+    'GroupsView', 
+    'MembersView'
+    ]);
 
-  //
-  const domainRoutes = getEntityRoutes();
+  const entityRoutes = getEntityRoutes();
 
   return [
     {
@@ -41,6 +48,6 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]>
       component: () => import('pages/Error404.vue'),
     },
 
-    ...domainRoutes
+    ...entityRoutes
     ] 
 }

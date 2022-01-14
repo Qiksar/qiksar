@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 <template>
   <div class='row q-mt-lg q-mb-lg'>
     <div class='col'>
@@ -10,6 +12,7 @@
 </template>
 
 <script lang='ts' setup>
+
 import EntityField from '../base/EntityField';
 import { GqlRecord } from '../base/GqlTypes';
 

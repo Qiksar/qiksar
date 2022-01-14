@@ -10,6 +10,8 @@
 </template>
 
 <script lang='ts' setup>
+// eslint-disable @typescript-eslint/no-unused-vars
+
 import EntityField from '../base/EntityField';
 import { GqlRecord, GqlRecords } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
