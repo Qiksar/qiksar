@@ -61,8 +61,7 @@ module.exports = configure(function (ctx) {
         'PUBLIC_GRAPHQL_ENDPOINT':'https://localhost:8092/v1/graphql',
         'PUBLIC_AUTH_ENDPOINT':'https://localhost:8093/auth',
         'I18N_WARNINGS': false,
-        'DEFAULT_LOCALE': 'en-AU',
-        'API_PATH': 'https://localhost:8080/api'
+        'DEFAULT_LOCALE': 'en-AU'
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
