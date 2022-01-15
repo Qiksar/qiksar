@@ -55,7 +55,7 @@ export function CreateStore<Id extends string>(name: Id) {
 
       //#region initialise setup
 
-      SetLoaded(loaded = true):void {
+      SetLoaded(loaded: boolean):void {
         this.hasRecord = loaded;
       },
 

@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts" setup>
+
 import { onBeforeMount, ref, Ref } from 'vue';
 import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
 import { Dictionary, GqlRecord } from '../base/GqlTypes';
@@ -61,7 +62,7 @@ const props = defineProps<{
 }>();
 
 // eslint-disable-next-line vue/no-setup-props-destructure
-let id: string | undefined = props.context.entity_id;
+let id: string = props.context.entity_id;
 
 // create store for the required view/schema
 const RecordLoaded = ref(false);
@@ -110,6 +111,6 @@ function updateEntity(field: EntityField, value: unknown): void {
 }
 
 function deleteEntity() {
-  void store.delete(reactive_record.value[store.view.Schema.Key]);
+  void store.delete(reactive_record.value[store.view.Schema.Key] as string);
 }
 </script>

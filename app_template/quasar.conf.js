@@ -60,11 +60,9 @@ module.exports = configure(function (ctx) {
       env :{
         //'PUBLIC_GRAPHQL_ENDPOINT':'https://graphql.qiksar.com/v1/graphql',
         //'PUBLIC_AUTH_ENDPOINT':'https://login.qiksar.com/auth',
-        //'API_PATH': 'api.qiksar.com',
 
         'PUBLIC_GRAPHQL_ENDPOINT':'http://localhost:8092/v1/graphql',
         'PUBLIC_AUTH_ENDPOINT':'http://localhost:8093/auth',
-        'API_PATH': 'api.qiksar.com',
 
         'I18N_WARNINGS': false,
         'DEFAULT_LOCALE': 'en-AU'

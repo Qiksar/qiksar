@@ -23,10 +23,11 @@ array_relationships:
 select_permissions:
 - permission:
     columns:
-    - name
-    - comment
     - active
+    - comment
     - created_at
+    - id
+    - name
     - updated_at
     filter:
       name:
@@ -34,10 +35,11 @@ select_permissions:
   role: member
 - permission:
     columns:
-    - name
-    - comment
     - active
+    - comment
     - created_at
+    - id
+    - name
     - updated_at
     filter:
       name:

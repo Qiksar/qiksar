@@ -10,7 +10,7 @@ array_relationships:
   using:
     manual_configuration:
       column_mapping:
-        status_id: status_id
+        name: status_id
       insertion_order: null
       remote_table:
         name: members
@@ -18,15 +18,15 @@ array_relationships:
 select_permissions:
 - permission:
     columns:
-    - status_id
     - comment
+    - id
     - name
     filter: {}
   role: member
 - permission:
     columns:
-    - status_id
     - comment
+    - id
     - name
     filter: {}
   role: tenant_admin

@@ -3,27 +3,35 @@
 -- TEST DATA
 --
 --
-INSERT INTO membership.tenants ("name", "comment")
-VALUES 
-    ('admin', 'Platform Administrator'),
-    ('perth', 'Hopping mad people'),
-    ('arbroath', 'Scotlands foremost clinic');
 
-INSERT INTO membership.roles ("name", "comment")
-VALUES 
-    ('admin', 'Tenant administrator'),
-    ('member', 'Member'),
-    ('leader', 'Membership Manager');
 
-INSERT INTO membership.status ("name", "comment")
+--
+-- NOTE: Enumerations have an ID and a name column. In the platform, the name column can be translated for any locale/tenant requirement.
+-- Therefore the ID is needed in order to track the record's ID, as the name column will be replaced in the translation process.
+-- 
+-- Having a human readable ID column also makes it easy to seed the data, where assigning enum ids to other records becomes trivial.
+--
+INSERT INTO membership.tenants ("id", "name", "comment")
 VALUES 
-    ('active', 'Membership active'),
-    ('cancelled', 'Membership cancelled');
+    ('admin','admin', 'Platform Administrator'),
+    ('perth','perth', 'Hopping mad people'),
+    ('arbroath','arbroath', 'Scotlands foremost clinic');
 
-INSERT INTO membership.locales ("name", "comment")
+INSERT INTO membership.roles ("id", "name", "comment")
 VALUES 
-    ('en-AU', 'English - Australia'),
-    ('en-UK', 'English - United Kingdom');
+    ('admin','admin', 'Tenant administrator'),
+    ('member','member', 'Member'),
+    ('leader','leader', 'Membership Manager');
+
+INSERT INTO membership.status ("id", "name", "comment")
+VALUES 
+    ('active','active', 'Membership active'),
+    ('cancelled','cancelled', 'Membership cancelled');
+
+INSERT INTO membership.locales ("id", "name", "comment")
+VALUES 
+    ('en-AU','en-AU', 'English - Australia'),
+    ('en-UK','en-UK', 'English - United Kingdom');
 
 
 --
@@ -58,8 +66,8 @@ VALUES
 'Megacorp',        
 'am@ozemail.com.au', 
 '0400 111 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
 ),
 
@@ -71,8 +79,8 @@ VALUES
 'StartsUp',        
 'bm@ozemail.com.au', 
 '0400 211 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
 
 ),
@@ -86,8 +94,8 @@ VALUES
 'Fast cars Inc',   
 'cm@ozemail.com.au', 
 '0400 311 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
 
 ),
@@ -99,8 +107,8 @@ VALUES
 'Rest-a-while',    
 'dm@ozemail.com.au', 
 '0400 411 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
 ),
 
@@ -112,8 +120,8 @@ VALUES
 'Angies Plumbers', 
 'em@ozemail.com.au', 
 '0400 511 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
 
 ),
@@ -126,10 +134,9 @@ VALUES
 'Finance Wizards', 
 'fm@ozemail.com.au', 
 '0400 611 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-AU'
-
 );
 
 UPDATE membership.groups SET leader_id=(SELECT member_id FROM "membership"."members" WHERE firstname LIKE '%Barry%') WHERE name = 'Aussie Group 1';
@@ -167,8 +174,8 @@ VALUES
 'CaveCorp',            
 'robert@scotmail.co.uk',  
 '0500 111 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 ),
 
@@ -180,8 +187,8 @@ VALUES
 'Bottoms Up',          
 'william@scotmail.co.uk', 
 '0500 211 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 ),
 
@@ -193,8 +200,8 @@ VALUES
 'Jokes On You',        
 'billy@scotmail.co.uk',   
 '0500 311 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 ),
 
@@ -207,8 +214,8 @@ VALUES
 'Ambulance on Call',   
 'mairi@scotmail.co.uk',   
 '0500 411 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 ),
 
@@ -221,8 +228,8 @@ VALUES
 'Dial a Pizza',        
 'alex@scotmail.co.uk',    
 '0500 511 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 ),
 
@@ -235,8 +242,8 @@ VALUES
 'Royal Tea',           
 'mary@scotmail.co.uk',    
 '0500 611 222',
-(SELECT status_id FROM "membership"."status" WHERE name LIKE '%active%'), 
-(SELECT role_id FROM "membership"."roles" WHERE name LIKE '%member%'),
+'active',
+'member',
 'en-UK'
 );
 

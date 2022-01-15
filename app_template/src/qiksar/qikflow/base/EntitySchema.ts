@@ -5,6 +5,7 @@ import { TranslateRecord } from './GqlTypes';
 import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
 import IInclude from './IInclude';
+import { t } from 'src/qiksar/Translator/Translator';
 
 export default class EntitySchema {
     private _description: string;
@@ -59,10 +60,11 @@ export default class EntitySchema {
         return schema.SetKey(key);
     }
 
-    static CreateEnum(entityType: string, key:string, description: string | undefined): EntitySchema {
+    static CreateEnum(entityType: string, description: string | undefined): EntitySchema {
+        const key = 'id';
         entityType = entityType.toLowerCase();
 
-        const schema: EntitySchema = new EntitySchema(entityType, 'name', description ?? entityType, true);
+        const schema: EntitySchema = new EntitySchema(entityType, key, description ?? entityType, true);
 
         if(this.GetSchemaForEntity(entityType))
             throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityType}`
@@ -70,14 +72,14 @@ export default class EntitySchema {
         this._schemas.push(schema);
         
         return schema
-            .SetKey(key, defaultIntFieldOptions)
-            .Field('name', 'Code')
+            .SetKey(key, ['sortable'])
+            .Field('name', 'Label')
             .Field('comment', 'Description')
             .ToSelection((r) => { 
                 return {
                     id: r[key],
-                    label: r.name as string,
-                    description: r.comment as string,
+                    label: t(r.name as string),
+                    description: t(r.comment as string),
                 }
             });
     }
@@ -90,11 +92,11 @@ export default class EntitySchema {
 
     get LocaleFields(): EntityField[] { return  this._fields.filter(f => f.IsLocale)}
 
-    Columns(fm:fetchMode, entityStack:string[]): string {
+    Columns(fetch_mode:fetchMode, entityStack:string[]): string {
         let columns = '';
         let  fields = this.Fields;
 
-        switch(fm)
+        switch(fetch_mode)
         {
             case 'grid':
                 fields = fields.filter(f => f.IsKey || f.IsOnTable);
@@ -145,7 +147,6 @@ export default class EntitySchema {
         // and it's nominated fields. e.g. role_id role {name comment}
         // role_id can then be edited in the UI and updated
         const related_object_key = (field.KeyColumnName ?? '');
-
         // fetch only the nominated columns, or if none are nominated, fetch all
         if(field.ObjectColumns)
             field_definition = `${related_object_key} ${field.ObjectName} { ${field.ObjectColumns} }`;
@@ -182,26 +183,22 @@ export default class EntitySchema {
         return this.Field(name, 'ID', 'id', fo);
     }
 
-    UseEnum(view_name:string,  referencing_column_name: string, key_column_name:string|undefined = undefined): EntitySchema {
+    UseEnum(view_name:string,  source_id_column: string, preferred_join_name: string): EntitySchema {
         const view = Query.GetView(view_name);
-        const key_name = key_column_name ?? view.Schema.Key;
         const et = view.Schema.EntityType;
         const desc =view.Schema.Description;
 
-        if(!referencing_column_name)
-            referencing_column_name = view_name;
-
         return this
-            .Include(et, key_name, referencing_column_name, `${view.Schema.Key} name comment`)
-            .Flatten(`${referencing_column_name}.name`, desc, defaultIntFieldOptions);
+            .Include(et, source_id_column, preferred_join_name, 'id name comment')
+            .Flatten(`${preferred_join_name}.name`, desc, defaultIntFieldOptions);
     }
 
-    Include(schema: string, key_column_name:string, ref_column_name: string, ref_columns:string): EntitySchema {
+    Include(schema: string, key_column_name:string, ref_column_name: string, required_columns:string): EntitySchema {
         this._includes.push(({
             schema,
             key_column_name,
             ref_column_name,
-            ref_columns
+            ref_columns: required_columns
         } as IInclude))
 
         return this;
@@ -215,7 +212,7 @@ export default class EntitySchema {
                 object_schema: i.schema,
                 label: view.Schema.Description,
                 type:'obj',
-                 options: ['ontable', 'EntityEditSelect'],
+                options: ['ontable', 'EntityEditSelect'],
                 key_column_name: i.key_column_name,
                 ref_column_name: i.ref_columns,
                 schema: i.schema,

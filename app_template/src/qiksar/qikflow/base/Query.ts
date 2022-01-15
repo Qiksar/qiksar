@@ -20,8 +20,12 @@ import JsonTools from './JsonTools';
 
 export const defaultFetchMode: fetchMode = 'heavy';
 
+/**
+ * Provide GQL query building capabilities and automatic localisation and token expansion
+ */
 export default class Query {
-	//#region instance variables
+
+	//#region properties
 
 	private _offset: number;
 	private _limit: number | undefined;
@@ -31,10 +35,19 @@ export default class Query {
 	private _where: string | undefined;
 	private _fetch_mode: fetchMode;
 	private _auto_fetch: boolean;
+	private _auto_translate = true;
 
 	private static _apollo: ApolloClient<NormalizedCacheObject>;
+
+	/**
+	 * Global Apollo client used by all queries
+	 */
 	public static set Apollo(client: ApolloClient<NormalizedCacheObject>) { Query._apollo = client; }
-	public static get Apollo(): ApolloClient<NormalizedCacheObject> { 
+	
+	/**
+	 * Global Apollo client used by all queries
+	 */
+	 public static get Apollo(): ApolloClient<NormalizedCacheObject> { 
 		if(!Query._apollo)
 			throw `${typeof Query}: Apollo client not specified`;
 
@@ -48,6 +61,9 @@ export default class Query {
 	// Static array of all views
 	private static _views: Array<Query> = [];
 
+	/**
+	 * Build type policies that inform the behviour of the cache
+	 */
 	static get ApolloTypePolicies(): TypePolicies {
 		const tp = {} as GqlRecord;
 
@@ -60,7 +76,12 @@ export default class Query {
 		return tp as TypePolicies;
 	}
 
-	// Retrieve a view by name
+	/**
+	 * Return the view for the specified entity
+	 * 
+	 * @param entityName Name of that source entity
+	 * @returns The required view
+	 */
 	static GetView(entityName: string): Query {
 		const views = Query._views.filter(
 			(v) => v.Schema.EntityType === entityName
@@ -74,7 +95,7 @@ export default class Query {
 
 	//#endregion
 
-	//#region Properties
+	//#region Getters/Setters
 
 	get Schema(): EntitySchema {
 		return this._schema;
@@ -113,6 +134,13 @@ export default class Query {
 
 	get AutoFetch() {
 		return this.IsEnum || this._auto_fetch;
+	}
+	
+	set AutoTranslate(trn: boolean) {
+		this._auto_translate = trn;
+	}
+	get AutoTranslate() {
+		return this._auto_translate;
 	}
 
 	//#endregion
@@ -180,12 +208,18 @@ export default class Query {
 
 	//#region query builder
 
-	// Build a GrapQL query based on the schema
-	
+	/**
+	 * Build a GQL query
+	 * 
+	 * @param where GQL where clause
+	 * @param fetch_mode Fetch mode, which can filter the columns returned, thus reducing the size of the returned data set
+	 * @param sortBy Optional custom sort clause 
+	 * @param limit Limit number of records returned
+	 * @returns 
+	 */
 	private BuildQuery(
 		where: string | undefined,
-		fm: fetchMode = defaultFetchMode,
-		query_name: string | undefined = undefined,
+		fetch_mode: fetchMode = defaultFetchMode,
 		sortBy: string | undefined = undefined,
 		limit: number | undefined = undefined
 	) {
@@ -194,55 +228,67 @@ export default class Query {
 		limit = limit ?? this.Limit;
 
 		const query =
-			`query fetch_${query_name ?? this.Schema.EntityType} {
-            ${this.Schema.EntityType}
-            (` +
-			(limit ? `limit: ${limit},` : '') +
-			`
-                offset: ${this.Offset}, 
-                ${this.BuildOrderBy(this.SortBy, sortBy)}
-                ${this.BuildWhere(where)}
-            )  
-            {
-                ${this.Schema.Columns(fm, entityStack)}
-            }
-        },
-        `;
+	`query {
+		${this.Schema.EntityType} 
+		(` +
+		(limit ? `limit: ${limit},` : '') +
+		`
+			${this.BuildOrderBy(sortBy ?? this.SortBy, this.Asc)},
+			offset: ${this.Offset},
+			${this.BuildWhere(where)}
+		)  
+		{
+			${this.Schema.Columns(fetch_mode, entityStack)}
+		}
+	}`;
+
+		const q = gql(query);
 
 		const doc = {
-			query: gql(query),
+			query: q,
 		};
 
-		//console.log('*** GRAPHQL QUERY');
-		//console.log(query);
+		console.log('*** GRAPHQL QUERY');
+		console.log(query);
 
 		return doc;
 	}
 
-	// Build a where clause if specified
+	/**
+	 * Build a GQL where clause
+	 * @param where Optional where clause, permits dynamic query building where this clause may or may not be required
+	 * @returns where clause as a string
+	 */
 	private BuildWhere(where: string | undefined): string {
-		return where ? `, where: { ${where} }` : '';
+		const where_statement = (where ?? '').trim();
+		return where_statement.length > 0 ? `where: { ${where_statement} }, ` : '';
 	}
 
-	// If a where clause is specified then use it, else fall back to the default sort of the view
+	/**
+	 * Build the order_by clause
+	 * 
+	 * @param column_name Name of a column on the entity
+	 * @param custom_sort Custom formatted sort clause
+	 * @param sort_ascending Sort in ascending order (default=true), or descending order when false
+	 * @returns order_by clause as a string
+	 */
 	private BuildOrderBy(
-		sortBy: string | undefined,
-		where: string | undefined
+		column_name: string | undefined,
+		sort_ascending = true
 	): string {
-		const sort_option = sortBy
-			? `order_by: {${this.SortBy}: ${this.Asc ? 'asc' : 'desc'}}`
-			: undefined;
-		const where_option = where ? `order_by: {${where}}` : undefined;
 
-		return where_option ?? sort_option ?? '';
+		const sort_option = column_name
+			? `order_by: {${column_name}: ${sort_ascending ? 'asc' : 'desc'}}`
+			: '';
+
+		return sort_option;
 	}
 
 	//#endregion
 
 	//#region Row / Alias processing
 
-	private SetRows(result: GqlRecord, store: any, translate = true) {
-
+	private SetRows(result: GqlRecord, store: any, translate:boolean) {
 		// Get the data object which contains the rows of data
 		const rows = JsonTools.ExtractFromPath<GqlRecords>(result, [
 			'data',
@@ -254,7 +300,7 @@ export default class Query {
 		
 		// Update status
 		store.SetBusy(false);
-		store.SetLoaded(true);
+		store.SetLoaded(store.Rows.length > 0);
 
 		//const first = store.Rows[0] as GqlRecord;
 		//console.log('----------------------------------------------------')
@@ -263,7 +309,7 @@ export default class Query {
 	}
 
 	// Process all rows to apply aliasing
-	private ProcessAllRows(rows: GqlRecords, translate = true): GqlRecords {
+	private ProcessAllRows(rows: GqlRecords, translate: boolean): GqlRecords {
 		if (!rows) return [];
 
 		const output: GqlRecords = [];
@@ -273,7 +319,7 @@ export default class Query {
 	}
 
 	// process rows read from the database, includes flattened, translated (locale) and JSON formats
-	private ProcessRow(row: GqlRecord, translate = true): GqlRecord {
+	private ProcessRow(row: GqlRecord, translate:boolean): GqlRecord {
 		const output: GqlRecord = { ...row };
 
 		// import flattened objects from json
@@ -288,8 +334,11 @@ export default class Query {
 
 			if (alias_field && alias_field.ObjectColumns) {
 				alias_field.ObjectColumns.split(' ').map((a) => {
-					alias_value += this.GetAliasValue(output, a) + ' ';
+					const val = this.GetAliasValue(output, a);
+					if(val)
+						alias_value += val + ' ';
 				});
+
 				output[alias_field.Name] = alias_value.trim();
 			}
 		});
@@ -321,11 +370,11 @@ export default class Query {
 	}
 
 	// Get the value of an alias, which is an attribute of a nested object, e.g. customer.address.zipcode
-	private GetAliasValue(source: GqlRecord, alias: string): string {
+	private GetAliasValue(source: GqlRecord, alias: string): string | null {
 		if (!alias || alias.length == 0) throw `Invalid alias: ${alias}`;
 
 		const value = JsonTools.ExtractFromPath<string>(source, alias.split('.'));
-		return value ?? '---';
+		return value;
 	}
 
 	// Convert objects for use in GraphQL statements
@@ -345,96 +394,163 @@ export default class Query {
 
 	//#region FETCH
 
-	// Return result, loading, error to the caller
-	// This enables the query to execute asynchronously, and when loading = false, the result is ready
+	/**
+	 * Fetch all rows from a table and place in a store. The query can be executed asynchronously and the store busy flag will indicate when the query has completed.
+	 * 
+	 * @param store Pinia store
+	 * @param translate Optionally translate to locale and expand tokens
+	 * @param limit Limit the number of records returned
+	 * @returns Data records which were also placed into the store
+	 */
 	async FetchAll(
 		store: any,
-		translate = true,
-		limit = undefined
+		translate: boolean | undefined,
+		limit:number | undefined = undefined
 	): Promise<GqlRecords> {
+		
+		console.log('>> FetchAll')
 		store.SetBusy(true);
 
-		const query = this.BuildQuery(undefined, undefined, undefined, limit);
-		const r = await Query.Apollo.query(query).catch((e) => {
-			throw e;
+		const doc = this.BuildQuery(undefined, undefined, undefined, limit);
+		
+		const r = await Query.Apollo
+		.query(doc)
+		.catch((e) => {
+			console.log('<< EXCEPTION! FetchAll')
+
+			throw `FetchAll - Exception ${e as string}`;
 		});
 
-		this.SetRows(r, store, translate);
+		this.SetRows(r, store, translate ?? this._auto_translate);
 
 		store.SetBusy(false);
-		store.SetLoaded(true);
+		store.SetLoaded(store.Rows.length > 0);
+
+		console.log('<< FetchAll')
 
 		return store.Rows;
 	}
 
-	// Fetch multiple records matching a where clause. If the where clause is not provided, the previous where clause is used.
-	// If there is no previous where clause then all rows will be returned
+	/**
+	 * Fetch records 
+	 * 
+	 * @param where A GQL where clause which is automatically wrapped in an outer container, e.g. where: { where_clause }
+	 * @param fetch_mode Option 
+	 * @param store 
+	 * @param translate 
+	 * @param orderBy 
+	 * @param limit 
+	 * @returns 
+	 */
 	async FetchWhere(
 		where: string | undefined,
-		fm: fetchMode | undefined,
+		fetch_mode: fetchMode | undefined,
 		store: any,
-		translate = true,
-		query_name: string | undefined = undefined,
+		translate:boolean | undefined,
 		orderBy: string | undefined = undefined,
-		limit = undefined
+		limit:number|undefined = undefined
 	): Promise<GqlRecords> {
-		if (!where) where = this._where;
+		console.log('>> FetchWhere')
 
-		if (!fm) fm = this._fetch_mode;
+		// Optionally use the previous where clause and fetch mode
+		// This is useful when calling FetchPrevious to repeat excution of a previous query
+		if (!where) where = this._where;
+		if (!fetch_mode) fetch_mode = this._fetch_mode;
 
 		store.SetBusy(true);
+		const doc = this.BuildQuery(where, fetch_mode, orderBy, limit)
 
-		const r = await Query.Apollo.query(
-			this.BuildQuery(where, fm, query_name, orderBy, limit)
-		);
+		const r = await Query.Apollo
+		.query(doc)	
+		.catch((e) => {
+			throw `FetchWhere - Exception ${e as string}`;
+		});
 
-		this.SetRows(r, store, translate);
+		this.SetRows(r, store, translate ?? this._auto_translate);
 
 		this._where = where;
-		this._fetch_mode = fm;
+		this._fetch_mode = fetch_mode;
 
 		store.SetBusy(false);
-		store.SetLoaded(true);
+		store.SetLoaded(store.Rows.length > 0);
+
+		console.log('<< FetchWhere')
 
 		return store.Rows;
 	}
 
-	// Attempt to fetch a single record given its primary key value
+	/**
+	 * Fetch a single record by its unique ID
+	 * 
+	 * @param id Unique ID of the record
+	 * @param fetch_mode Fetch mode
+	 * @param store Pinia Store
+	 * @param translate Optionally trigger translation
+	 * @returns Data record, with optional translations and token expansion
+	 */
 	async FetchById(
 		id: string,
-		fm = defaultFetchMode,
+		fetch_mode = defaultFetchMode,
 		store: any,
 		translate = true
 	): Promise<GqlRecord> {
+		console.log('>> FetchById')
+
 		store.SetBusy(true);
-		const query_name = `${this.Schema.EntityType}_by_id`;
 		
-		const q = this.BuildQuery(`${this.Schema.Key}: { _eq: "${id}"}`, fm, query_name);
+		const entityStack: string[] = [];
+		const query_name = `${this.Schema.EntityType}_by_pk`;
+		
+		const query = `{
+			${query_name} (${this.Schema.Key}: "${id}")
+			{
+				${this.Schema.Columns(fetch_mode, entityStack)}
+			}
+		}
+		`
+		
+		const doc = { query: gql(query) };
 
-		const r = await Query.Apollo.query(
-			q
-		);
+		const r = await Query.Apollo
+		.query(doc)
+		.catch((e) => {
+			throw `FetchById - Exception ${e as string}`;
+		});
 
-		const rows = <[]>r.data[this.Schema.EntityType];
-		if (rows.length) {
-			const row = this.ProcessAllRows(rows, translate);
-			store.CurrentRecord = row[0];
+		const raw_record = r.data[query_name] as GqlRecord;
+		const record = this.ProcessRow(raw_record, translate);
+
+		if (record) {
+			store.CurrentRecord = record;
+			store.SetLoaded(true);
 		} else {
 			store.CurrentRecord = {};
-		}
+			store.SetLoaded(false);
+		}	
 
 		store.SetBusy(false);
-		store.SetLoaded(true);
+
+		console.log('<< FetchById')
 
 		return store.CurrentRecord;
 	}
 
-	// Repeat previous fetch
+	/**
+	 * Repeat the previous fetch query using the stored where clause and fetch mode. It is is inferred that the method will automatically
+	 * use the previous sort column and limit the record count
+	 * 
+	 * @param store Pinia store
+	 */
 	async FetchPrevious(store: any): Promise<void> {
-		await this.FetchWhere(this._where, this._fetch_mode, store);
+		console.log('>> FetchPrevious')
+		
+		await this.FetchWhere(this._where, this._fetch_mode, store, true, this._sort_by, this.Limit);
 
 		store.SetBusy(false);
-		store.SetLoaded(true);
+		store.SetLoaded(store.Rows.length > 0);
+
+		console.log('<< FetchPrevious')
+
 	}
 
 	//#endregion
@@ -443,10 +559,15 @@ export default class Query {
 
 	async Insert(
 		data: GqlRecord,
-		fm = defaultFetchMode,
+		fetch_mode = defaultFetchMode,
 		store: any
 	): Promise<GqlRecord> {
 		data = this.PrepareRowForSave(data);
+
+		// The user can not set the ID of an entity.
+		// For enums, the ID is always the name
+		if(this.Schema.IsEnum)
+			data['id'] = data['name'];
 
 		const mutation_name = `insert_${this.Schema.EntityType}`;
 		const doc = `
@@ -458,7 +579,7 @@ export default class Query {
                 }
             }`;
 
-		const r: GqlRecord = await this.doMutation(doc, 'insert', store);
+		const r: GqlRecord = await this.ExecuteMutation(doc, 'insert', store);
 		const id = JsonTools.ExtractFromPath<string>(r, [
 			'data',
 			mutation_name,
@@ -467,10 +588,8 @@ export default class Query {
 			this.Schema.Key,
 		]);
 
-		store.CurrentRecord = await this.FetchById(id, fm, store);
-
+		store.CurrentRecord = await this.FetchById(id, fetch_mode, store);
 		store.SetBusy(false);
-		store.SetLoaded(true);
 
 		return store.CurrentRecord;
 	}
@@ -478,14 +597,13 @@ export default class Query {
 	// If id is missing, handle as an insert, else do an update
 	async Update(data: GqlRecord, store: any): Promise<GqlRecord> {
 		const id = data[this.Schema.Key] as string;
+		if (!id)
+			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = "${id}"`;
 
 		data = this.PrepareRowForSave(data);
 
 		// Remove the primary key so that the mutation does not attempt to update it
 		delete data[this.Schema.Key];
-
-		if (!id)
-			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = "${id}"`;
 
 		let keys = '';
 		Object.keys(data).map((k) => (keys += `${k} `));
@@ -504,7 +622,7 @@ export default class Query {
                     { ${this.Schema.Key} ${keys} }
             }`;
 
-		const r = await this.doMutation(doc, 'update', store);
+		const r = await this.ExecuteMutation(doc, 'update', store);
 
 		store.SetBusy(false);
 		store.SetLoaded(true);
@@ -522,7 +640,7 @@ export default class Query {
             	${mutation} { ${this.Schema.Key} }
             }`;
 
-		const res = await this.doMutation(doc, 'delete_id', store);
+		const res = await this.ExecuteMutation(doc, 'delete_id', store);
 
 		store.CurrentRecord = {};
 		store.SetBusy(false);
@@ -541,7 +659,7 @@ export default class Query {
             }
         }`;
 
-		const res = await this.doMutation(doc, 'delete_multi', store);
+		const res = await this.ExecuteMutation(doc, 'delete_multi', store);
 
 		store.CurrentRecord = {};
 		store.SetBusy(false);
@@ -551,24 +669,33 @@ export default class Query {
 
 	}
 
-	private async doMutation(
+	private async ExecuteMutation(
 		mutation: string,
 		operation: string,
 		store: any
 	): Promise<GqlRecord> {
-		//console.log('**** mutate input: ' + mutation);
+
+		console.log('>> ExecuteMutation')
+
+		console.log('**** mutate input: ' + mutation);
 
 		const doc = { mutation: gql(mutation) };
 		store.SetBusy(true);
 
-		const r = await Query.Apollo.mutate(doc);
-
+		const r = await Query.Apollo
+		.mutate(doc)
+		.catch((e) => {
+			throw `doMutation - Exception ${e as string}`;
+		});
+		
 		//console.log('**** mutate output: ' + JSON.stringify(r));
+		
 		void this.FetchPrevious(store);
+
+		console.log('<< ExecuteMutation')
 
 		return r as GqlRecord;
 	}
 
 	//#endregion
-
 }

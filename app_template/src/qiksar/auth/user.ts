@@ -1,4 +1,5 @@
 export default class User {
+    auth_id = '';
     realm = '';
     username = '';
     firstname = '';

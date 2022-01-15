@@ -1,27 +1,17 @@
 import Query from '../../qiksar/qikflow/base/Query'
 import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
-class RoleView extends Query {
+class LocalesView extends Query {
     constructor() {
        
-        const schema: EntitySchema = EntitySchema.Create(
+        const schema: EntitySchema = EntitySchema.CreateEnum(
             'locales', 
-            'name', 
             'Locale'
-            )
-			.Field('name', 'Locale ID')
-			.Field('comment', 'Description')
-            .ToSelection((r) => { 
-                    return {
-                        id: r[this.Schema.Key],
-                        label: r.name as string,
-                        description: r.comment as string,
-                    }
-                });
-
+            );
+			
         super(schema, true)
     }
 } 
 
-const view = new RoleView();
+const view = new LocalesView();
 export default view;		

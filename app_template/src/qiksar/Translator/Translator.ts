@@ -12,7 +12,7 @@ const logWarnings = (process.env.I18N_WARNINGS ?? 'false') === 'true';
 // This call permists us to call t('some text', true/false)
 // This makes it possible to call t() whilst processing rows of data where some columns are translated and others are not
 export function t(txt: string, translate = true): string {
-  return Translator.Instance.Translate(txt, translate);
+  return Translator.Instance?.Translate(txt, translate) ?? txt;
 }
 
 export default class Translator {
@@ -36,8 +36,8 @@ export default class Translator {
   }
 
   private constructor(user:User, messages:any, tokenStore:TokenStore) {
-    this.user = user;
     this.TokenStore = tokenStore;
+    this.user = user;
     this.SetLocale(this.user.locale, messages);
   }
 

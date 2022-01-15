@@ -17,16 +17,18 @@ select_permissions:
 - permission:
     columns:
     - comment
-    - name
     - created_at
+    - id
+    - name
     - updated_at
     filter: {}
   role: member
 - permission:
     columns:
     - comment
-    - name
     - created_at
+    - id
+    - name
     - updated_at
     filter: {}
   role: tenant_admin

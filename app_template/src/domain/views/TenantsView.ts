@@ -4,20 +4,10 @@ import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 class TenantsView extends Query {
     constructor() {
        
-        const schema: EntitySchema = EntitySchema.Create(
+        const schema: EntitySchema = EntitySchema.CreateEnum(
             'tenants', 
-            'name', 
             'Tenant'
-            )
-			.Field('name', 'Tenant ID')
-			.Field('comment', 'Description')
-            .ToSelection((r) => { 
-                    return {
-                        id: r[this.Schema.Key],
-                        label: r.name as string,
-                        description: r.comment as string,
-                    }
-                });
+            );
 
         super(schema, true)
     }

@@ -1,8 +1,9 @@
 import Query from '../../qiksar/qikflow/base/Query'
 import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
-class MemberView extends Query {
+class MembersView extends Query {
 	constructor() {
+	
 		const schema: EntitySchema = EntitySchema.Create(
 			'members',
 			'member_id',
@@ -18,9 +19,9 @@ class MemberView extends Query {
 			.Include('groups', 'group_id', 'group', 'group_id name state')
 			.Flatten('group.name', 'Group')
 			.Flatten('group.state', 'State')
-			.UseEnum('roles', 'role')
-			.UseEnum('status', 'status')
-			.UseEnum('locales', 'locale', 'locale_id')
+			.UseEnum('roles', 'role_id', 'role')
+			.UseEnum('status', 'status_id', 'status')
+			.UseEnum('locales', 'locale_id', 'locale')
 			.ToSelection((r) => { 
 					return {
 						id: r.member_id, 
@@ -34,5 +35,5 @@ class MemberView extends Query {
 	}
 }
 
-const view = new MemberView();
+const view = new MembersView();
 export default view;		

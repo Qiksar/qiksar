@@ -23,11 +23,23 @@ export default class JsonTools {
 	 * @example
 	 */ 
 	
-	static ExtractFromPath<Type>(data: GqlRecord, path: string | any[]): Type {
+	static ExtractFromPath<Type>(data: GqlRecord, path: string | any[], failIfMissing = false): Type {
 		const datapath:any[] = typeof path === 'string' ? path.split('.') : path;
 
 		let field = data;
-		datapath.map((p) => (field = field[p] as GqlRecord));
+		let progress = '';
+		datapath.map((p:string) => {
+			progress += p.toString() + '.';
+
+			// If used with a database record where a column has a null value, we have to guard against missing values and error if failIfMissing is true
+			if(!field) {
+				if(failIfMissing)
+					throw `ExtractFromPath - failed to retrieve a value at path:'${progress}' meaning the source record has no element at this position'`
+				} 
+			else {
+				field = field[p] as GqlRecord
+			}
+		});
 
 		return field as Type;
 	}
