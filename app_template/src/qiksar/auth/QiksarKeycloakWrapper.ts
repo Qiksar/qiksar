@@ -9,6 +9,8 @@ import Keycloak, { KeycloakProfile } from 'keycloak-js';
 import QiksarAuthWrapper from './QiksarAuthWrapper';
 import User from './user';
 import { CreateStore } from '../qikflow/store/GenericStore';
+import Translator from '../Translator/Translator';
+import TokenStore from '../Translator/TokenStore';
 
 export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
@@ -167,6 +169,13 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       console.log('CURRENT USER AUTHID: ' + user_profile.auth_id );
       console.log('CURRENT USER LOCALE: ' + this.user.locale);
 
+      // Import the locale for the user
+      await import('src/domain/i18n/' + this.user.locale)
+      .then((module) => {
+        //console.log('Loaded : ' + JSON.stringify(module.default))
+        Translator.InitInstance(this.user, module.default, new TokenStore());
+      });
+    
       return user_profile;
     }
   

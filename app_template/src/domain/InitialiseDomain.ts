@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CreateApolloClient } from 'src/apollo';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+
+import { AuthWrapper } from 'src/boot/qiksar';
 import Query from 'src/qiksar/qikflow/base/Query';
 import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
+import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
 
 /**
  * Initialise the data domain with views defined in the specifified folder, denoted by the path parameter.
@@ -14,6 +18,7 @@ import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 export default async function InitialiseDomain(views: string[]): Promise<void> {
 	
 	const imports = [] as unknown[];
+	
 	views.map((m:string) => {
 		imports.push(import('./views/' + m + '.ts')); 
 		});
@@ -23,5 +28,5 @@ export default async function InitialiseDomain(views: string[]): Promise<void> {
 	EntitySchema.ResolveReferences();
 	
 	// create the apollo client, which creates TypePolicies according to the views registered above
-	Query.Apollo = CreateApolloClient();	
+	Query.Apollo = CreateApolloClient(AuthWrapper);	
 }
