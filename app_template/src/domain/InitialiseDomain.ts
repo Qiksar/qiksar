@@ -17,12 +17,10 @@ import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
  */
 export default async function InitialiseDomain(views: string[]): Promise<void> {
 	
-	const imports = [] as unknown[];
-	
-	views.map((m:string) => {
-		imports.push(import('./views/' + m + '.ts')); 
-		});
-	await Promise.all(imports);
+	// Load the views in the sequence that they are declared in and await each to completely load before going to the next
+	for(const viewName of views) {
+		await import('./views/' + viewName + '.ts'); 
+	}
 
 	// Connect schema that reference each other, e.g. members->groups   groups->leaders
 	EntitySchema.ResolveReferences();
