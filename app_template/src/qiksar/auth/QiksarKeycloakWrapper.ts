@@ -77,12 +77,12 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     // Get authorisation token from keycloak
     GetAuthToken():string {
       //console.log(keycloak.token);
-      return this.keycloak.token ?? 'unauthenticated';
+      return this.keycloak.token as string ?? 'unauthenticated';
     }
   
     // Test if the  user has a specified role
     HasRealmRole(roleName:string | undefined): boolean {
-      const hasRole = this.keycloak.hasRealmRole(roleName ?? '');
+      const hasRole:boolean = this.keycloak.hasRealmRole(roleName ?? '');
       
       //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
     
@@ -128,7 +128,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     }
   
     GetUserRoles():string[] {
-      return this.keycloak.realmAccess?.roles ?? []
+      return this.keycloak.realmAccess?.roles as string [] ?? [] 
     }
   
 //#endregion

@@ -17,7 +17,7 @@ yarn add --silent dotenv jest ts-jest @types/jest -D
 echo
 echo
 echo "Install qiksar dependencies..."
-yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia date-fnsaxios
+yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia date-fns axios
 echo
 echo
 
