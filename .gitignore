@@ -2,7 +2,7 @@
 app/
 
 #ignore the generated Keycloak realm
-**/initkc/realm.json
+**/initkc/kc_data/realm.json
 
 #ignore the generated environment variable file
 **/services/.env 

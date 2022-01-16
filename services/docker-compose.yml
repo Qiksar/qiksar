@@ -20,7 +20,7 @@ services:
     gql:
         env_file: 
             - .env
-            - initkc/private_data/token.env
+            - initkc/kc_data/private_data/token.env
 
         image: hasura/graphql-engine:v2.1.0-beta.3
         container_name: q_gql
@@ -43,12 +43,13 @@ services:
         env_file: .env
 
         container_name: q_auth
-        image: openremote/keycloak
+        image: bitnami/keycloak:16.1.0
 
         # mount configuration files
         volumes:
-            - ./initkc:/docker-entrypoint-initdb.d/
-            - ./initkc/kctheme:/opt/jboss/keycloak/themes/qiksar
+            - ./initkc/kc_init.sh:/kc_init.sh
+            - ./initkc/kc_data:/docker-entrypoint-initdb.d/
+            - ./initkc/kc_theme:/opt/jboss/keycloak/themes/qiksar
 
         links: 
             - db

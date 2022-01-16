@@ -3,10 +3,10 @@ clear
 
 # Create the prive_data folder in which Keycloak configuration can store sensitive data.
 # private_data folders are not committed to the repo.
-[ ! -d "initkc/private_data" ] && mkdir -p initkc/private_data
-[ -f "initkc/private_data/token.env" ] && rm -f initkc/private_data/token.env
+[ ! -d "initkc/kc_data/private_data" ] && mkdir -p initkc/kc_data/private_data
+[ -f "initkc/kc_data/private_data/token.env" ] && rm -f initkc/kc_data/private_data/token.env
 
-echo "" > initkc/private_data/token.env
+echo "" > initkc/kc_data/private_data/token.env
 
 
 echo "Build environment started"
@@ -83,7 +83,7 @@ echo
 # Initialise the keycloak environment
 # This will create a realm for the app, and create an admin and none admin user
 echo "Configure Keycloak"
-docker exec -u 0 -it q_auth bash -c "chmod a+x /docker-entrypoint-initdb.d/kc_init.sh; bash -c /docker-entrypoint-initdb.d/kc_init.sh"
+docker exec -u 0 -it q_auth bash -c "chmod a+x /kc_init.sh; bash -c /kc_init.sh"
 echo
 
 

@@ -4,16 +4,16 @@ echo KEYCLOAK INITIALISATION SCRIPT
 echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
-echo "Waiting for containers to stabilise after startup..."
-sleep 20
-
 echo
 echo "Install JSON Query..."
 #install jq package for JSON querying
-microdnf install jq > /dev/null
+apt-get update 
+apt-get install jq -y
 
 PATH=$PATH:/opt/jboss/keycloak/bin
 OUTPUT_PATH=/docker-entrypoint-initdb.d
+
+sleep 30
 
 echo
 echo "Login to Keycloak..."
@@ -26,6 +26,7 @@ cat $OUTPUT_PATH/template_realm.json |\
  sed "s|{{PUBLIC_AUTH_ENDPOINT}}|${PUBLIC_AUTH_ENDPOINT}|" | \
  sed "s|{{APP_URL}}|${APP_URL}|" | \
  sed "s|{{CLIENT}}|${CLIENT}|" | \
+ sed "s|{{REALM_UUID}}|${REALM_UUID}|" | \
  sed "s|{{REALM_ID}}|${REALM_ID}|" | \
  sed "s|{{REALM_NAME}}|${REALM_NAME}|" | \
  sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | \
@@ -40,13 +41,13 @@ kcadm.sh create partialImport -r ${REALM_ID} -s ifResourceExists=SKIP -f ${REALM
 echo
 
 echo "Create API user: "${description}" with password: "${API_PASSWORD}
-kcadm.sh create users -r ${REALM_ID} -s username=${API_USER} -s enabled=true -s "attributes.tenant_role=tenant_admin"
+kcadm.sh create users -r ${REALM_ID} -s username=${API_USER} -s enabled=true -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName={{REALM_UUID}}" -s "attributes.lastName=none" -s "email=api@api.com"
 kcadm.sh set-password -r ${REALM_ID} --username=${API_USER} --new-password ${API_PASSWORD}
 
 
 echo
 echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin"
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin roles: "${APP_ADMIN}" with password: "${USER_PW}
@@ -55,7 +56,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_A
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com"
 kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: oz_"${APP_ADMIN}" with password: "${USER_PW}
@@ -64,7 +65,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${
 
 echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath" -s "attributes.firstName=Ronnie" -s "attributes.lastName=MacBeefburger" -s "email=ron@scotapp.com"
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
@@ -73,7 +74,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_"${APP_ADMIN} --rolename 
 
 echo
 echo "Create test user for 'perth' tenant: "${APP_USER}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth"
+kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth" -s "firstName=Will" -s "lastName=Scarlett" -s "email=will@hood.com" 
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_USER} --new-password ${USER_PW}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
 

@@ -66,7 +66,7 @@
 
         user_id uuid NULL UNIQUE,
         email text NULL UNIQUE,
-        mobile text NULL UNIQUE,
+        mobile text NOT NULL DEFAULT '',
         
         group_id uuid NULL REFERENCES membership.groups,
         status_id text NOT NULL REFERENCES membership.status,

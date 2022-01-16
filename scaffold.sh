@@ -95,6 +95,10 @@ echo "Installing sample config - quasar.conf.js.example -> quasar.conf.js"
 cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
 
 echo
+echo "Installing tsconfig.json"
+cp ${SOURCE_LOCATION}/app_template/tsconfig.json ${TARGET}/tsconfig.json
+
+echo
 echo
 echo "Qiksar scaffolding process complete!"
 echo
