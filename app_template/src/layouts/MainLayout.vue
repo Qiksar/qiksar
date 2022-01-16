@@ -13,6 +13,12 @@
           :label='userStore.user.username'
         >
           <q-list>
+            <q-item>
+              <q-item-section>
+                <q-item-label>Locale: {{ userStore.user.locale }}</q-item-label>
+              </q-item-section>
+            </q-item>
+
             <q-item clickable v-close-popup @click='onUserDropdownClick'>
               <q-item-section>
                 <q-item-label>Photos</q-item-label>

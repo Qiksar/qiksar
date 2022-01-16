@@ -9,9 +9,11 @@ function Usage() {
 }
 
 clear
+
+echo "Qiksar"
 echo
-echo
-echo QIKSAR - Quasar apps at lightspeed
+echo "Quasar apps at lightspeed"
+echo "-------------------------"
 
 : ${1?"$(Usage)"}
 
@@ -30,82 +32,68 @@ TARGET=$1
 
 
 echo
+echo "Scaffold new application using source files in '"${SOURCE_LOCATION}"' to create a new app at '"${TARGET}"'"
 echo
-echo "Scaffold new application using source files in '"${SOURCE_LOCATION}"' to create app at '"${TARGET}"'"
+echo "Follow these simple steps:"
 echo
+echo "STEP ONE   - Begin by execute the build_services.sh script to automatically build all of the services used by the app"
+echo "             If you have not done this yet, just terminate this script (CTRL-C), build the services, then start this script again"
+echo
+echo "STEP TWO   - Use this Qiksar scaffolding script, which will invoke Quasar CLI to create the base application."
+echo "             This script will copy all of the demo source files into your new app directory."
+echo
+echo "STEP THREE - Start VSCODE and use the dev container, then in a terminal session, execute qiksar_install.sh to install tools and packages"
+echo
+echo "STEP FOUR  - Finally, serve your new app with: quasar dev"
+echo
+echo
+echo "If you have not built the services, press CTRL-C to exit"
+read -p "If you have built the services, press ENTER to continue..."
 
-read -p "Press enter to continue..."
 
+echo
+echo
 echo "Create target folder..."
 mkdir -p ${TARGET}
 cd ${TARGET}
 
-# Setup all the environment variables in the env file
+
+echo
+echo
 echo "Import environment variables from 'services/.env'"
 export $(cat ${SOURCE_LOCATION}/services/.env | xargs)
-echo
 
-# create an empty app
+
+echo
+echo
+echo "Invoke the Quasar CLI"
+echo
+echo "IMPORTANT - When prompted, the only FEATURES you need to select are ESLINT and Typescript."
+echo "Do not select any others as Qiksar takes care of everything else."
+echo "Other than the features, you simply press ENTER to accept the Quasar defaults"
 quasar create .
 
-# run initial installation
 echo
 echo
-echo "Install base packages"
-yarn install --silent
-
-# install dependencies
-echo
-echo
-echo "Install dev dependencies"
-yarn add --silent dotenv jest ts-jest @types/jest -D
+echo "Copy the Qiksar installer (qiksar_install.sh) to the app root"
+cp ${SOURCE_LOCATION}/qiksar_install.sh ${TARGET}
 
 echo
-echo
-echo "Install qiksar dependencies"
-yarn add --silent vue-i18n@next
-yarn add --silent @apollo/client 
-yarn add --silent apollo@next 
-yarn add --silent apollo-link-ws 
-yarn add --silent subscriptions-transport-ws 
-yarn add --silent flatted 
-yarn add --silent keycloak-js 
-yarn add --silent pinia
-yarn add --silent date-fns
-yarn add --silent axios
-
-# copy template files
-echo
-echo
-echo "copy in src folder and .devcontainer"
+echo "Copy src folder"
 cp -R  ${SOURCE_LOCATION}/app_template/src/*          ${TARGET}/src
+
+echo
+echo "Copy remote dev container config "
 cp -Ra ${SOURCE_LOCATION}/app_template/.devcontainer  ${TARGET}
 
-# Create the config file for Hasura
 echo
-echo
-echo "Create Hasura console config"
-cat ${SOURCE_LOCATION}/app_template/.env.template \
-    | sed "s|{{PUBLIC_GRAPHQL_ENDPOINT}}|$PUBLIC_GRAPHQL_ENDPOINT|" \
-    | sed "s|{{PUBLIC_AUTH_ENDPOINT}}|$PUBLIC_AUTH_ENDPOINT|" \
-    > ${TARGET}/.env
-echo
-
-echo "Scan packages for vulnerabilities"
-cd ${TARGET}
-yarn audit
-
-echo
-echo
-
 echo "Rename quasar.conf.js -> quasar.conf.js.keep"
 mv ${TARGET}/quasar.conf.js ${TARGET}/quasar.conf.js.keep
 
-echo "Installing the qiksar quasar.conf.js.example -> quasar.conf.js"
-cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
 echo
+echo "Installing sample config - quasar.conf.js.example -> quasar.conf.js"
+cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
 
-echo "You may wish to modify the quasar config according to your 'quasar create' process."
 echo
 echo
 echo "Qiksar scaffolding process complete!"
@@ -113,10 +101,17 @@ echo
 echo "Next Steps"
 echo "----------"
 echo
+echo "1. Execute build_services.sh to automatically build the database, graphql and authentication services"
+echo "2. Run VSCODE and open the dev container"
+echo "3. Execute qiksar_install.sh"
+echo "4. Start the app with 'quasar dev'"
+echo
+echo
 echo "Thank you for exploring Qiksar!"
-echo "Refer to the readme file for further instructions, and check back frequently as this project is frequently being updated."
+echo
+echo "- Checkout our YouTube channel: https://www.youtube.com/channel/UCHZYiuLLj82asRqoj4tYe5A"
+echo "- Refer to the readme file for further instructions, and check back frequently as this project is frequently being updated."
 echo 
-echo "Checkout our YouTube channel: https://www.youtube.com/channel/UCHZYiuLLj82asRqoj4tYe5A"
 echo 
 echo "Remember to become a member of the Quasar community, and add your support at https://donate.quasar.dev. You'll feel good about it :)"
 echo 

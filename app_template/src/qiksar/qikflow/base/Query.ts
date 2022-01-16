@@ -248,8 +248,8 @@ export default class Query {
 			query: q,
 		};
 
-		console.log('*** GRAPHQL QUERY');
-		console.log(query);
+		//console.log('*** GRAPHQL QUERY');
+		//console.log(query);
 
 		return doc;
 	}
@@ -408,7 +408,7 @@ export default class Query {
 		limit:number | undefined = undefined
 	): Promise<GqlRecords> {
 		
-		console.log('>> FetchAll')
+		//console.log('>> FetchAll')
 		store.SetBusy(true);
 
 		const doc = this.BuildQuery(undefined, undefined, undefined, limit);
@@ -416,7 +416,7 @@ export default class Query {
 		const r = await Query.Apollo
 		.query(doc)
 		.catch((e) => {
-			console.log('<< EXCEPTION! FetchAll')
+			//console.log('<< EXCEPTION! FetchAll')
 
 			throw `FetchAll - Exception ${e as string}`;
 		});
@@ -426,7 +426,7 @@ export default class Query {
 		store.SetBusy(false);
 		store.SetLoaded(store.Rows.length > 0);
 
-		console.log('<< FetchAll')
+		//console.log('<< FetchAll')
 
 		return store.Rows;
 	}
@@ -450,7 +450,7 @@ export default class Query {
 		orderBy: string | undefined = undefined,
 		limit:number|undefined = undefined
 	): Promise<GqlRecords> {
-		console.log('>> FetchWhere')
+		//console.log('>> FetchWhere')
 
 		// Optionally use the previous where clause and fetch mode
 		// This is useful when calling FetchPrevious to repeat excution of a previous query
@@ -474,7 +474,7 @@ export default class Query {
 		store.SetBusy(false);
 		store.SetLoaded(store.Rows.length > 0);
 
-		console.log('<< FetchWhere')
+		//console.log('<< FetchWhere')
 
 		return store.Rows;
 	}
@@ -494,7 +494,7 @@ export default class Query {
 		store: any,
 		translate = true
 	): Promise<GqlRecord> {
-		console.log('>> FetchById')
+		//console.log('>> FetchById')
 
 		store.SetBusy(true);
 		
@@ -530,7 +530,7 @@ export default class Query {
 
 		store.SetBusy(false);
 
-		console.log('<< FetchById')
+		//console.log('<< FetchById')
 
 		return store.CurrentRecord;
 	}
@@ -542,14 +542,14 @@ export default class Query {
 	 * @param store Pinia store
 	 */
 	async FetchPrevious(store: any): Promise<void> {
-		console.log('>> FetchPrevious')
+		//console.log('>> FetchPrevious')
 		
 		await this.FetchWhere(this._where, this._fetch_mode, store, true, this._sort_by, this.Limit);
 
 		store.SetBusy(false);
 		store.SetLoaded(store.Rows.length > 0);
 
-		console.log('<< FetchPrevious')
+		//console.log('<< FetchPrevious')
 
 	}
 
@@ -675,7 +675,7 @@ export default class Query {
 		store: any
 	): Promise<GqlRecord> {
 
-		console.log('>> ExecuteMutation')
+		//console.log('>> ExecuteMutation')
 
 		console.log('**** mutate input: ' + mutation);
 
@@ -692,7 +692,7 @@ export default class Query {
 		
 		void this.FetchPrevious(store);
 
-		console.log('<< ExecuteMutation')
+		//console.log('<< ExecuteMutation')
 
 		return r as GqlRecord;
 	}

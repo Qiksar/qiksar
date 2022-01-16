@@ -20,11 +20,10 @@ export default class Translator {
   private static instance:Translator;
 
   private i18n:any;
-  private user: User;
   private TokenStore:TokenStore;
 
   public static InitInstance(user:User, messages: any, tokenStore:TokenStore): void {
-    Translator.instance = new Translator(user, messages, tokenStore);
+    Translator.instance = new Translator(messages, tokenStore);
   }
 
   public static get Instance():Translator {
@@ -35,15 +34,14 @@ export default class Translator {
     return Translator.Instance.TokenStore;
   }
 
-  private constructor(user:User, messages:any, tokenStore:TokenStore) {
+  private constructor(messages:any, tokenStore:TokenStore) {
+    const locale= Object.keys(messages)[0];
+    this.SetLocale(locale, messages);
     this.TokenStore = tokenStore;
-    this.user = user;
-    this.SetLocale(this.user.locale, messages);
   }
 
 // The locale can be changed at any time...
   public SetLocale(locale:string, messages:any):void {
-
   this.i18n = createI18n({
     legacy: false,
     silentTranslationWarn: !logWarnings,
@@ -61,12 +59,12 @@ export default class Translator {
   // That way we can translate enums and similar data columns on tables
   public Translate(txt: string, translate = true): string {
   
-  const detokenised:string = this.TokenStore.Expand(txt);
-  const trn:string = translate ? this.i18n.global.t(detokenised, { defaultValue: detokenised }) : detokenised;
+    const detokenised:string = this.TokenStore.Expand(txt);
+    const trn:string = translate ? this.i18n.global.t(detokenised, { defaultValue: detokenised }) : detokenised;
 
-  //console.log(trn);
+    //console.log(trn);
 
-  return trn;
+    return trn;
   }
 
 }

@@ -14,7 +14,7 @@ import TokenStore from '../Translator/TokenStore';
 
 export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
-    //#region Properties
+//#region Properties
 
     // actual instance of keycloak
     private keycloak:Keycloak.KeycloakInstance;
@@ -34,7 +34,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     private user:User = new User();
     private userStore:any;  
     
-    //#endregion
+//#endregion
 
     constructor () {
       if (!process.env.PUBLIC_AUTH_ENDPOINT) 
@@ -63,7 +63,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         throw 'Qiksar Initialisation Error: Keycloak did not initialise';
     }
     
-    //#region getters
+//#region getters
 
     get User():User {
       return this.user;
@@ -104,88 +104,36 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   
         // Get Keycloak user profile
     async GetUserProfile():Promise<User> {
-      let kc_profile: KeycloakProfile = {};
   
-      if (this.IsAuthenticated()) {
-        await this
-        .keycloak
-        .loadUserProfile()
-        .then((p: KeycloakProfile) => {
-            kc_profile = p;
-            })
-        .catch((e) => {
-            console.error('!!!! Failed to load user profile');
-            console.error(JSON.stringify(e));
-          });
+      if (!this.IsAuthenticated()) {
+        return {} as User;
       }
 
-      const piniaStore = CreateStore('members');
-      const where =`user_id: {_eq: "${this.keycloak.subject ?? ''}"}`;
-      const user_rows = await piniaStore.fetchWhere(where);
-      let locale_setting = '';
+      let kc_profile: KeycloakProfile = {};
 
-      if(piniaStore.hasRecord) {
-        const user = user_rows[0];
-        locale_setting = user['locale_id'] as string;
-      } 
-      else {
-        
-        const new_user = {
-          user_id: this.keycloak.subject ?? '',
-          email:kc_profile.email,
-          mobile:'123456789',
-          firstname: kc_profile.firstName ?? '',
-          lastname: kc_profile.lastName ?? '',
-          locale_id: process.env.DEFAULT_LOCALE,
-          status_id: 'active',
-          role_id: 'member'
-        }
+      await this
+      .keycloak
+      .loadUserProfile()
+      .then((p: KeycloakProfile) => {
+          kc_profile = p;
+          })
+      .catch((e) => {
+          throw('GetUserProfile - Error: Failed to load user profile ' + JSON.stringify(e));
+        });
 
-        const inserted_user = await piniaStore.add(new_user);
-
-        if(!piniaStore.hasRecord) {
-          throw 'Failed to insert new user profile';
-        }
-        
-        locale_setting = process.env.DEFAULT_LOCALE ?? '';
-        
-        console.log('INSERTED USER:')
-        console.log(JSON.stringify(inserted_user))
-      }
-
-      const user_profile: User = {
-        auth_id: this.keycloak.subject ?? '',
-        realm: this.realm,
-        username: kc_profile.username ?? '',
-        email: kc_profile.email ?? '',
-        emailVerified: kc_profile.emailVerified ?? false,
-        firstname: kc_profile.firstName ?? '',
-        lastname: kc_profile.lastName ?? '',
-        roles: this.GetUserRoles(),
-        locale: locale_setting,
-        lastLogin: '',
-      };
-
-      console.log('CURRENT USER AUTHID: ' + user_profile.auth_id );
-      console.log('CURRENT USER LOCALE: ' + this.user.locale);
-
-      // Import the locale for the user
-      await import('src/domain/i18n/' + this.user.locale)
-      .then((module) => {
-        //console.log('Loaded : ' + JSON.stringify(module.default))
-        Translator.InitInstance(this.user, module.default, new TokenStore());
-      });
+      const user_record = await this.EnsureUserProfile(this.keycloak.subject ?? '', kc_profile);
+      await this.ImportLocale(user_record.locale);
     
-      return user_profile;
+      return user_record;
     }
   
     GetUserRoles():string[] {
       return this.keycloak.realmAccess?.roles ?? []
     }
   
-    //#endregion
+//#endregion
 
-    //#region Auth Lifecycle
+//#region Auth Lifecycle
 
     async Init(userStore:any):Promise<void> {
       
@@ -248,9 +196,9 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         }
     }
 
-    //#endregion
+//#endregion
 
-    //#region Router
+//#region Router
 
     SetupRouterGuards(router: vueRouter):void {
           
@@ -273,6 +221,72 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       });
     }
 
-    //#endregion
+//#endregion
+
+//#region User Profile
+    private async EnsureUserProfile(user_id:string, kc_profile: KeycloakProfile): Promise<User> {
+      const piniaStore = CreateStore('members');
+      
+      const where =`user_id: {_eq: "${user_id}"}`;
+      const user_rows = await piniaStore.fetchWhere(where);
+      
+      let user_record;
+
+      if(piniaStore.hasRecord) {
+        user_record = user_rows[0];
+      } 
+      else {
+        
+        const new_user = {
+          user_id: user_id,
+          email:kc_profile.email,
+          firstname: kc_profile.firstName ?? '',
+          lastname: kc_profile.lastName ?? '',
+          locale_id: process.env.DEFAULT_LOCALE,
+          status_id: 'active',
+          role_id: 'member'
+        }
+
+        user_record = await piniaStore.add(new_user);
+
+        if(!piniaStore.hasRecord) {
+          throw 'GetUserProfile - Error: Failed to insert new user profile';
+        }
+        
+        //console.log('INSERTED USER:')
+        //console.log(JSON.stringify(inserted_user))
+      }
+
+      const user_profile: User = {
+        auth_id: this.keycloak.subject ?? '',
+        realm: this.realm,
+        username: kc_profile.username ?? '',
+        email: kc_profile.email ?? '',
+        emailVerified: kc_profile.emailVerified ?? false,
+        firstname: kc_profile.firstName ?? '',
+        lastname: kc_profile.lastName ?? '',
+        roles: this.GetUserRoles(),
+        locale: user_record.locale_id as string,
+        lastLogin: '',
+      };
+
+      return user_profile;
+    }
+
+    private async ImportLocale(locale_setting: string) {
+
+      // Import the locale for the user
+      await import('src/domain/i18n/' + locale_setting)
+      .then((module) => {
+        console.log('Translator - Loaded : ' + JSON.stringify(module.default))
+        //console.log('CURRENT USER AUTHID: ' + user_profile.auth_id );
+        //console.log('CURRENT USER LOCALE: ' + user_profile.locale);
+
+        Translator.InitInstance(this.user, module.default, new TokenStore());
+      });
+    }
+
+  //#endregion
 
   }
+
