@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 import User from './user';
 
 /**
@@ -10,29 +10,30 @@ const useUserStore = defineStore('user', {
    * @returns state object
    */
   state: () => {
-      return {
-        loggedIn: false,
-        user:<User>{}
-     }
+    return {
+      loggedIn: false,
+      user: <User>{},
+    };
   },
   // optional getters
-  getters: {
-  },
+  getters: {},
   // optional actions
   actions: {
     /**
      * Set the user profile
      * @param user New user profile
      */
-    setUser(user: User) { this.user = user; },
-    
+    setUser(user: User) {
+      this.user = user;
+    },
+
     /**
      * Set the authenticated state
      * @param loggedIn True = Logged in, else logged out
      */
-    setLoggedIn(loggedIn: boolean){
+    setLoggedIn(loggedIn: boolean) {
       this.loggedIn = loggedIn;
-    }
+    },
   },
 });
 

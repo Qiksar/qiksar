@@ -6,6 +6,6 @@ export default {
     failed: 'Oh dear, I say, it appears to have failed',
     success: 'Jolly good work!',
     leader: 'His Majesty',
-    State: 'County'
-  }
+    State: 'County',
+  },
 };

@@ -1,26 +1,25 @@
-import Query from '../../qiksar/qikflow/base/Query'
+import Query from '../../qiksar/qikflow/base/Query';
 import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
 class GroupsView extends Query {
-    constructor() {
+  constructor() {
+    const schema: EntitySchema = EntitySchema.Create(
+      'groups',
+      'group_id',
+      'Membership Groups'
+    )
 
-        const schema: EntitySchema = EntitySchema.Create(
-            'groups', 
-            'group_id', 
-            'Membership Groups'
-            )
-            
-            .Field('name', 'Group Name')
-            .Field('state', 'State')
- 
-            .Fetch('members', 'leader_id', 'leader', 'member_id firstname lastname')
-            .Flatten('leader.firstname leader.lastname', 'Leader Name')
+      .Field('name', 'Group Name')
+      .Field('state', 'State')
 
-            .CreateTransform('selector', {id: 'group_id', label: 'name'});
+      .Fetch('members', 'leader_id', 'leader', 'member_id firstname lastname')
+      .Flatten('leader.firstname leader.lastname', 'Leader Name')
 
-        super(schema, true)
-    }
+      .CreateTransform('selector', { id: 'group_id', label: 'name' });
+
+    super(schema, true);
+  }
 }
 
 const view = new GroupsView();
-export default view;		
+export default view;

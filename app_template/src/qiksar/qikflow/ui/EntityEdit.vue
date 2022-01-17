@@ -13,18 +13,8 @@
   </div>
 
   <div class="row">
-    <q-btn
-      v-if="!currentRecordId()"
-      @click="insertEntity()"
-      class="q-mt-xl"
-      label="Save"
-    />
-    <q-btn
-      v-if="currentRecordId()"
-      @click="deleteEntity()"
-      class="q-mt-xl"
-      label="Delete"
-    />
+    <q-btn v-if="!currentRecordId()" @click="insertEntity()" class="q-mt-xl" label="Save" />
+    <q-btn v-if="currentRecordId()" @click="deleteEntity()" class="q-mt-xl" label="Delete" />
     <q-btn to="/" class="q-mt-xl" label="Home" />
   </div>
 </template>

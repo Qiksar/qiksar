@@ -3,14 +3,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Router as vueRouter } from "vue-router";
-import Keycloak, { KeycloakProfile } from "keycloak-js";
+import { Router as vueRouter } from 'vue-router';
+import Keycloak, { KeycloakProfile } from 'keycloak-js';
 
-import QiksarAuthWrapper from "./QiksarAuthWrapper";
-import User from "./user";
-import { CreateStore } from "../qikflow/store/GenericStore";
-import Translator from "../Translator/Translator";
-import TokenStore from "../Translator/TokenStore";
+import QiksarAuthWrapper from './QiksarAuthWrapper';
+import User from './user';
+import { CreateStore } from '../qikflow/store/GenericStore';
+import Translator from '../Translator/Translator';
+import TokenStore from '../Translator/TokenStore';
 
 /**
  * Keycloak implementation of authentication and authorisation
@@ -22,7 +22,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   private keycloak: Keycloak.KeycloakInstance;
 
   // The realm detected at login
-  private realm = "none specified";
+  private realm = 'none specified';
 
   // Check for token refresh every 30 seconds
   private kc_token_check_seconds = 30 * 1000;
@@ -43,11 +43,11 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
   constructor() {
     if (!process.env.PUBLIC_AUTH_ENDPOINT)
-      throw "PUBLIC_AUTH_ENDPOINT is not defined";
+      throw 'PUBLIC_AUTH_ENDPOINT is not defined';
 
-    const [, , subdomain] = window.location.hostname.split(".").reverse();
+    const [, , subdomain] = window.location.hostname.split('.').reverse();
 
-    if (!subdomain || subdomain.length == 0) this.realm = "app";
+    if (!subdomain || subdomain.length == 0) this.realm = 'app';
     else this.realm = subdomain;
 
     //console.log('Realm: >' + this.realm + '<');
@@ -56,14 +56,14 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
     const kc_config: Keycloak.KeycloakConfig = {
       url: process.env.PUBLIC_AUTH_ENDPOINT,
       realm: this.realm,
-      clientId: "app-client",
+      clientId: 'app-client',
     };
 
     // Create a keycloak instance
     this.keycloak = Keycloak(kc_config);
 
     if (!this.keycloak)
-      throw "Qiksar Initialisation Error: Keycloak did not initialise";
+      throw 'Qiksar Initialisation Error: Keycloak did not initialise';
   }
 
   //#region getters
@@ -86,7 +86,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
    */
   GetAuthToken(): string {
     //console.log(keycloak.token);
-    return (this.keycloak.token as string) ?? "unauthenticated";
+    return (this.keycloak.token as string) ?? 'unauthenticated';
   }
 
   /**
@@ -95,7 +95,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
    * @param role Indicates
    */
   HasRealmRole(roleName: string | undefined): boolean {
-    const hasRole: boolean = this.keycloak.hasRealmRole(roleName ?? "");
+    const hasRole: boolean = this.keycloak.hasRealmRole(roleName ?? '');
 
     //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
 
@@ -105,9 +105,9 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   // Get the full host URL and append the destination path in order to form a redirect URI
   private getRedirectTarget(path: string): string {
     let basePath: string = window.location.toString();
-    let index: number = basePath.indexOf("//") + 2;
+    let index: number = basePath.indexOf('//') + 2;
 
-    while (index < basePath.length && basePath[index] != "/") index++;
+    while (index < basePath.length && basePath[index] != '/') index++;
 
     basePath = basePath.substr(0, index + 1) + path;
 
@@ -129,13 +129,13 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       })
       .catch((e) => {
         throw (
-          "GetUserProfile - Error: Failed to load user profile " +
+          'GetUserProfile - Error: Failed to load user profile ' +
           JSON.stringify(e)
         );
       });
 
     const user_record = await this.EnsureUserProfile(
-      this.keycloak.subject ?? "",
+      this.keycloak.subject ?? '',
       kc_profile
     );
     await this.ImportLocale(user_record.locale);
@@ -174,7 +174,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
   /**
    * Trigger the authentication flow
-   * 
+   *
    * @param route The route to go to after auth completes
    */
   Login(path: string): void {
@@ -195,7 +195,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   }
 
   // Triggered when authentication is completed
-private async AuthComplete(auth: boolean): Promise<void> {
+  private async AuthComplete(auth: boolean): Promise<void> {
     if (auth) {
       const profile = await this.GetUserProfile();
       this.userStore.setUser(profile);
@@ -209,8 +209,8 @@ private async AuthComplete(auth: boolean): Promise<void> {
             this.keycloak
               .updateToken(this.kc_min_validity_seconds)
               .catch((e) => {
-                console.error("Token refresh failed");
-                console.error("Exception: " + JSON.stringify(e));
+                console.error('Token refresh failed');
+                console.error('Exception: ' + JSON.stringify(e));
               });
           }
         },
@@ -231,7 +231,7 @@ private async AuthComplete(auth: boolean): Promise<void> {
    */
   SetupRouterGuards(router: vueRouter): void {
     router.beforeEach((to, from, next) => {
-      const required_role: string = <string>to.meta.role ?? "unauthorized";
+      const required_role: string = <string>to.meta.role ?? 'unauthorized';
       const allow_anonymous: boolean = <boolean>to.meta.anonymous ?? false;
 
       if (allow_anonymous) {
@@ -244,7 +244,7 @@ private async AuthComplete(auth: boolean): Promise<void> {
         // User must have at least the default role
         next();
       } else {
-        next({ path: "/unauthorized" });
+        next({ path: '/unauthorized' });
       }
     });
   }
@@ -258,7 +258,7 @@ private async AuthComplete(auth: boolean): Promise<void> {
     user_id: string,
     kc_profile: KeycloakProfile
   ): Promise<User> {
-    const piniaStore = CreateStore("members");
+    const piniaStore = CreateStore('members');
 
     const where = `user_id: {_eq: "${user_id}"}`;
     const user_rows = await piniaStore.FetchWhere(where);
@@ -271,17 +271,17 @@ private async AuthComplete(auth: boolean): Promise<void> {
       const new_user = {
         user_id: user_id,
         email: kc_profile.email,
-        firstname: kc_profile.firstName ?? "",
-        lastname: kc_profile.lastName ?? "",
+        firstname: kc_profile.firstName ?? '',
+        lastname: kc_profile.lastName ?? '',
         locale_id: process.env.DEFAULT_LOCALE,
-        status_id: "active",
-        role_id: "member",
+        status_id: 'active',
+        role_id: 'member',
       };
 
       user_record = await piniaStore.Add(new_user);
 
       if (!piniaStore.hasRecord) {
-        throw "GetUserProfile - Error: Failed to insert new user profile";
+        throw 'GetUserProfile - Error: Failed to insert new user profile';
       }
 
       //console.log('INSERTED USER:')
@@ -289,16 +289,16 @@ private async AuthComplete(auth: boolean): Promise<void> {
     }
 
     const user_profile: User = {
-      auth_id: this.keycloak.subject ?? "",
+      auth_id: this.keycloak.subject ?? '',
       realm: this.realm,
-      username: kc_profile.username ?? "",
-      email: kc_profile.email ?? "",
+      username: kc_profile.username ?? '',
+      email: kc_profile.email ?? '',
       emailVerified: kc_profile.emailVerified ?? false,
-      firstname: kc_profile.firstName ?? "",
-      lastname: kc_profile.lastName ?? "",
+      firstname: kc_profile.firstName ?? '',
+      lastname: kc_profile.lastName ?? '',
       roles: this.GetUserRoles(),
       locale: user_record.locale_id as string,
-      lastLogin: "",
+      lastLogin: '',
     };
 
     return user_profile;
@@ -307,8 +307,8 @@ private async AuthComplete(auth: boolean): Promise<void> {
   // Import the locale according to the setting on the user profile
   private async ImportLocale(locale_setting: string) {
     // Import the locale for the user
-    await import("src/domain/i18n/" + locale_setting).then((module) => {
-      console.log("Translator - Loaded : " + JSON.stringify(module.default));
+    await import('src/domain/i18n/' + locale_setting).then((module) => {
+      console.log('Translator - Loaded : ' + JSON.stringify(module.default));
       //console.log('CURRENT USER AUTHID: ' + user_profile.auth_id );
       //console.log('CURRENT USER LOCALE: ' + user_profile.locale);
 

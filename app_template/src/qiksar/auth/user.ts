@@ -2,53 +2,53 @@
  * User profile
  */
 export default class User {
-    /**
-     * Unique ID from authentication service
-     */
-    auth_id = '';
-    
-    /**
-     * Auth realm
-     */
-    realm = '';
+  /**
+   * Unique ID from authentication service
+   */
+  auth_id = '';
 
-    /**
-     * Unique user name
-     */
-    username = '';
+  /**
+   * Auth realm
+   */
+  realm = '';
 
-    /** 
-     * User's first name
-     */
-    firstname = '';
+  /**
+   * Unique user name
+   */
+  username = '';
 
-    /**
-     * User's last name
-     */
-    lastname = '';
+  /**
+   * User's first name
+   */
+  firstname = '';
 
-    /**
-     * Email address
-     */
-    email = '';
+  /**
+   * User's last name
+   */
+  lastname = '';
 
-    /**
-     * Indicates if the user has verified their email address
-     */
-    emailVerified = false;
+  /**
+   * Email address
+   */
+  email = '';
 
-    /**
-     * List of roles assigned to the user
-     */
-    roles:string[] = [];
+  /**
+   * Indicates if the user has verified their email address
+   */
+  emailVerified = false;
 
-    /**
-     * Timestamp of last login
-     */
-    lastLogin = '';
+  /**
+   * List of roles assigned to the user
+   */
+  roles: string[] = [];
 
-    /**
-     * Locale or user specific terminology
-     */
-    locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
+  /**
+   * Timestamp of last login
+   */
+  lastLogin = '';
+
+  /**
+   * Locale or user specific terminology
+   */
+  locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
 }

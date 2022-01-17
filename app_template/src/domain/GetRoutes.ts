@@ -6,21 +6,19 @@ import InitialiseDomain from './InitialiseDomain';
 
 /**
  * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.
- * 
+ *
  * @returns List of route records
  */
-export default async function getRoutes(): Promise<RouteRecordRaw[]>
-{ 
+export default async function getRoutes(): Promise<RouteRecordRaw[]> {
   // Pre-load all the views for the domain
-	await InitialiseDomain(
-    [
-    'TenantsView', 
-    'LocalesView', 
-    'RolesView', 
-    'StatusView', 
-    'GroupsView', 
-    'MembersView'
-    ]);
+  await InitialiseDomain([
+    'TenantsView',
+    'LocalesView',
+    'RolesView',
+    'StatusView',
+    'GroupsView',
+    'MembersView',
+  ]);
 
   const generatedRoutes = getEntityRoutes();
 
@@ -32,7 +30,11 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]>
       path: '/',
       component: () => import('layouts/MainLayout.vue'),
       children: [
-        { path: '', component: () => import('pages/Index.vue'), meta: { anonymous: true } },
+        {
+          path: '',
+          component: () => import('pages/Index.vue'),
+          meta: { anonymous: true },
+        },
       ],
     },
 
@@ -56,6 +58,6 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]>
       component: () => import('pages/Error404.vue'),
     },
 
-    ...generatedRoutes
-    ] 
+    ...generatedRoutes,
+  ];
 }

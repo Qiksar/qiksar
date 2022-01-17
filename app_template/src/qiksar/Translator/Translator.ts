@@ -16,55 +16,57 @@ export function t(txt: string, translate = true): string {
 }
 
 export default class Translator {
+  private static instance: Translator;
 
-  private static instance:Translator;
+  private i18n: any;
+  private TokenStore: TokenStore;
 
-  private i18n:any;
-  private TokenStore:TokenStore;
-
-  public static InitInstance(user:User, messages: any, tokenStore:TokenStore): void {
+  public static InitInstance(
+    user: User,
+    messages: any,
+    tokenStore: TokenStore
+  ): void {
     Translator.instance = new Translator(messages, tokenStore);
   }
 
-  public static get Instance():Translator {
+  public static get Instance(): Translator {
     return Translator.instance;
   }
 
-  public static TokenStore():TokenStore {
+  public static TokenStore(): TokenStore {
     return Translator.Instance.TokenStore;
   }
 
-  private constructor(messages:any, tokenStore:TokenStore) {
-    const locale= Object.keys(messages)[0];
+  private constructor(messages: any, tokenStore: TokenStore) {
+    const locale = Object.keys(messages)[0];
     this.SetLocale(locale, messages);
     this.TokenStore = tokenStore;
   }
 
-// The locale can be changed at any time...
-  public SetLocale(locale:string, messages:any):void {
-  this.i18n = createI18n({
-    legacy: false,
-    silentTranslationWarn: !logWarnings,
-    fallbackWarn: logWarnings,
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-    missingWarn: logWarnings,
-    locale: locale,
-    messages: messages,
+  // The locale can be changed at any time...
+  public SetLocale(locale: string, messages: any): void {
+    this.i18n = createI18n({
+      legacy: false,
+      silentTranslationWarn: !logWarnings,
+      fallbackWarn: logWarnings,
+      /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+      missingWarn: logWarnings,
+      locale: locale,
+      messages: messages,
     });
-  
   }
-  
+
   // This call permists us to call t('some text, true/false)
   // It is now possible to call t() with rows of data and have columns optionally translated
   // That way we can translate enums and similar data columns on tables
   public Translate(txt: string, translate = true): string {
-  
-    const detokenised:string = this.TokenStore.Expand(txt);
-    const trn:string = translate ? this.i18n.global.t(detokenised, { defaultValue: detokenised }) : detokenised;
+    const detokenised: string = this.TokenStore.Expand(txt);
+    const trn: string = translate
+      ? this.i18n.global.t(detokenised, { defaultValue: detokenised })
+      : detokenised;
 
     //console.log(trn);
 
     return trn;
   }
-
 }

@@ -286,13 +286,13 @@ export default class Query {
   //#region Transformer
 
   /**
-   * Transform an input record using a specified transformation. The transformation is simply a JSON object, 
-   * where the key specifies the target field name in the output record, and the value is a list of fields which are 
+   * Transform an input record using a specified transformation. The transformation is simply a JSON object,
+   * where the key specifies the target field name in the output record, and the value is a list of fields which are
    * concatenated to create the value for the field.
-   * 
-   * @param row 
-   * @param transform 
-   * @returns 
+   *
+   * @param row
+   * @param transform
+   * @returns
    */
   public Transform(row: GqlRecord, transform: GqlRecord): GqlRecord {
     const output = {} as GqlRecord;
@@ -301,7 +301,7 @@ export default class Query {
       let val = '';
       const fields = transform[k] as string;
 
-      fields.split(' ').map((f) => (val += row[f.trim()] as string + ' '));
+      fields.split(' ').map((f) => (val += (row[f.trim()] as string) + ' '));
 
       output[k] = val.trim();
     });

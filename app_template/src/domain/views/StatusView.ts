@@ -1,17 +1,13 @@
-import Query from '../../qiksar/qikflow/base/Query'
+import Query from '../../qiksar/qikflow/base/Query';
 import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
- class StatusView extends Query {
-    constructor() {
-       
-        const schema: EntitySchema = EntitySchema.CreateEnum(
-            'status', 
-            'Status'
-            );
-  
-        super(schema, true)
-    }
-} 
+class StatusView extends Query {
+  constructor() {
+    const schema: EntitySchema = EntitySchema.CreateEnum('status', 'Status');
 
-const view =  new StatusView();
-export default view;		
+    super(schema, true);
+  }
+}
+
+const view = new StatusView();
+export default view;

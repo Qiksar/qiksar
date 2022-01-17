@@ -1,10 +1,9 @@
-import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query'
+import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { defineStore } from 'pinia';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
 
 export function CreateStore<Id extends string>(name: Id) {
   const createStore = defineStore(name, {
-
     state: () => {
       return {
         Rows: [] as GqlRecords,
@@ -13,40 +12,41 @@ export function CreateStore<Id extends string>(name: Id) {
         hasRecord: false,
         TableColumns: [],
         view: {} as Query,
-      }
+      };
     },
 
     getters: {
+      Busy: (state) => {
+        return state.busy;
+      },
 
-      Busy: (state) => { return state.busy },
-     
-      RecordLoaded: (state) => { return state.hasRecord },
+      RecordLoaded: (state) => {
+        return state.hasRecord;
+      },
 
       Pagination: (state) => {
         return {
           sortBy: state.view.SortBy,
           descending: !state.view.Asc,
           page: 1,
-          rowsPerPage: 20
-        }
+          rowsPerPage: 20,
+        };
       },
-
 
       NewRecord: (state): GqlRecord => {
         state.CurrentRecord = {};
-        
+
         state.busy = false;
-        state.hasRecord=true;
+        state.hasRecord = true;
 
         return state.CurrentRecord;
-      }
+      },
     },
 
     actions: {
-
       //#region initialise setup
 
-      SetLoaded(loaded: boolean):void {
+      SetLoaded(loaded: boolean): void {
         this.hasRecord = loaded;
       },
 
@@ -54,7 +54,7 @@ export function CreateStore<Id extends string>(name: Id) {
         this.busy = busy;
       },
 
-      // setup the view and cache the column definitions for table presentation 
+      // setup the view and cache the column definitions for table presentation
       SetView(name: string): void {
         this.view = Query.GetView(name);
         this.TableColumns = <[]>this.view.TableColumns;
@@ -66,25 +66,27 @@ export function CreateStore<Id extends string>(name: Id) {
 
       /**
        * Transform the records in the store into a collection that is suitable for use in a drop selector a similar compact record selection component
-       * 
+       *
        * @param state Transform all records in the store to a format used for selection by the user, e.g. dropdown selector
        * @returns A new collection of records, transformed into the required format
        */
-       TransformRows(transformName:string): GqlRecords {
+      TransformRows(transformName: string): GqlRecords {
         if (this.Rows.length == 0)
-          console.log('Unable to build Enum Selections from empty dataset: ' + this.view.Schema.EntityName);
+          console.log(
+            'Unable to build Enum Selections from empty dataset: ' +
+              this.view.Schema.EntityName
+          );
 
-          const selections = [] as GqlRecords;
+        const selections = [] as GqlRecords;
 
-          const fields = this.view.Schema.GetTransform(transformName);
+        const fields = this.view.Schema.GetTransform(transformName);
 
-          this.Rows.map(r => {
-            const trn = this.view.Transform(r, fields);
-            if(trn)
-              selections.push(trn)}
-            );
-      
-          return selections;
+        this.Rows.map((r) => {
+          const trn = this.view.Transform(r, fields);
+          if (trn) selections.push(trn);
+        });
+
+        return selections;
       },
       //#endregion
 
@@ -92,7 +94,11 @@ export function CreateStore<Id extends string>(name: Id) {
 
       //#region Fetch
 
-      async FetchById(id: string, translate = true, fm = defaultFetchMode): Promise<GqlRecord> {
+      async FetchById(
+        id: string,
+        translate = true,
+        fm = defaultFetchMode
+      ): Promise<GqlRecord> {
         const record = await this.view.FetchById(id, fm, this, translate);
 
         if (!record)
@@ -105,7 +111,11 @@ export function CreateStore<Id extends string>(name: Id) {
         return await this.view.FetchAll(this, translate);
       },
 
-      async FetchWhere(where: string, fm = defaultFetchMode, translate = true): Promise<GqlRecords> {
+      async FetchWhere(
+        where: string,
+        fm = defaultFetchMode,
+        translate = true
+      ): Promise<GqlRecords> {
         return await this.view.FetchWhere(where, fm, this, translate);
       },
 
@@ -121,17 +131,22 @@ export function CreateStore<Id extends string>(name: Id) {
 
       //#region Update
 
-      async Update(current: GqlRecord, original: GqlRecord): Promise<GqlRecord> {
+      async Update(
+        current: GqlRecord,
+        original: GqlRecord
+      ): Promise<GqlRecord> {
         const diff = {} as GqlRecord;
 
         // Get the primary key
-        diff[this.view.Schema.Key] = this.CurrentRecord[this.view.Schema.Key] as string;
+        diff[this.view.Schema.Key] = this.CurrentRecord[
+          this.view.Schema.Key
+        ] as string;
 
         // Get only the fields which have changed value
         Object.keys(current).map((k: string) => {
-          if (current[k] as string !== original[k] as string)
+          if ((current[k] as string) !== (original[k] as string))
             diff[k] = current[k];
-        })
+        });
 
         //console.log(JSON.stringify(diff));
 
@@ -148,13 +163,12 @@ export function CreateStore<Id extends string>(name: Id) {
 
       async DeleteWhere(where: string): Promise<GqlRecord> {
         return await this.view.DeleteWhere(where, this);
-      }
+      },
 
       //#endregion
 
       //#endregion
-
-    }
+    },
   });
 
   const store = createStore();

@@ -3,14 +3,14 @@ import EntityField, {
   hiddenFieldOptions,
   defaultEnumOptions,
   defaultIntFieldOptions,
-} from "./EntityField";
-import fieldOptions from "./fieldOptions";
-import IFieldDefinition from "./IFieldDefinition";
-import { TransformRecordFunction, Dictionary, GqlRecord } from "./GqlTypes";
-import Query, { defaultFetchMode } from "./Query";
-import fetchMode from "./fetchMode";
-import IInclude from "./IInclude";
-import { t } from "src/qiksar/Translator/Translator";
+} from './EntityField';
+import fieldOptions from './fieldOptions';
+import IFieldDefinition from './IFieldDefinition';
+import { TransformRecordFunction, Dictionary, GqlRecord } from './GqlTypes';
+import Query, { defaultFetchMode } from './Query';
+import fetchMode from './fetchMode';
+import IInclude from './IInclude';
+import { t } from 'src/qiksar/Translator/Translator';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -190,7 +190,7 @@ export default class EntitySchema {
     entityName: string,
     label: string | undefined
   ): EntitySchema {
-    const key = "id";
+    const key = 'id';
     entityName = entityName.toLowerCase();
 
     const schema: EntitySchema = new EntitySchema(
@@ -206,13 +206,13 @@ export default class EntitySchema {
     this._schemas.push(schema);
 
     return schema
-      .SetKey(key, ["sortable"])
-      .Field("name", "Label")
-      .Field("comment", "Description")
-      .CreateTransform("selector", {
-        id: "id",
-        name: "name",
-        comment: "comment",
+      .SetKey(key, ['sortable'])
+      .Field('name', 'Label')
+      .Field('comment', 'Description')
+      .CreateTransform('selector', {
+        id: 'id',
+        label: 'name',
+        comment: 'comment',
       });
   }
 
@@ -224,24 +224,24 @@ export default class EntitySchema {
    * @returns Text representation of columns to be included in GraphQL query
    */
   Columns(fetch_mode: fetchMode, entityStack: string[]): string {
-    let columns = "";
+    let columns = '';
     let fields = this.Fields;
 
     switch (fetch_mode) {
-      case "grid":
+      case 'grid':
         fields = fields.filter((f) => f.IsKey || f.IsOnTable);
         break;
 
-      case "light":
+      case 'light':
         fields = fields.filter((f) => f.IsKey || !f.IsHeavy);
         break;
 
-      case "heavy":
+      case 'heavy':
         // all fields are returned
         break;
     }
 
-    fields.map((f) => (columns += this.FieldToGql(f, entityStack) + " "));
+    fields.map((f) => (columns += this.FieldToGql(f, entityStack) + ' '));
 
     return columns;
   }
@@ -254,16 +254,16 @@ export default class EntitySchema {
    * @returns Text representation of the field as a GraphQL fragment
    */
   FieldToGql(field: EntityField, entityStack: string[]): string {
-    if ("arr obj alias".indexOf(field.Type) == -1) return field.Name;
+    if ('arr obj alias'.indexOf(field.Type) == -1) return field.Name;
 
     if (
-      (field.Type == "arr" || field.Type == "obj") &&
+      (field.Type == 'arr' || field.Type == 'obj') &&
       entityStack.filter((e) => e === field.ObjectName).length == 0
     ) {
       return this.RelatedObjectToGql(field, entityStack);
     }
 
-    return "";
+    return '';
   }
 
   /**
@@ -294,7 +294,7 @@ export default class EntitySchema {
     // when a referenced object is required the object's key is required in addition to the object
     // and it's nominated fields. e.g. role_id role {name comment}
     // role_id can then be edited in the UI and updated
-    const related_object_key = field.KeyColumnName ?? "";
+    const related_object_key = field.KeyColumnName ?? '';
     // fetch only the nominated columns, or if none are nominated, fetch all
     if (field.ObjectColumns)
       field_definition = `${related_object_key} ${field.ObjectName} { ${field.ObjectColumns} }`;
@@ -322,7 +322,7 @@ export default class EntitySchema {
   Field(
     fieldName: string,
     label: string,
-    type = "Text",
+    type = 'Text',
     options = defaultFieldOptions
   ): EntitySchema {
     return this.AddField({
@@ -354,7 +354,7 @@ export default class EntitySchema {
     fo: fieldOptions[] = hiddenFieldOptions
   ): EntitySchema {
     this._key = fieldName;
-    return this.Field(fieldName, "ID", "id", fo);
+    return this.Field(fieldName, 'ID', 'id', fo);
   }
 
   /**
@@ -378,7 +378,7 @@ export default class EntitySchema {
       et,
       source_id_column,
       preferred_join_name,
-      "id name comment"
+      'id name comment'
     ).Flatten(`${preferred_join_name}.name`, desc, defaultIntFieldOptions);
   }
 
@@ -418,8 +418,8 @@ export default class EntitySchema {
         name: i.schema,
         object_schema: i.schema,
         label: view.Schema.Label,
-        type: "obj",
-        options: ["ontable", "EntityEditSelect"],
+        type: 'obj',
+        options: ['ontable', 'EntityEditSelect'],
         key_column_name: i.key_column_name,
         ref_column_name: i.ref_columns,
         schema: i.schema,
@@ -450,7 +450,7 @@ export default class EntitySchema {
     const def = {
       name: schemaName,
       label: view.Schema.Label,
-      type: "arr",
+      type: 'arr',
       object_schema: ref_type,
       object_columns: ref_columns,
     } as IFieldDefinition;
@@ -475,7 +475,7 @@ export default class EntitySchema {
     const def = {
       name,
       label,
-      type: "alias",
+      type: 'alias',
       options,
       object_columns: path,
     } as IFieldDefinition;

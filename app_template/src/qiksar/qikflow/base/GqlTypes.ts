@@ -15,7 +15,7 @@ export type GqlRecords = GqlRecord[];
 
 /**
  * Transform a record from one structure to another.
- * 
+ *
  * Transformers can add and remove fields, or otherwise completely alter the structure/
  */
 export type TransformRecordFunction = (row: GqlRecord) => GqlRecord;

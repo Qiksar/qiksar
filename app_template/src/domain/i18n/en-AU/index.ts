@@ -2,12 +2,11 @@
 // so you can safely delete all default props below
 
 export default {
-  'en-AU': 
-  {
+  'en-AU': {
     failed: 'Ouch cobber',
     success: 'Fair dinkum, it worked!',
     leader: 'Boss',
     State: 'State/Territory',
-    member: 'mate'
-  }
+    member: 'mate',
+  },
 };

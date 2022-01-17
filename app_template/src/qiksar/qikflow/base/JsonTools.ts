@@ -6,8 +6,7 @@
 import { GqlRecord } from './GqlTypes';
 
 export default class JsonTools {
-
-	/** 
+  /** 
 	 * Given a source GqlRecord compliant type, extract an element from the object graph
 	 * which is specified as the path parameter.
 	 * 
@@ -21,26 +20,29 @@ export default class JsonTools {
 	 * const fname = ExtractFromPath<string>(CustomerRecord, 'result.data.customer[0].first_name') 
 	 * const lname = ExtractFromPath<string>(CustomerRecord, ['result', 'data', 'customer', 'last_name']) 
 	 * @example
-	 */ 
-	
-	static ExtractFromPath<Type>(data: GqlRecord, path: string | any[], failIfMissing = false): Type {
-		const datapath:any[] = typeof path === 'string' ? path.split('.') : path;
+	 */
 
-		let field = data;
-		let progress = '';
-		datapath.map((p:string) => {
-			progress += p.toString() + '.';
+  static ExtractFromPath<Type>(
+    data: GqlRecord,
+    path: string | any[],
+    failIfMissing = false
+  ): Type {
+    const datapath: any[] = typeof path === 'string' ? path.split('.') : path;
 
-			// If used with a database record where a column has a null value, we have to guard against missing values and error if failIfMissing is true
-			if(!field) {
-				if(failIfMissing)
-					throw `ExtractFromPath - failed to retrieve a value at path:'${progress}' meaning the source record has no element at this position'`
-				} 
-			else {
-				field = field[p] as GqlRecord
-			}
-		});
+    let field = data;
+    let progress = '';
+    datapath.map((p: string) => {
+      progress += p.toString() + '.';
 
-		return field as Type;
-	}
+      // If used with a database record where a column has a null value, we have to guard against missing values and error if failIfMissing is true
+      if (!field) {
+        if (failIfMissing)
+          throw `ExtractFromPath - failed to retrieve a value at path:'${progress}' meaning the source record has no element at this position'`;
+      } else {
+        field = field[p] as GqlRecord;
+      }
+    });
+
+    return field as Type;
+  }
 }

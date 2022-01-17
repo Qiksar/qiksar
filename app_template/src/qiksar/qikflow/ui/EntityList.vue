@@ -12,7 +12,11 @@
       />
     </div>
     <div class="row">
-      <q-btn @click="AddRecord()" class="q-mt-xl" :label="store.Busy ? 'Wait...' : `New ${ store.view.Schema.Label}`" />
+      <q-btn
+        @click="AddRecord()"
+        class="q-mt-xl"
+        :label="store.Busy ? 'Wait...' : `New ${store.view.Schema.Label}`"
+      />
       <q-btn @click="FetchRows()" class="q-mt-xl" :label="'Reload Data'" />
       <q-btn class="q-mt-xl" to="/" label="Home" />
     </div>
@@ -47,7 +51,7 @@ const onRowClick = (event: any, row: GqlRecord): void => {
   }
 }
 
-function FetchRows(){
+function FetchRows() {
   /* TODO move to filters section above grid
     void entityStore.fetchWhere(`_or: [ {group: {state: {_eq: "WA"}}}, 
                                       {  group: {state: {_eq: "NSW"}}}]`, 'grid');
