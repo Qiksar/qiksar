@@ -6,11 +6,10 @@ import EntityField, {
 } from './EntityField';
 import fieldOptions from './fieldOptions';
 import IFieldDefinition from './IFieldDefinition';
-import { TransformRecordFunction, Dictionary, GqlRecord } from './GqlTypes';
+import { GqlRecord } from './GqlTypes';
 import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
 import IInclude from './IInclude';
-import { t } from 'src/qiksar/Translator/Translator';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -55,7 +54,7 @@ export default class EntitySchema {
   GetTransform(name: string): GqlRecord {
     const transform = this._transformers[name];
 
-    if (!transform) throw `Transform '{name}' has not be registered`;
+    if (!transform) throw `Transform '${name}' has not be registered`;
 
     return transform;
   }
