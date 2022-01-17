@@ -111,6 +111,6 @@ function updateEntity(field: EntityField, value: unknown): void {
 }
 
 function deleteEntity() {
-  void store.Felete(reactive_record.value[store.view.Schema.Key] as string);
+  void store.Delete(reactive_record.value[store.view.Schema.Key] as string);
 }
 </script>
