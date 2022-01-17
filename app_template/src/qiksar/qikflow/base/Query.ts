@@ -68,7 +68,7 @@ export default class Query {
 		const tp = {} as GqlRecord;
 
 		this._views.map((v) => {
-			tp[v.Schema.EntityType] = { keyFields: [v.Schema.Key] };
+			tp[v.Schema.EntityName] = { keyFields: [v.Schema.Key] };
 		});
 
 		//console.log(JSON.stringify(tp));
@@ -84,7 +84,7 @@ export default class Query {
 	 */
 	static GetView(entityName: string): Query {
 		const views = Query._views.filter(
-			(v) => v.Schema.EntityType === entityName
+			(v) => v.Schema.EntityName === entityName
 		);
 
 		if (views.length == 0)
@@ -229,7 +229,7 @@ export default class Query {
 
 		const query =
 	`query {
-		${this.Schema.EntityType} 
+		${this.Schema.EntityName} 
 		(` +
 		(limit ? `limit: ${limit},` : '') +
 		`
@@ -292,7 +292,7 @@ export default class Query {
 		// Get the data object which contains the rows of data
 		const rows = JsonTools.ExtractFromPath<GqlRecords>(result, [
 			'data',
-			this.Schema.EntityType,
+			this.Schema.EntityName,
 		]);
 
 		// Process the rows with translation and insertion of attributes to entites from related entities
@@ -499,7 +499,7 @@ export default class Query {
 		store.SetBusy(true);
 		
 		const entityStack: string[] = [];
-		const query_name = `${this.Schema.EntityType}_by_pk`;
+		const query_name = `${this.Schema.EntityName}_by_pk`;
 		
 		const query = `{
 			${query_name} (${this.Schema.Key}: "${id}")
@@ -569,7 +569,7 @@ export default class Query {
 		if(this.Schema.IsEnum)
 			data['id'] = data['name'];
 
-		const mutation_name = `insert_${this.Schema.EntityType}`;
+		const mutation_name = `insert_${this.Schema.EntityName}`;
 		const doc = `
             mutation {
                 ${mutation_name} (
@@ -598,7 +598,7 @@ export default class Query {
 	async Update(data: GqlRecord, store: any): Promise<GqlRecord> {
 		const id = data[this.Schema.Key] as string;
 		if (!id)
-			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key} = "${id}"`;
+			throw `Unable to get primary key from ${this.Schema.EntityName}:${this.Schema.Key} = "${id}"`;
 
 		data = this.PrepareRowForSave(data);
 
@@ -608,7 +608,7 @@ export default class Query {
 		let keys = '';
 		Object.keys(data).map((k) => (keys += `${k} `));
 
-		const mutation_name = `update_${this.Schema.EntityType}_by_pk`;
+		const mutation_name = `update_${this.Schema.EntityName}_by_pk`;
 		const doc = `
             mutation {
                 ${mutation_name} (
@@ -632,9 +632,9 @@ export default class Query {
 
 	async DeleteById(id: string, store: any): Promise<GqlRecord> {
 		if (!id)
-			throw `Unable to get primary key from ${this.Schema.EntityType}:${this.Schema.Key}`;
+			throw `Unable to get primary key from ${this.Schema.EntityName}:${this.Schema.Key}`;
 
-		const mutation = `delete_${this.Schema.EntityType}_by_pk(${this.Schema.Key}: "${id}")`;
+		const mutation = `delete_${this.Schema.EntityName}_by_pk(${this.Schema.Key}: "${id}")`;
 		const doc = `
             mutation {
             	${mutation} { ${this.Schema.Key} }
@@ -650,9 +650,9 @@ export default class Query {
 	}
 
 	async DeleteWhere(where: string, store: any): Promise<GqlRecord> {
-		const mutation_name = `delete_${this.Schema.EntityType}`;
+		const mutation_name = `delete_${this.Schema.EntityName}`;
 		const doc = `
-            mutation delete_${this.Schema.EntityType}_where {
+            mutation delete_${this.Schema.EntityName}_where {
             ${mutation_name} (where: { ${where} }
             ) {
                 returning { ${this.Schema.Key} }

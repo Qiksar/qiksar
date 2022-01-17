@@ -38,7 +38,7 @@ export function CreateStore<Id extends string>(name: Id) {
        */
       GetSelections: (state): GqlRecords => {
         if (state.Rows.length == 0)
-          console.log('Unable to build Enum Selections from empty dataset: ' + state.view.Schema.EntityType);
+          console.log('Unable to build Enum Selections from empty dataset: ' + state.view.Schema.EntityName);
 
           const selections = [] as GqlRecords;
           state.Rows.map(r => {
@@ -87,7 +87,7 @@ export function CreateStore<Id extends string>(name: Id) {
         const record = await this.view.FetchById(id, fm, this, translate);
 
         if (!record)
-          throw `${this.view.Schema.EntityType} not found with id '${id}'`;
+          throw `${this.view.Schema.EntityName} not found with id '${id}'`;
 
         return record;
       },

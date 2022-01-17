@@ -20,25 +20,73 @@ export default class EntitySchema {
     private _key: string;
     private _is_enum: boolean;
     private _includes: IInclude[];
-	private _createSelection: TransformRecordFunction;
+	private _transformationFunction: TransformRecordFunction;
 
 //#endregion
 
 //#region Static members
 
+    /**
+     * Internal array of schema
+     */
     private static _schemas:Array<EntitySchema> = [];
+    
+    /**
+     * Global list of registered schemas
+     */
     static get Schemas(): Array<EntitySchema> { return this._schemas; } 
 
 //#endregion
 
 //#region Transformation
 
-    get TransformFunction(): TransformRecordFunction { return this._createSelection; }
-    
+    /**
+     * The transformation function converts records from one format to another
+     */
+    get TransformFunction(): TransformRecordFunction { return this._transformationFunction; }
+
+    // TODO make it possible to register multiple transformations
+    /**
+     * Register the transformation function
+     * 
+     * @param f Function which converts the source record to a target structure
+     * @returns The schema for fluent API style calls
+     */
     TransformWith(f:TransformRecordFunction):EntitySchema {
-        this._createSelection = f;
+        this._transformationFunction = f;
         return this;
     }
+
+//#endregion
+
+//#region Getters / Setters
+
+    /**
+     * Default caption applied when the schema is displayed
+     */
+    get Label(): string { return this._description}
+
+    /**
+     * Name of the entity
+     */
+    get EntityName(): string { return this._entityType}
+    
+    /**
+     * List of fields
+     */
+    get Fields(): EntityField[] { return this._fields}
+    
+    /**
+     * Name of unique key field
+     */
+    get Key():string { return this._key}
+    
+    /**
+     * Indicates if the schema is an enumeration
+     */
+    get IsEnum():boolean{return this._is_enum}
+
+    get LocaleFields(): EntityField[] { return  this._fields.filter(f => f.IsLocale)}
 
 //#endregion
 
@@ -57,14 +105,14 @@ export default class EntitySchema {
         this._fields = new Array<EntityField>();
         this._is_enum = isEnum;
         this._includes = [];
-        this._createSelection = ({}) => { return { id: 'Use ToSelection', Description:''} };
+        this._transformationFunction = ({}) => { return { id: 'Use ToSelection', Description:''} };
     }
 
     /**
      * Resolve references between schema
      */
     static ResolveReferences():void {
-        this._schemas.map(s => s.Resolve());
+        this._schemas.map(s => s.ResolveConnections());
     }
 
     /**
@@ -75,7 +123,7 @@ export default class EntitySchema {
     static GetSchemaForEntity(entityName: string): EntitySchema|null {
         entityName = entityName.toLowerCase();
      
-        const schemas = this._schemas.filter((s:EntitySchema) => s.EntityType === entityName);
+        const schemas = this._schemas.filter((s:EntitySchema) => s.EntityName === entityName);
 
         return schemas.length > 0 ? schemas[0] : null;
     }
@@ -94,7 +142,7 @@ export default class EntitySchema {
         const schema: EntitySchema = new EntitySchema(entityName, keyField, label ?? entityName);
 
         if(this.GetSchemaForEntity(entityName))
-            throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityType}`
+            throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityName}`
 
         this._schemas.push(schema);
 
@@ -115,7 +163,7 @@ export default class EntitySchema {
         const schema: EntitySchema = new EntitySchema(entityName, key, label ?? entityName, true);
 
         if(this.GetSchemaForEntity(entityName))
-            throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityType}`
+            throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityName}`
 
         this._schemas.push(schema);
         
@@ -132,14 +180,13 @@ export default class EntitySchema {
             });
     }
 
-    get Description(): string { return this._description}
-    get EntityType(): string { return this._entityType}
-    get Fields(): EntityField[] { return this._fields}
-    get Key():string { return this._key}
-    get IsEnum():boolean{return this._is_enum}
-
-    get LocaleFields(): EntityField[] { return  this._fields.filter(f => f.IsLocale)}
-
+    /**
+     * Get columns, including from nested entities, to support building of a GraphQL query
+     * 
+     * @param fetch_mode Fetch mode enables easy filtering of columns to prevent overfetch
+     * @param entityStack Track entities as columns added to the output
+     * @returns Text representation of columns to be included in GraphQL query
+     */
     Columns(fetch_mode:fetchMode, entityStack:string[]): string {
         let columns = '';
         let  fields = this.Fields;
@@ -164,6 +211,13 @@ export default class EntitySchema {
         return columns;
     }
 
+    /**
+     * Return GraphQL fragment representing a field in a query
+     * 
+     * @param field Field definition
+     * @param entityStack Track entities being processed to form the GraphQL statement for the field 
+     * @returns Text representation of the field as a GraphQL fragment
+     */
     FieldToGql(field: EntityField, entityStack:string[]):string {
         if('arr obj alias'.indexOf(field.Type) == -1)
             return field.Name;
@@ -175,9 +229,16 @@ export default class EntitySchema {
         return '';
     }
 
+    /**
+     * Return GraphQL fragment representing a related GraphQL object
+     * 
+     * @param field Field definition
+     * @param entityStack Track entities being processed to form the GraphQL statement for the field 
+     * @returns Text representation of the field as a GraphQL fragment
+     */
     RelatedObjectToGql(field: EntityField, entityStack:string[]):string {
         if (!field.ObjectSchema)
-            throw `Schema reference is missing on ${this.EntityType}.${field.Name}`;
+            throw `Schema reference is missing on ${this.EntityName}.${field.Name}`;
 
         if (!field.ObjectName)
             throw `Fieldname of object must be specified on field ${JSON.stringify(field)}`;
@@ -189,7 +250,7 @@ export default class EntitySchema {
         const refSchema = EntitySchema.GetSchemaForEntity(field.ObjectSchema);
 
         if(!refSchema)
-            throw `!!!! FATAL ERROR: Entity ${this.EntityType} references unknown schema ${field.ObjectName}`
+            throw `!!!! FATAL ERROR: Entity ${this.EntityName} references unknown schema ${field.ObjectName}`
 
         // when a referenced object is required the object's key is required in addition to the object
         // and it's nominated fields. e.g. role_id role {name comment}
@@ -209,32 +270,60 @@ export default class EntitySchema {
         return field_definition;
     }
 
-    Field(name: string, label: string, type='Text', options=defaultFieldOptions): EntitySchema
+    /**
+     * Add a field to the schema
+     * 
+     * @param fieldName Field name
+     * @param label Default label
+     * @param type Data type name
+     * @param options Field options which control when the field is loaded, how it is edited and translated
+     * @returns The schema for fluent API style calls
+     */
+    Field(fieldName: string, label: string, type='Text', options=defaultFieldOptions): EntitySchema
     {
         return this.AddField(
             {
-                name, 
+                name: fieldName, 
                 label, 
                 type,
                 options
             } as IFieldDefinition);
     }
 
-    AddField(def: IFieldDefinition): EntitySchema 
+    /**
+     * Add a field definition to the schema
+     * @param fieldDefinition Field definition
+     * @returns The schema for fluent API style calls
+     */
+    private AddField(fieldDefinition: IFieldDefinition): EntitySchema 
     {
-        this._fields.push(new EntityField(def));
+        this._fields.push(new EntityField(fieldDefinition));
         return this;
     }
 
-    SetKey(name: string, fo: fieldOptions[]=hiddenFieldOptions): EntitySchema {
-        this._key = name;
-        return this.Field(name, 'ID', 'id', fo);
+    /**
+     * Set the unique ID field for the schema
+     * @param fieldName Name of the key field
+     * @param fo Field options
+     * @returns The schema for fluent API style calls
+     */
+    private SetKey(fieldName: string, fo: fieldOptions[]=hiddenFieldOptions): EntitySchema {
+        this._key = fieldName;
+        return this.Field(fieldName, 'ID', 'id', fo);
     }
 
-    UseEnum(view_name:string,  source_id_column: string, preferred_join_name: string): EntitySchema {
-        const view = Query.GetView(view_name);
-        const et = view.Schema.EntityType;
-        const desc =view.Schema.Description;
+    /**
+     * Connect another schema as an Enumeration
+     * 
+     * @param schemaName Name of the schema
+     * @param source_id_column Key field on the parent which connects to the child record ID
+     * @param preferred_join_name The field name on the parent used to refer to the enumeration
+     * @returns The schema for fluent API style calls
+     */
+    UseEnum(schemaName:string,  source_id_column: string, preferred_join_name: string): EntitySchema {
+        const view = Query.GetView(schemaName);
+        const et = view.Schema.EntityName;
+        const desc =view.Schema.Label;
 
         return this
             .Fetch(et, source_id_column, preferred_join_name, 'id name comment')
@@ -244,15 +333,15 @@ export default class EntitySchema {
     /**
      * Fetch a related record, so that fields can be imported into the parent record, as though they were columns in the same table
      * 
-     * @param schema Name of the child schema
+     * @param schemaName Name of the child schema
      * @param key_column_name Name of key field on the parent that specifies the ID of the child record
      * @param ref_column_name Name of the child record to fetch
      * @param required_columns List of columns to fetch from the child
-     * @returns 
+     * @returns The schema for fluent API style calls
      */
-    Fetch(schema: string, key_column_name:string, ref_column_name: string, required_columns:string): EntitySchema {
+    Fetch(schemaName: string, key_column_name:string, ref_column_name: string, required_columns:string): EntitySchema {
         this._includes.push(({
-            schema,
+            schema: schemaName,
             key_column_name,
             ref_column_name,
             ref_columns: required_columns
@@ -262,17 +351,16 @@ export default class EntitySchema {
     }
 
     /**
-     * Resolve the interconnections between schema. This is a deferred call, as this function can resolve circular references, therefore, schema are created first
-     * and then interconnections are resolved after all schema have been declared
+     * Resolve connections between this schema and others
      */
-    Resolve(){
+    private ResolveConnections() {
         this._includes.map(i => {
             const view = Query.GetView(i.schema);
 
             const fieldDefinition = {
                 name:i.schema,
                 object_schema: i.schema,
-                label: view.Schema.Description,
+                label: view.Schema.Label,
                 type:'obj',
                 options: ['ontable', 'EntityEditSelect'],
                 key_column_name: i.key_column_name,
@@ -286,12 +374,21 @@ export default class EntitySchema {
         });
     }
 
-    AddArray(schema_name: string, ref_type: string, ref_columns:string): EntitySchema {
-        const view = Query.GetView(schema_name);
+    /**
+     * TODO - review the purpose and functionality of this method
+     * Add a relationship to a child schema, where there are multiple records at the child end
+     * 
+     * @param schemaName Name of the child schema
+     * @param ref_type Name of the field on the parent used to refer to the child schema
+     * @param ref_columns Columns fetched from the child object
+     * @returns The schema for fluent API style calls
+     */
+    AddArray(schemaName: string, ref_type: string, ref_columns:string): EntitySchema {
+        const view = Query.GetView(schemaName);
 
         const def = {
-            name: schema_name,
-            label: view.Schema.Description,
+            name: schemaName,
+            label: view.Schema.Label,
             type: 'arr',
             object_schema: ref_type,
             object_columns: ref_columns
@@ -300,6 +397,14 @@ export default class EntitySchema {
         return this.AddField(def);
     }
 
+    /**
+     * Merge fields into the current object from child objects
+     * 
+     * @param path Path to the target field, e.g. group.name
+     * @param label Default label
+     * @param options Used to indicate when the field is included, such as 'weight' of the field and fetch mode used
+     * @returns The schema for fluent API style calls
+     */
     Flatten(path: string, label: string, options = defaultEnumOptions):EntitySchema {
         const name=path;
         const def = {

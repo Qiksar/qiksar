@@ -48,7 +48,7 @@ export default function getEntityRoutes(): RouteRecordRaw[] {
 	const routes: RouteRecordRaw[] = [];
 	
 	EntitySchema.Schemas.map((s: EntitySchema) => {
-		routes.push(getRoutesForEntity(s.EntityType, 'tenant_admin'));
+		routes.push(getRoutesForEntity(s.EntityName, 'tenant_admin'));
 	});
 	
 	return routes;

@@ -12,7 +12,7 @@
       />
     </div>
     <div class="row">
-      <q-btn @click="AddRecord()" class="q-mt-xl" :label="store.Busy ? 'Wait...' : `New ${ store.view.Schema.Description}`" />
+      <q-btn @click="AddRecord()" class="q-mt-xl" :label="store.Busy ? 'Wait...' : `New ${ store.view.Schema.Label}`" />
       <q-btn @click="FetchRows()" class="q-mt-xl" :label="'Reload Data'" />
       <q-btn class="q-mt-xl" to="/" label="Home" />
     </div>
