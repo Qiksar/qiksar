@@ -16,6 +16,12 @@ import { AuthWrapper } from 'src/boot/qiksar';
 import Query from 'src/qiksar/qikflow/base/Query'
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 
+/**
+ * Create the apollo client and use the auth wrapper to acquire a token
+ * to secure communication
+ * @param auth Auth service which provides the authentication token
+ * @returns Apollo client
+ */
 export default function CreateApolloClient(auth:QiksarAuthWrapper): ApolloClient<NormalizedCacheObject> {
     if (!process.env.PUBLIC_GRAPHQL_ENDPOINT) 
         throw 'PUBLIC_GRAPHQL_ENDPOINT is undefined';    

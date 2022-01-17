@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import User from './user';
 
-
-// main is the name of the store. It is unique across your application
-// and will appear in devtools
+/**
+ * Provide a store to manage the state of the user profile
+ */
 const useUserStore = defineStore('user', {
-  // a function that returns a fresh state
+  /**
+   * Shared user profile state
+   * @returns state object
+   */
   state: () => {
       return {
         loggedIn: false,
@@ -17,7 +20,16 @@ const useUserStore = defineStore('user', {
   },
   // optional actions
   actions: {
+    /**
+     * Set the user profile
+     * @param user New user profile
+     */
     setUser(user: User) { this.user = user; },
+    
+    /**
+     * Set the authenticated state
+     * @param loggedIn True = Logged in, else logged out
+     */
     setLoggedIn(loggedIn: boolean){
       this.loggedIn = loggedIn;
     }

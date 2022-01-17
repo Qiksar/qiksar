@@ -16,13 +16,7 @@ class GroupsView extends Query {
             .Fetch('members', 'leader_id', 'leader', 'member_id firstname lastname')
             .Flatten('leader.firstname leader.lastname', 'Leader Name')
 
-            .TransformWith((r) => { 
-                    return {
-                        id: r[this.Schema.Key],
-                        label: r.name,
-                        description:r.state
-                    }
-                });
+            .CreateTransform('selector', {id: 'group_id', label: 'name'});
 
         super(schema, true)
     }

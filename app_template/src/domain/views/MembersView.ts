@@ -22,14 +22,7 @@ class MembersView extends Query {
 			.UseEnum('roles', 'role_id', 'role')
 			.UseEnum('status', 'status_id', 'status')
 			.UseEnum('locales', 'locale_id', 'locale')
-			.TransformWith((r) => { 
-					return {
-                        id: r[this.Schema.Key],
-						label: (r.firstname as string) + ' ' + (r.lastname as string), 
-						description: (r.firstname as string) + ' ' + (r.lastname as string) 
-						}
-					}
-				);
+            .CreateTransform('selector', {id: 'member_id', label: 'firstname lastname'});
 
 		super(schema);
 	}
