@@ -30,13 +30,22 @@ export function CreateStore<Id extends string>(name: Id) {
         }
       },
 
-      // Return the rows of data in a format suitable for use in drop down selections or menus
+      /**
+       * Transform the records in the store into a collection that is suitable for use in a drop selector a similar compact record selection component
+       * 
+       * @param state Transform all records in the store to a format used for selection by the user, e.g. dropdown selector
+       * @returns A new collection of records, transformed into the required format
+       */
       GetSelections: (state): GqlRecords => {
         if (state.Rows.length == 0)
           console.log('Unable to build Enum Selections from empty dataset: ' + state.view.Schema.EntityType);
 
           const selections = [] as GqlRecords;
-          state.Rows.map(r => selections.push(state.view.Schema.SelectionTranslator(r)));
+          state.Rows.map(r => {
+            const trn = state.view.Schema.TransformFunction(r);
+            if(trn)
+              selections.push(trn)}
+            );
       
           return selections;
       },

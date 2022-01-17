@@ -3,7 +3,14 @@
 import { RouteRecordRaw } from 'vue-router';
 import EntitySchema from '../qiksar/qikflow/base/EntitySchema';
 
-function getRoutesForEntity(entityName: string, requiredRole: string) {
+/**
+ * This method generates a set of routes for viewing and editing a specific entity
+ * 
+ * @param entityName Name of the entity
+ * @param requiredRole Role required to access the route
+ * @returns Route record comprising the path to the view and edit pages
+ */
+function getRoutesForEntity(entityName: string, requiredRole: string):RouteRecordRaw {
 	return 	{
 		path: `/${entityName}`,
 

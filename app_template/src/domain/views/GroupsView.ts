@@ -13,12 +13,12 @@ class GroupsView extends Query {
             .Field('name', 'Group Name')
             .Field('state', 'State')
  
-            .Include('members', 'leader_id','leader', 'member_id firstname lastname')
+            .Fetch('members', 'leader_id', 'leader', 'member_id firstname lastname')
             .Flatten('leader.firstname leader.lastname', 'Leader Name')
 
-            .ToSelection((r) => { 
+            .TransformWith((r) => { 
                     return {
-                        id: r.group_id,
+                        id: r[this.Schema.Key],
                         label: r.name,
                         description:r.state
                     }

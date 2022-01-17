@@ -1,44 +1,77 @@
 import EntityField, {defaultFieldOptions, hiddenFieldOptions, defaultEnumOptions, defaultIntFieldOptions } from './EntityField';
 import fieldOptions from './fieldOptions';
 import IFieldDefinition from './IFieldDefinition';
-import { TranslateRecord } from './GqlTypes';
+import { TransformRecordFunction } from './GqlTypes';
 import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
 import IInclude from './IInclude';
 import { t } from 'src/qiksar/Translator/Translator';
 
+/**
+ * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
+ */
 export default class EntitySchema {
+
+//#region Properties
+
     private _description: string;
     private _entityType: string;
     private _fields: Array<EntityField>;
     private _key: string;
     private _is_enum: boolean;
     private _includes: IInclude[];
-	private _createSelection: TranslateRecord;
+	private _createSelection: TransformRecordFunction;
+
+//#endregion
+
+//#region Static members
 
     private static _schemas:Array<EntitySchema> = [];
     static get Schemas(): Array<EntitySchema> { return this._schemas; } 
 
-    get SelectionTranslator(): TranslateRecord { return this._createSelection; }
-    ToSelection(f:TranslateRecord):EntitySchema {
+//#endregion
+
+//#region Transformation
+
+    get TransformFunction(): TransformRecordFunction { return this._createSelection; }
+    
+    TransformWith(f:TransformRecordFunction):EntitySchema {
         this._createSelection = f;
         return this;
     }
-    
-    constructor(entityType: string, key:string, description: string, isEnum = false) {
-        this._entityType = entityType.toLowerCase();
-        this._key = key;
-        this._description = description;
+
+//#endregion
+
+/**
+ * Construct new object
+ * 
+ * @param entityName Unique name for the schema
+ * @param keyField Name of the field which is the unique database ID
+ * @param label Default label 
+ * @param isEnum Indicates if the table is an enumeration type, which enables it to be quickly used for dropdown selections
+ */
+    constructor(entityName: string, keyField:string, label: string, isEnum = false) {
+        this._entityType = entityName.toLowerCase();
+        this._key = keyField;
+        this._description = label;
         this._fields = new Array<EntityField>();
         this._is_enum = isEnum;
         this._includes = [];
         this._createSelection = ({}) => { return { id: 'Use ToSelection', Description:''} };
     }
 
+    /**
+     * Resolve references between schema
+     */
     static ResolveReferences():void {
         this._schemas.map(s => s.Resolve());
     }
 
+    /**
+     * Get the schema for a specified entity
+     * @param entityName Name of the entity
+     * @returns The schema, or null if the schema does not exist
+     */
     static GetSchemaForEntity(entityName: string): EntitySchema|null {
         entityName = entityName.toLowerCase();
      
@@ -47,26 +80,41 @@ export default class EntitySchema {
         return schemas.length > 0 ? schemas[0] : null;
     }
 
-    static Create(entityType: string, key:string, description: string | undefined): EntitySchema {
-        entityType = entityType.toLowerCase();
+    /**
+     * Create a schema
+     * 
+     * @param entityName Name of the entity type
+     * @param keyField Name of the field which is the database unique ID
+     * @param label Default label
+     * @returns Schema
+     */
+    static Create(entityName: string, keyField:string, label: string | undefined): EntitySchema {
+        entityName = entityName.toLowerCase();
       
-        const schema: EntitySchema = new EntitySchema(entityType, key, description ?? entityType);
+        const schema: EntitySchema = new EntitySchema(entityName, keyField, label ?? entityName);
 
-        if(this.GetSchemaForEntity(entityType))
+        if(this.GetSchemaForEntity(entityName))
             throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityType}`
 
         this._schemas.push(schema);
 
-        return schema.SetKey(key);
+        return schema.SetKey(keyField);
     }
 
-    static CreateEnum(entityType: string, description: string | undefined): EntitySchema {
+    /**
+     * Create a schema for an enumeration
+     * 
+     * @param entityName Name of the entity type
+     * @param label Default label
+     * @returns Schema
+     */
+    static CreateEnum(entityName: string, label: string | undefined): EntitySchema {
         const key = 'id';
-        entityType = entityType.toLowerCase();
+        entityName = entityName.toLowerCase();
 
-        const schema: EntitySchema = new EntitySchema(entityType, key, description ?? entityType, true);
+        const schema: EntitySchema = new EntitySchema(entityName, key, label ?? entityName, true);
 
-        if(this.GetSchemaForEntity(entityType))
+        if(this.GetSchemaForEntity(entityName))
             throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityType}`
 
         this._schemas.push(schema);
@@ -75,7 +123,7 @@ export default class EntitySchema {
             .SetKey(key, ['sortable'])
             .Field('name', 'Label')
             .Field('comment', 'Description')
-            .ToSelection((r) => { 
+            .TransformWith((r) => { 
                 return {
                     id: r[key],
                     label: t(r.name as string),
@@ -189,11 +237,20 @@ export default class EntitySchema {
         const desc =view.Schema.Description;
 
         return this
-            .Include(et, source_id_column, preferred_join_name, 'id name comment')
+            .Fetch(et, source_id_column, preferred_join_name, 'id name comment')
             .Flatten(`${preferred_join_name}.name`, desc, defaultIntFieldOptions);
     }
 
-    Include(schema: string, key_column_name:string, ref_column_name: string, required_columns:string): EntitySchema {
+    /**
+     * Fetch a related record, so that fields can be imported into the parent record, as though they were columns in the same table
+     * 
+     * @param schema Name of the child schema
+     * @param key_column_name Name of key field on the parent that specifies the ID of the child record
+     * @param ref_column_name Name of the child record to fetch
+     * @param required_columns List of columns to fetch from the child
+     * @returns 
+     */
+    Fetch(schema: string, key_column_name:string, ref_column_name: string, required_columns:string): EntitySchema {
         this._includes.push(({
             schema,
             key_column_name,
@@ -204,10 +261,15 @@ export default class EntitySchema {
         return this;
     }
 
+    /**
+     * Resolve the interconnections between schema. This is a deferred call, as this function can resolve circular references, therefore, schema are created first
+     * and then interconnections are resolved after all schema have been declared
+     */
     Resolve(){
         this._includes.map(i => {
             const view = Query.GetView(i.schema);
-            const def = {
+
+            const fieldDefinition = {
                 name:i.schema,
                 object_schema: i.schema,
                 label: view.Schema.Description,
@@ -219,7 +281,8 @@ export default class EntitySchema {
                 object_name:i.ref_column_name,
                 object_columns: i.ref_columns
             } as IFieldDefinition;
-            this.AddField(def);
+
+            this.AddField(fieldDefinition);
         });
     }
 

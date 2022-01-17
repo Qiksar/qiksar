@@ -16,15 +16,15 @@ class MembersView extends Query {
 			.Field('mobile', 'Mobile Number', 'mobile')
 			.Field('photo', 'Profile Photo', 'image', ['heavy', 'EntityEditImage'])
 			.Field('rating', 'Member Rating', 'number', ['EntityEditLichert'])
-			.Include('groups', 'group_id', 'group', 'group_id name state')
+			.Fetch('groups', 'group_id', 'group', 'group_id name state')
 			.Flatten('group.name', 'Group')
 			.Flatten('group.state', 'State')
 			.UseEnum('roles', 'role_id', 'role')
 			.UseEnum('status', 'status_id', 'status')
 			.UseEnum('locales', 'locale_id', 'locale')
-			.ToSelection((r) => { 
+			.TransformWith((r) => { 
 					return {
-						id: r.member_id, 
+                        id: r[this.Schema.Key],
 						label: (r.firstname as string) + ' ' + (r.lastname as string), 
 						description: (r.firstname as string) + ' ' + (r.lastname as string) 
 						}

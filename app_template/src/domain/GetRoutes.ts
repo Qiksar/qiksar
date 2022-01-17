@@ -4,6 +4,11 @@ import { RouteRecordRaw } from 'vue-router';
 import getEntityRoutes from './GetEntityRoutes';
 import InitialiseDomain from './InitialiseDomain';
 
+/**
+ * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.
+ * 
+ * @returns List of route records
+ */
 export default async function getRoutes(): Promise<RouteRecordRaw[]>
 { 
   // Pre-load all the views for the domain
@@ -17,8 +22,11 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]>
     'MembersView'
     ]);
 
-  const entityRoutes = getEntityRoutes();
+  const generatedRoutes = getEntityRoutes();
 
+  // At this point the generatedRoutes can be further manipulated to add routes from other generators
+
+  // Add static routes here...
   return [
     {
       path: '/',
@@ -48,6 +56,6 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]>
       component: () => import('pages/Error404.vue'),
     },
 
-    ...entityRoutes
+    ...generatedRoutes
     ] 
 }
