@@ -261,7 +261,7 @@ private async AuthComplete(auth: boolean): Promise<void> {
     const piniaStore = CreateStore("members");
 
     const where = `user_id: {_eq: "${user_id}"}`;
-    const user_rows = await piniaStore.fetchWhere(where);
+    const user_rows = await piniaStore.FetchWhere(where);
 
     let user_record;
 
@@ -278,7 +278,7 @@ private async AuthComplete(auth: boolean): Promise<void> {
         role_id: "member",
       };
 
-      user_record = await piniaStore.add(new_user);
+      user_record = await piniaStore.Add(new_user);
 
       if (!piniaStore.hasRecord) {
         throw "GetUserProfile - Error: Failed to insert new user profile";

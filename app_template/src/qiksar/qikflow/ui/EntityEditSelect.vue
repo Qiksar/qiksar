@@ -46,15 +46,15 @@ onBeforeMount(async () => {
     return;
 
   const store = CreateStore(props.field.ObjectSchema);
-  await store.fetchAll()
+  await store.FetchAll()
     .then(() => {
       const fieldName = props.field?.AffectedFieldName ?? '';
       const fieldValue = props.entity[fieldName];
 
       // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
-      options.value = store.GetSelections;
+      options.value = store.TransformRows('selector');
       selectedObject.value = options.value.filter(f => f['id'] == fieldValue)[0];
-      
+
       //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
     })
 });

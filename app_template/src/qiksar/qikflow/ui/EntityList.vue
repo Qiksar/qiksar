@@ -54,7 +54,7 @@ function FetchRows(){
   */
 
   // don't fetch translated data for enum views
-  void store.fetchAll(!store.view.IsEnum);
+  void store.FetchAll(!store.view.IsEnum);
 }
 
 function AddRecord() {

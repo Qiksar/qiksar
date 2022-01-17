@@ -78,7 +78,7 @@ function setReactiveRecord(entity: GqlRecord): void {
 // Fetch the entity to edit
 onBeforeMount(async () => {
   if (id && id.length > 0 && id != 'new') {
-    await store.fetchById(id, !store.view.IsEnum).then(() => {
+    await store.FetchById(id, !store.view.IsEnum).then(() => {
       setReactiveRecord(store.CurrentRecord);
     });
   } else {
@@ -99,7 +99,7 @@ function currentRecordId(): string | undefined {
 }
 
 async function insertEntity(): Promise<void> {
-  reactive_record.value = await store.add(reactive_record.value);
+  reactive_record.value = await store.Add(reactive_record.value);
 }
 
 function updateEntity(field: EntityField, value: unknown): void {
@@ -107,10 +107,10 @@ function updateEntity(field: EntityField, value: unknown): void {
   store.CurrentRecord[field.AffectedFieldName] = value;
 
   if (props.context.real_time && currentRecordId())
-    void store.update(store.CurrentRecord, original);
+    void store.Update(store.CurrentRecord, original);
 }
 
 function deleteEntity() {
-  void store.delete(reactive_record.value[store.view.Schema.Key] as string);
+  void store.Felete(reactive_record.value[store.view.Schema.Key] as string);
 }
 </script>
