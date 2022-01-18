@@ -43,11 +43,12 @@ services:
         env_file: .env
 
         container_name: q_auth
-        image: feduxorg/keycloak
+        image: ghcr.io/marcelcoding/keycloak:latest
 
         # mount configuration files
         volumes:
             - ./initkc/kc_init.sh:/kc_init.sh
+            - ./initkc/kc_profile/profile.properties:/opt/jboss/keycloak/standalone/configuration/profile.properties
             - ./initkc/kc_data:/docker-entrypoint-initdb.d/
             - ./initkc/kc_theme:/opt/jboss/keycloak/themes/qiksar
 
@@ -63,7 +64,7 @@ services:
         env_file: .env
         
         container_name: qiktrak
-        image: namsource/qiktrak:latest
+        image: qiksar/qiktrak:latest
 
         volumes:
             - ./qiktrak:/qiktrak

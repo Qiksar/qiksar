@@ -66,17 +66,8 @@ cat hasura/hasura-migrations/config.template \
     > hasura/hasura-migrations/config.yaml
 echo
 
-
-
 echo "Start database and authentication containers"
-docker-compose up -d --build proxy db auth 
-echo
-
-
-# Pull the latest qiktrak utility container
-# This will enable us to create a database, seed it with data and track all the tables and relationships, with zero-touch
-echo "Pull qiktrak docker image"
-docker pull namsource/qiktrak:latest
+docker-compose up -d --quiet-pull --build proxy db auth 
 echo
 
 
@@ -90,7 +81,7 @@ echo
 # Start the graphql container
 # then give it time to settle
 echo "Start Hasura GraphQL container"
-docker-compose up -d --build gql
+docker-compose up -d --quiet-pull --build gql
 echo
 
 
@@ -99,7 +90,7 @@ echo
 echo "Execute qiktrak..."
 echo "Allow Hasura container to stabilise"
 sleep 10
-docker-compose up qiktrak 
+docker-compose up --quiet-pull qiktrak 
 echo
 
 echo "Removing qiktrak container"

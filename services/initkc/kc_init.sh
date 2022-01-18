@@ -12,7 +12,9 @@ microdnf install jq > /dev/null
 PATH=$PATH:/opt/jboss/keycloak/bin
 OUTPUT_PATH=/docker-entrypoint-initdb.d
 
-sleep 30
+echo
+echo "Wait for keycloak to complete the startup process..."
+sleep 20
 
 echo
 echo "Login to Keycloak..."
@@ -55,7 +57,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_A
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com"
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.phoneNumber=+61 0456 789 012" -s "attributes.locale=en-AU"
 kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: oz_"${APP_ADMIN}" with password: "${USER_PW}
@@ -64,7 +66,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${
 
 echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath" -s "attributes.firstName=Ronnie" -s "attributes.lastName=MacBeefburger" -s "email=ron@scotapp.com"
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath" -s "attributes.firstName=Ronnie" -s "attributes.lastName=MacBeefburger" -s "email=ron@scotapp.com"  -s "attributes.phoneNumber=+44 04567 891 012" -s "attributes.locale=en-UK"
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
