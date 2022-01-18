@@ -7,8 +7,7 @@ echo
 echo
 echo "Install JSON Query..."
 #install jq package for JSON querying
-apt-get update 
-apt-get install jq -y
+microdnf install jq > /dev/null
 
 PATH=$PATH:/opt/jboss/keycloak/bin
 OUTPUT_PATH=/docker-entrypoint-initdb.d

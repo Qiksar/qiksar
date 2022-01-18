@@ -43,7 +43,7 @@ services:
         env_file: .env
 
         container_name: q_auth
-        image: bitnami/keycloak:16.1.0
+        image: feduxorg/keycloak
 
         # mount configuration files
         volumes:
