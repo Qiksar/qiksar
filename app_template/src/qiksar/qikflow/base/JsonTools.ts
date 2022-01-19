@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
-import { GqlRecord } from './GqlTypes';
+import { GqlRecord, GqlRecords } from './GqlTypes';
 
 export default class JsonTools {
   /** 
@@ -44,5 +44,32 @@ export default class JsonTools {
     });
 
     return field as Type;
+  }
+
+  /**
+   * Return an element from an array of objects, where an object field equals a specified value
+   * 
+   * @param source Array of JSON objects
+   * @param field Field name to match
+   * @param searchValue Required value
+   * @returns object having the specified field value
+   */
+  static GetElementFromArray(
+    source: GqlRecords,
+    field: string,
+    searchValue: string
+  ): GqlRecord | null {
+
+    if (!(source instanceof Array)) return null;
+
+    let output = null;
+
+    source.map((i) => {
+      const val = i[field] as string;
+
+      if (val && val.trim().toLowerCase() === searchValue.trim().toLowerCase()) output = i;
+    });
+
+    return output;
   }
 }

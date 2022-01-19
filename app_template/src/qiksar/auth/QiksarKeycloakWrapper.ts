@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -8,9 +9,10 @@ import Keycloak, { KeycloakProfile } from 'keycloak-js';
 
 import QiksarAuthWrapper from './QiksarAuthWrapper';
 import User from './user';
-import { CreateStore } from '../qikflow/store/GenericStore';
 import Translator from '../Translator/Translator';
 import TokenStore from '../Translator/TokenStore';
+import { GqlRecord, GqlRecords } from '../qikflow/base/GqlTypes';
+import JsonTools from '../qikflow/base/JsonTools';
 
 /**
  * Keycloak implementation of authentication and authorisation
@@ -134,13 +136,29 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         );
       });
 
-    const user_record = await this.EnsureUserProfile(
-      this.keycloak.subject ?? '',
-      kc_profile
-    );
-    await this.ImportLocale(user_record.locale);
+    const metadata = (kc_profile as GqlRecord).userProfileMetadata as GqlRecord;
+    const attributes = metadata.attributes as GqlRecord;
+    
+    const user_profile: User = {
+      auth_id: (kc_profile.id as string) ?? '',
+      realm: this.realm,
+      username: (kc_profile.username as string) ?? '',
+      email: kc_profile.email ?? '',
+      emailVerified: kc_profile.emailVerified ?? false,
+      firstname: (kc_profile.firstName as string) ?? '',
+      lastname: (kc_profile.lastName as string) ?? '',
+      roles: this.GetUserRoles(),
+      mobile: attributes['mobile_phone'] as string ?? '',
+      locale: attributes['locale'] as string ?? process.env.DEFAULT_LOCALE,
+    };
 
-    return user_record;
+    //console.log('PROFILE **************************');
+    //console.log(JSON.stringify(user_profile));
+    //console.log('**************************');
+
+    await this.ImportLocale(user_profile.locale);
+
+    return user_profile;
   }
 
   /**
@@ -252,57 +270,6 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   //#endregion
 
   //#region User Profile
-
-  // Ensure the user profile is created in the database
-  private async EnsureUserProfile(
-    user_id: string,
-    kc_profile: KeycloakProfile
-  ): Promise<User> {
-    const piniaStore = CreateStore('members');
-
-    const where = `user_id: {_eq: "${user_id}"}`;
-    const user_rows = await piniaStore.FetchWhere(where);
-
-    let user_record;
-
-    if (piniaStore.hasRecord) {
-      user_record = user_rows[0];
-    } else {
-      const new_user = {
-        user_id: user_id,
-        email: kc_profile.email,
-        firstname: kc_profile.firstName ?? '',
-        lastname: kc_profile.lastName ?? '',
-        locale_id: process.env.DEFAULT_LOCALE,
-        status_id: 'active',
-        role_id: 'member',
-      };
-
-      user_record = await piniaStore.Add(new_user);
-
-      if (!piniaStore.hasRecord) {
-        throw 'GetUserProfile - Error: Failed to insert new user profile';
-      }
-
-      //console.log('INSERTED USER:')
-      //console.log(JSON.stringify(inserted_user))
-    }
-
-    const user_profile: User = {
-      auth_id: this.keycloak.subject ?? '',
-      realm: this.realm,
-      username: kc_profile.username ?? '',
-      email: kc_profile.email ?? '',
-      emailVerified: kc_profile.emailVerified ?? false,
-      firstname: kc_profile.firstName ?? '',
-      lastname: kc_profile.lastName ?? '',
-      roles: this.GetUserRoles(),
-      locale: user_record.locale_id as string,
-      lastLogin: '',
-    };
-
-    return user_profile;
-  }
 
   // Import the locale according to the setting on the user profile
   private async ImportLocale(locale_setting: string) {

@@ -43,12 +43,13 @@ export default class User {
   roles: string[] = [];
 
   /**
-   * Timestamp of last login
-   */
-  lastLogin = '';
-
-  /**
    * Locale or user specific terminology
    */
   locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
+
+  
+  /**
+   * Locale or user specific terminology
+   */
+   mobile = '';
 }

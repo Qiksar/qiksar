@@ -12,6 +12,9 @@ microdnf install jq > /dev/null
 PATH=$PATH:/opt/jboss/keycloak/bin
 OUTPUT_PATH=/docker-entrypoint-initdb.d
 
+#USER_REQUIRED_ACTIONS=-s 'requiredActions=["VERIFY_EMAIL","UPDATE_PROFILE","CONFIGURE_TOTP","UPDATE_PASSWORD"]'
+
+
 echo
 echo "Wait for keycloak to complete the startup process..."
 sleep 20
@@ -51,22 +54,34 @@ echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
 kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
 
-echo "Assign admin roles: "${APP_ADMIN}" with password: "${USER_PW}
+echo "Assign admin roles: "${APP_ADMIN}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
 
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.phoneNumber=+61 0456 789 012" -s "attributes.locale=en-AU"
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.mobile_phone=+61 0456 789 012" -s "attributes.locale=en-AU" -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
 kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
-echo "Assign tenant_admin roles: oz_"${APP_ADMIN}" with password: "${USER_PW}
+echo "Assign tenant_admin roles: oz_"${APP_ADMIN}
 kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 echo
+echo "Create Australian tenant admin user: "ozadmin" without key attributes set and password: "${USER_PW}
+kcadm.sh create users -r ${REALM_ID} -s username="ozadmin" -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
+kcadm.sh set-password -r ${REALM_ID} --username="ozadmin" --new-password ${USER_PW}
+
+echo "Assign tenant_admin roles: ozadmin"
+kcadm.sh add-roles    -r ${REALM_ID} --uusername="ozadmin" --rolename ${TENANT_ADMIN_ROLE} 
+
+
+
+
+
+echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath" -s "attributes.firstName=Ronnie" -s "attributes.lastName=MacBeefburger" -s "email=ron@scotapp.com"  -s "attributes.phoneNumber=+44 04567 891 012" -s "attributes.locale=en-UK"
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
