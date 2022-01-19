@@ -60,7 +60,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_A
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.mobile_phone=+61 0456 789 012" -s "attributes.locale=en-AU" -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
+kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.mobile_phone=+61 0456 789 012" -s "attributes.locale=en-AU" -s 'requiredActions=["UPDATE_PROFILE"]'
 kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: oz_"${APP_ADMIN}
