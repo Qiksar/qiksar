@@ -11,8 +11,7 @@ import QiksarAuthWrapper from './QiksarAuthWrapper';
 import User from './user';
 import Translator from '../Translator/Translator';
 import TokenStore from '../Translator/TokenStore';
-import { GqlRecord, GqlRecords } from '../qikflow/base/GqlTypes';
-import JsonTools from '../qikflow/base/JsonTools';
+import { GqlRecord } from '../qikflow/base/GqlTypes';
 
 /**
  * Keycloak implementation of authentication and authorisation
