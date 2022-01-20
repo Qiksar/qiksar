@@ -93,19 +93,12 @@ hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPO
 
 
 
-# Start the qiktrak container which will configure Hasura GraphQL
-# The configuration is done according to the contents of the docker/qiktrak folder 
-echo "Execute qiktrak..."
-docker-compose up --quiet-pull qiktrak 
-echo
-
-echo "Removing qiktrak container"
-docker container rm qiktrak
-
-
+# If hasura metadata has not been initialised then run qiktrak to create the initial setup, then export metadata that qiktrak creates
+[ ! -f "hasura/hasura-migrations/metadata/databases/default/tables/tables.yaml" ] && echo "Execute qiktrak..." && docker-compose up --quiet-pull qiktrak && echo "Removing qiktrak container" && docker container rm qiktrak && echo "Exporting base metadata" && export_gql_metadata.sh
 
 echo
-echo "Applying custom metadata to Hasura"
+echo
+echo "Applying GraphQL metadata"
 hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} metadata apply
 
 echo
