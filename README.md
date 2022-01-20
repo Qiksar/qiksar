@@ -127,15 +127,23 @@ chmod u+x ./scaffold.sh
 The scaffold process uses Quasar CLI, which will require the following inputs...
 
 **Project name** : enter your preferred project name
+
 **Project product** : enter your preferred project name
+
 **Project description** : enter a meaningful description of your project
+
 **Author** : enter your email address, or accept the one recovered from your git configuration
 
 **Pick your CSS preprocessor** : SCSS
+
 **Check the features for your project** : ESLINT, TypeScript
+
 - DO NOT SELECT any other options, as Qiksar deals with everything else.
+
 **Select Comoposition API**
+
 **Select Prettier**
+
 **Select Yarn**
 
 The app code is placed in the new_app folder. We used the ```../``` in order to place the app code in its own folder outside of the Qiksar project folder.
