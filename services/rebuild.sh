@@ -74,7 +74,7 @@ echo
 # Initialise the keycloak environment
 # This will create a realm for the app, and create an admin and none admin user
 echo "Configure Keycloak"
-docker exec -u 0 -it q_auth bash -c "chmod a+x /kc_init.sh; bash -c /kc_init.sh"
+docker exec -u 0 q_auth bash -c "chmod a+x /kc_init.sh; bash -c /kc_init.sh"
 echo
 
 
