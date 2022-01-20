@@ -67,7 +67,7 @@ cat hasura/hasura-migrations/config.template \
 echo
 
 echo "Start database and authentication containers"
-docker-compose up -d --quiet-pull --build proxy db auth 
+docker-compose up -d --quiet-pull --build db auth 
 echo
 
 
@@ -81,15 +81,21 @@ echo
 # Start the graphql container
 # then give it time to settle
 echo "Start Hasura GraphQL container"
-docker-compose up -d --quiet-pull --build gql
+docker-compose up -d --quiet-pull --build proxy gql
+echo "Allow Hasura container to stabilise"
+sleep 15
 echo
+echo
+
+
+echo "Applying database migrations"
+hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} migrate apply
+
 
 
 # Start the qiktrak container which will configure Hasura GraphQL
 # The configuration is done according to the contents of the docker/qiktrak folder 
 echo "Execute qiktrak..."
-echo "Allow Hasura container to stabilise"
-sleep 10
 docker-compose up --quiet-pull qiktrak 
 echo
 
@@ -97,9 +103,6 @@ echo "Removing qiktrak container"
 docker container rm qiktrak
 
 
-echo
-echo "Applying database migrations"
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} migrate apply
 
 echo
 echo "Applying custom metadata to Hasura"

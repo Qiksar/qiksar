@@ -1,18 +1,38 @@
 ![image](https://user-images.githubusercontent.com/45703746/147714202-b593e55e-7782-4dd2-9833-5823ef1bed07.png)
 
-# WELCOME TO QIKSAR
+# INTRODUCTION - WELCOME TO QIKSAR
 
-**Quasar Apps powered by Postgres, Hasura GraphQL, Keycloak and Pinia**
+When trying to learn any exciting new framework, like Quasar, you typically need a good example to learn from, and one which helps you to thoroughly explore all of the common concepts, such as data storage, data access and security. These concepts underpin most software applications, and without them there is a large missing piece of the puzzle that helps you understand the usefulness and purpose of the thing you're trying to learn. Which in our case is Quasar.
 
-Qiksar supports learning, helping you to build Quasar apps faster, securely connected to data through a moden GraphQL interface with minimal code.
+Qiksar is a learning environment, that will give you space to explore all of the cool Quasar capabilities and user interface components.
 
-# WELCOME TO THE QIKSAR DEMO APP
+You can use the demo app to learn how to deploy a Progressive Web App, or explore how you can create dynamic user interfaces, which are automatically built based on the types of data your are working with.
 
-The worlds worst example of cyber security!
+Being by visiting the demo app in the cloud (see below), and then take just a few minutes to build the same app on your own computer! 
 
-Here is how to login:
+Finally, subscribe to our YouTube channel to learn about Qiksar and Quasar
 
-https://app.qiksar.com
+Visit: https://www.youtube.com/channel/UCHZYiuLLj82asRqoj4tYe5A
+
+## Learn more about Quasar
+
+You can learn all about Quasar through the amazing online documentation.
+
+Visit : (https://quasar.dev)
+
+
+# VISIT THE QIKSAR DEMO APP
+
+Imagine a global platform that enables member based organisations to bring people together. This is what we imagine the Qiksar demo app does.
+
+In the example, one orgsanisation and membership group exists in Australia, whilst another exists in Scotland. 
+
+So our multi-tenanted app, enables an Australian administrator to login and manage the Australian members, whilst the Scottish administrator looks after members in Scotland.
+
+The demo app, provides a very basic example of how a multi-tenanted platform can be built using Postgres, Hasura GraphQL and Keycloak. 
+
+Want to see it running right now? Simply browse to: https://app.qiksar.com
+
 username: **oz_app_admin**
 or
 username: **scot_app_admin**
@@ -21,79 +41,30 @@ password: **password**
 
 You can now see the demo app running in the cloud!
 
-Please do the right thing, browse the data, make small edits, create your own records so that you can delete them.
-Don't put any secret information in the worlds worst example of a secure app!!!
-If you destroy the data then you just spoil it for everybody and I will have to lock the app down.
+**SECURITY NOTICE:**
+
+Please do the right thing...browse the data, make small edits, create your own records so that you can delete them. Don't spoil the system, and the demonstration data for everybody. Don't put any secret information in the worlds worst example of a secure app!!! Everybody has the passwords :)
+
+If you destroy the data then you just spoil it for everybody and I will have to lock the app or take it down.
 
 
-## Getting Started Videos
+# PREPARE TO BUILD THE DEMO APP
 
-**The videos are pending an update now that the example app has made signiicant improvements with multi-tenancy and PWA features**
+## Pre-requisites
 
-Introduction - https://www.youtube.com/watch?v=ti72vq3aqZw 
-Building a fully functioning prototype app with login, and data storage
+You will need some important pre-requisites installed, including VSCODE, Docker and some command line tools.
 
-
-Smart Data   - https://www.youtube.com/watch?v=GLBG6BNlRqc
-How Qiksar dynamically builds the user interface, and even translates data to foreign languages
-
-
-
-# Introduction
-
-Qiksar is intended to help you get the most from Quasar (https://quasar.dev), by helping you get a functional app running in minutes, so then you can explore all the features of Quasar without having to worry about how to store data, handle users logging in etc. Something that always frustrates a learning journey is when the most important pieces are missing, such as authentication, security and data storage. Qiksar provides you with all the things you need to get up and running on your PC or Mac, and you don't have to sign up for ANY cloud services.
-
-
-## Motivation
-
-The motiviation for this project was to be able to rapidly create a Quasar development environment, with related data and authentication services. It was also highly desirable to have no external dependencies on Cloud based services, e.g. Firebase. Everything will run on your computer, and everything will run identically on Windows or Mac development platforms.
-
-
-## Example of the Objective
-
-Once the detailed instructions below have been followed to completion, you will be able to use your browser to use a Quasar App which manages an imaginary organisation which has a number of members, where the members are placed in specified groups. You can maintain the groups, assign members to groups and maintain the status of members. 
-
-![image](https://user-images.githubusercontent.com/45703746/147625282-fe470734-7933-40ff-be9f-532b0811c7a7.png)
-
-
-### Pre-requisites
-
-
-#### Docker
+### Docker
 
 Install docker and ensure that the docker engine runs when the user logs in.
 
+### VS Code
 
-#### VS Code
+Install VS Code on your computer for the best editing experience.
 
-Install VS Code
+## Clone the Qiksar project
 
-
-# Build Process for Mac
-
-The process is identical to the windows build process described below, simply ignore any references to the Windows Subsystem for Linux (WSL).
-
-So for example, you can simply open the terminal, create a ```development``` folder, and clone the Qiksar git repository and be underway in minutes!
-
-
-# Build Process for Windows
-
-Open WSL2 and install the Hasura CLI...
-
-
-## Install Hasura CLI
-
-For further information, refer to: 
-https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli.html
-
-To install, execute the following command...
-
-```
-curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-```
-
-
-## Check the location where you will clone the Qiksar Repo
+**Note for Windows Users**: Use Windows Subsystem for Linux. Open your WSL instance, and simply follow the remainder of the instructions.
 
 Ensure you are in your home folder:
 
@@ -111,99 +82,49 @@ mkdir dev
 cd dev
 ```
 
-
-## Clone the Qiksar repository from github
+Use your preferred method to clone the Qiksar repository. In this example we use SSH access...
 
 ```
 git clone git@github.com:chrisnurse/qiksar.git 
 ```
 
-As the source code is now in the WSL filesystem, VS Code will be extremely quick when using remote dev containers.
+**Note for Windows Users**: As the source code is now on the WSL filesystem, VS Code will be extremely quick when using remote dev containers. If you do not do it this way, VSCODE is extremely slow, as when VSCODE is running solely in the Windows environment, it has to reach inside WSL to get the source files, which makes it painfully slow.
 
+## Install Command Line Tools
 
-## Launch VS CODE in WSL
+In the Qiksar project directory, execute:
 
-cd qiksar
-code .
+```./install_prereqs.sh```
 
-We are now in VS CODE with a remote connection to WSL filesystem where our code is located. 
-This means, the entire project structure and build tools work the same on Mac and Windows. So you can also do cross-platform development on any computer you prefer.
+This command will install yarn, Quasar CLI and Hasura CLI.
 
-The qiksar project is maintained directly whilst using VSCODE in WSL as this has access to the repo via SSH, as this is how the source code was cloned from GitHub.
+## Preparation complete
 
+At this stage you are fully prepared to follow the simple steps to build the demonstration app, including its supporting services.
 
-## Build the supporting services for Data and Auth
+# BUILD THE DEMO APP
 
-In VS CODE, open a terminal and ensure you are in the root of the qiksar project and can see a folder called
-services. Now build the services (Docker containers), which includes postgreSQL, Hasura GraphQL and Keycloak:
+## Build the supporting services
 
 ```
 cd services
 chmod u+x ./rebuild.sh
 ./rebuild.sh
+cd ..
 ```
 
-Note: In the above commands, we use chmod to ensure that the shell script is executable.
+**Note**: In the above commands, we use chmod to ensure that the shell script is executable.
 
+## Scaffold a new app
 
-### Windows DNS (hosts file)
-
-On Windows it is possible to edit the hosts file in ```C:\Windows\System32\drivers\etc\hosts```
-and add the following entries:
+You are now in the Qiksar project folder, and can execute the scaffold command:
 
 ```
-# app development
-127.0.0.1 login.localhost
-127.0.0.1 graphql.localhost
-127.0.0.1 api.localhost
-127.0.0.1 app.localhost
-# end app development
+chmod u+x ./scaffold.sh
+./scaffold.sh ../new_app
 ```
 
- This step makes the app feel more like it is consuming services from remote locations, as we would typically use services in locations like, ```auth.awesome-app.com```.
-
- Changes need to be made to ** quasar.conf.js ** to point the user interface to the correct service locations.
-
-
-## SCAFFOLD A NEW APP
-
-Once the services are rebuilt, we now need to open the project as a remote container in VS CODE. Doing so, creates a docker image with Quasar and Cordova installed.
-A number of useful VS Code plugins are also installed.
-
-In the bottom left corner, we can click on the green container box which currently shows WSL, and opens the command palette.
-Select "Reopen in Container (Remote-Containers)"
-
-The first time this is done, the container will be built. 
-
-If the ```devcontainer.json``` file is ever modified, or is out of sync with the current container image for any reason, VS CODE will offer you the option to rebuild the container. 
-
-Note: Be cautious in case there are any unsaved changes to your source code which might be at risk. This shouldn't be the case, but better to be safe than sorry, and make sure you preserve any changes.
-
-
-## Use the Qiksar Scaffold process to allow us to use our containerised services
-Once the remote container has launched, in the VS Code Explorer, you will see the app_template folder and the scaffold.sh script.
-
-Open a terminal and ensure you are in the root of the qiksar project and can see the script file:
-scaffold.sh
-
-It may also be necessary to ensure that there is no current "app" folder, which would be the case if you have execute the scaffold process previously. 
-If you wish to re-scaffold a clean app, simply remove or rename the folder so you can use your preferred app name
-
-
-## Ensure the SCAFFOLD script has execute permission, then run it
-chmod u+x scaffold.sh
-scaffold.sh
-
-The QUASAR CLI will execute and require some inputs:
-
-Note: Before proceeding, inside WSL, you may also prefer to configure your git options with your default name and email address:
-
-```
-git config --global user.name "My Name"
-git config --global user.email "my.name@emailaddress.com"
-```
-
-Quasar CLI will require the following inputs...
+The scaffold process uses Quasar CLI, which will require the following inputs...
 
 **Project name** : enter your preferred project name
 **Project product** : enter your preferred project name
@@ -211,86 +132,66 @@ Quasar CLI will require the following inputs...
 **Author** : enter your email address, or accept the one recovered from your git configuration
 
 **Pick your CSS preprocessor** : SCSS
-**Check the features for your project** : ESLINT, TypeScript, Axios and vue-i18n - DO NOT SELECT Vuex because we use Pinia by default
+**Check the features for your project** : ESLINT, TypeScript
+- DO NOT SELECT any other options, as Qiksar deals with everything else.
 **Select Comoposition API**
 **Select Prettier**
 **Select Yarn**
 
-Quasar will now create the default APP template and the neccessary packages will be installed
-You can safely ignore any warnings about dependencies and versions, for now.
+The app code is placed in the new_app folder. We used the ```../``` in order to place the app code in its own folder outside of the Qiksar project folder.
 
-When asked, Does your app have typescript support? input Y and press enter
 
+## Install the packages required by the demo app
+
+```
+cd new_app
+chmod u+x ./qiksar_install.sh
+./qiksar_install.sh
+```
+
+All of the packages required for the demo app will be installed, and the app will be ready to run locally on your computer.
 
 ## Vulnerability Scan
-It is always a good idea to scan packages for vulnerabilities that might cause concern for your and your users.
+It is always a good idea to scan packages for vulnerabilities that might cause concern for you and your users.
 
-After a few moments the scaffold script will conclude by automatically scanning for vulnerabilities in any of the packages used.
+The scaffold script concludes by scanning for vulnerabilities in any of the packages used.
 
-This is done by executing:
+Behind the scenes, the scaffold script executes:
 
 ```
 yarn audit
 ```
 
-So you can do this at any time in the future.
+You can do this manually at any time in the future.
 
 Note any vulnerabilities, they do occur from time to time and you will have to determine your response to them.
-
-
-## Prepare to run the new QUASAR APP
-
-At this point the app folder contains a fully functioning Quasar App, and the services for the database, graphql and login are all running.
-
-
-### Check the docker container services are running
-
-To confirm, as we are currently in WSL, where we executed the services rebuild.sh script, you can enter:
-docker ps
-
-The status column for q_gql, q_auth and q_db will all show as "UP".
-
-
-### Move the scaffolded app folder
-
-At this point it is probably most wise to close VSCODE, and then just run WSL in Windows, because we now need to move the folder container the app code, out to its own isolated location.
-
-In WSL change to the location of the folder where we cloned the github repo:
-cd ~/qiksar
-
-Check the app folder exists:
-ls app
-
-Return to the root folder in which the qiksar folder is located
-cd ~
-
-Move the app folder to the same level:
-mv qiksar/app .
-
 
 ## Open the app code in a remote container
 
 Launch VS CODE
 
 ```
-cd app
 code .
 ```
 
 VS CODE will see the presence of the .devcontainer folder, and automatically ask if you wish to reopen the folder in a remote container:
-Click "Reopen in Container"
 
-If an error occurs, click MORE ACTIONS and select "Rebuild Container"
+**Click "Reopen in Container"**
 
-VSCODE is now running and is attached to a Docker image, which is now our source folder and development environment. VS Code has a number of useful extensions installed.
+If an error occurs, click MORE ACTIONS and select "Rebuild Container".
+
+VSCODE is now running and is attached to a Docker image, which is our  development environment. 
+
+VS Code has a number of useful extensions installed and ready to use.
 
 
-### Serve and test the app
+## Serve and test the app
 
 Open a terminal which will now show the working folder as:
-/workspaces/app
+```/workspaces/app```
 
-Start serving the Quasar App:
+### Start serving the Quasar App:
+
 ```
 quasar dev
 ```
@@ -311,10 +212,11 @@ Click the **LOGIN** BUTTON
 
 Login with:
 
-```
-app_admin@localhost
-Password: password
-```
+**username**: oz_app_admin
+or
+**username**: scot_app_admin
+
+**Password**: password
 
 Use the follwing buttons on the home screen to maintain the different types of data:
 
@@ -344,3 +246,10 @@ Currently documented for Digital Ocean
 
 This helped understand how to provide claims to Hasura within a Keycloak token...
 https://github.com/janhapke/hasura-keycloak
+
+## Quasar
+For further information, refer to: https://quasar.dev
+
+## Hasura CLI
+
+For further information, refer to: https://hasura.io/docs/latest/graphql/core/hasura-cli/install-hasura-cli.html
