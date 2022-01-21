@@ -79,9 +79,22 @@ ADD
     CONSTRAINT group_leader FOREIGN KEY (leader_id) REFERENCES membership.members (member_id);
 
 CREATE TABLE
+    membership.article_status (
+        id text PRIMARY KEY,
+        name text NOT NULL UNIQUE,
+        comment text NOT NULL,
+        created_at timestamptz DEFAULT now() NOT NULL,
+        updated_at timestamptz
+    );
+
+CREATE TABLE
     membership.articles (
         article_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         article text NOT NULL,
+        subject text NOT NULL,
+        summary text NOT NULL,
+        image   text NULL,
+        status_id text NOT NULL REFERENCES membership.article_status,
         created_by uuid NOT NULL REFERENCES membership.members,
         created_at timestamptz DEFAULT now() NOT NULL,
         updated_at timestamptz

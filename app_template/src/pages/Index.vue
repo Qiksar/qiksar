@@ -20,6 +20,22 @@
       class="q-mt-xl"
       color="white"
       text-color="blue"
+      to="/articles"
+      label="Maintain Articles"
+      no-caps
+    />
+    <q-btn
+      class="q-mt-xl"
+      color="white"
+      text-color="blue"
+      to="/article_status"
+      label="Maintain Article Status"
+      no-caps
+    />
+    <q-btn
+      class="q-mt-xl"
+      color="white"
+      text-color="blue"
       to="/groups"
       label="Maintain Groups"
       no-caps

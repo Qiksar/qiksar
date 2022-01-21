@@ -39,12 +39,9 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - device_id
     - member_id
     - description
     - device_type_id
-    - created_at
-    - updated_at
   role: tenant_admin
 select_permissions:
 - permission:
@@ -71,7 +68,6 @@ update_permissions:
 - permission:
     check: null
     columns:
-    - device_id
     - member_id
     - description
     - device_type_id

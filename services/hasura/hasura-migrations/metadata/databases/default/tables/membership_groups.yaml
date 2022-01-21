@@ -33,15 +33,12 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - group_id
     - tenant_id
     - leader_id
     - group_news
     - meeting_day
     - name
     - state
-    - created_at
-    - updated_at
     set:
       tenant_id: x-hasura-tenant-id
   role: tenant_admin

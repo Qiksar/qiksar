@@ -1,0 +1,34 @@
+table:
+  name: article_status
+  schema: membership
+configuration:
+  custom_column_names: {}
+  custom_name: article_status
+  custom_root_fields: {}
+array_relationships:
+- name: articles
+  using:
+    foreign_key_constraint_on:
+      column: status_id
+      table:
+        name: articles
+        schema: membership
+select_permissions:
+- permission:
+    columns:
+    - id
+    - name
+    - comment
+    - created_at
+    - updated_at
+    filter: {}
+  role: member
+- permission:
+    columns:
+    - comment
+    - id
+    - name
+    - created_at
+    - updated_at
+    filter: {}
+  role: tenant_admin

@@ -9,6 +9,9 @@ object_relationships:
 - name: member
   using:
     foreign_key_constraint_on: created_by
+- name: status
+  using:
+    foreign_key_constraint_on: status_id
 array_relationships:
 - name: article_tags
   using:
@@ -24,43 +27,96 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
-    - article_id
-    - created_by
     - article
-    - created_at
-    - updated_at
+    - image
+    - status_id
+    - subject
+    - summary
+    set:
+      created_by: x-hasura-user-id
+      status_id: draft
+  role: member
+- permission:
+    backend_only: false
+    check: {}
+    columns:
+    - article
+    - image
+    - status_id
+    - subject
+    - summary
+    set:
+      created_by: x-hasura-user-id
+      status_id: draft
   role: tenant_admin
 select_permissions:
 - permission:
     columns:
-    - article_id
-    - created_by
     - article
+    - article_id
     - created_at
+    - created_by
+    - image
+    - status_id
+    - subject
+    - summary
     - updated_at
-    filter: {}
+    filter:
+      member:
+        tenant_id:
+          _eq: X-Hasura-Tenant-Id
   role: member
 - permission:
     columns:
-    - article_id
-    - created_by
     - article
+    - article_id
     - created_at
+    - created_by
+    - image
+    - status_id
+    - subject
+    - summary
     - updated_at
-    filter: {}
+    filter:
+      member:
+        tenant_id:
+          _eq: X-Hasura-Tenant-Id
   role: tenant_admin
 update_permissions:
 - permission:
     check: null
     columns:
-    - article_id
-    - created_by
     - article
-    - created_at
-    - updated_at
-    filter: {}
+    - image
+    - status_id
+    - subject
+    - summary
+    filter:
+      created_by:
+        _eq: X-Hasura-User-Id
+  role: member
+- permission:
+    check: null
+    columns:
+    - article
+    - image
+    - status_id
+    - subject
+    - summary
+    filter:
+      member:
+        tenant_id:
+          _eq: X-Hasura-tenant-Id
   role: tenant_admin
 delete_permissions:
 - permission:
-    filter: {}
+    filter:
+      created_by:
+        _eq: X-Hasura-User-Id
+  role: member
+- permission:
+    filter:
+      member:
+        tenant_id:
+          _eq: X-Hasura-tenant-Id
   role: tenant_admin

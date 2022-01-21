@@ -27,13 +27,22 @@ object_relationships:
 insert_permissions:
 - permission:
     backend_only: false
+    check:
+      article:
+        member:
+          member_id:
+            _eq: X-Hasura-User-Id
+    columns:
+    - article_id
+    - tag_id
+  role: member
+- permission:
+    backend_only: false
     check: {}
     columns:
     - article_id
     - row_id
     - tag_id
-    - created_at
-    - updated_at
   role: tenant_admin
 select_permissions:
 - permission:
@@ -62,5 +71,14 @@ update_permissions:
   role: tenant_admin
 delete_permissions:
 - permission:
-    filter: {}
+    filter:
+      article:
+        created_by:
+          _eq: X-Hasura-User-Id
+  role: member
+- permission:
+    filter:
+      article:
+        created_by:
+          _eq: X-Hasura-User-Id
   role: tenant_admin

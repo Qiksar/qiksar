@@ -74,21 +74,17 @@ insert_permissions:
     columns:
     - about_me
     - company
-    - created_at
     - email
     - firstname
     - group_id
     - lastname
     - locale_id
-    - member_id
     - mobile
     - photo
     - rating
     - role_id
     - status_id
     - tenant_id
-    - updated_at
-    - user_id
     set:
       tenant_id: x-hasura-tenant-id
   role: tenant_admin
@@ -151,7 +147,6 @@ update_permissions:
     - group_id
     - lastname
     - locale_id
-    - member_id
     - mobile
     - photo
     - rating

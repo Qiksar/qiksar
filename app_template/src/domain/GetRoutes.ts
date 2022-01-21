@@ -18,6 +18,8 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]> {
     'StatusView',
     'GroupsView',
     'MembersView',
+    'ArticleStatusView',
+    'ArticlesView',
   ]);
 
   const generatedRoutes = getEntityRoutes();

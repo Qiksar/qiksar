@@ -40,10 +40,7 @@ insert_permissions:
     check: {}
     columns:
     - device_id
-    - message_id
     - json_data
-    - created_at
-    - updated_at
   role: tenant_admin
 select_permissions:
 - permission:

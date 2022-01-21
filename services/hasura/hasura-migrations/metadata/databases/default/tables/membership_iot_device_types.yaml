@@ -22,8 +22,6 @@ insert_permissions:
     columns:
     - comment
     - name
-    - created_at
-    - updated_at
   role: tenant_admin
 select_permissions:
 - permission:
@@ -48,7 +46,6 @@ update_permissions:
     columns:
     - comment
     - name
-    - created_at
     - updated_at
     filter: {}
   role: tenant_admin
