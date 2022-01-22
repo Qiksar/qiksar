@@ -695,7 +695,7 @@ export default class Query {
   ): Promise<GqlRecord> {
     //console.log('>> ExecuteMutation')
 
-    console.log('**** mutate input: ' + mutation);
+    // console.log('**** mutate input: ' + mutation);
 
     const doc = { mutation: gql(mutation) };
     store.SetBusy(true);

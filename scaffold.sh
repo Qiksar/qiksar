@@ -98,6 +98,11 @@ echo
 echo "Installing tsconfig.json"
 cp ${SOURCE_LOCATION}/app_template/tsconfig.json ${TARGET}/tsconfig.json
 
+echo "Cleanup obsolete files"
+rm ${TARGET}/src/components/models.ts 
+rm ${TARGET}/src/components/CompositionComponent.vue 
+rm ${TARGET}/src/router/routes.ts 
+
 echo
 echo
 echo "Qiksar scaffolding process complete!"

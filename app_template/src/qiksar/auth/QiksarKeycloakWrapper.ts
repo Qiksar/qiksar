@@ -274,7 +274,7 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   private async ImportLocale(locale_setting: string) {
     // Import the locale for the user
     await import('src/domain/i18n/' + locale_setting).then((module) => {
-      console.log('Translator - Loaded : ' + JSON.stringify(module.default));
+      //console.log('Translator - Loaded : ' + JSON.stringify(module.default));
       //console.log('CURRENT USER AUTHID: ' + user_profile.auth_id );
       //console.log('CURRENT USER LOCALE: ' + user_profile.locale);
 

@@ -147,6 +147,7 @@ update_permissions:
     - group_id
     - lastname
     - locale_id
+    - member_id
     - mobile
     - photo
     - rating

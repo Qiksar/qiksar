@@ -18,6 +18,7 @@ echo
 echo
 echo "Install qiksar dependencies..."
 yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia date-fns axios
+yarn add --silent compressorjs 
 echo
 echo
 
