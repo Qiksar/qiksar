@@ -8,6 +8,7 @@ type fieldOptions =
   | 'hidden'
   | 'locale'
   | 'EntityEditText'
+  | 'EntityEditMarkdown'
   | 'EntityEditSelect'
   | 'EntityEditLichert'
   | 'EntityEditImage'

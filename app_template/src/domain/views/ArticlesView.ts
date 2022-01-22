@@ -31,7 +31,7 @@ class ArticlesView extends Query {
         label: 'Article',
         column: 'article',
         type: 'text',
-        options: ['EntityEditText'],
+        options: ['EntityEditMarkdown'],
       })
 
       .Fetch({
