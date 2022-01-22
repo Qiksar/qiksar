@@ -3,20 +3,55 @@ import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
 class ArticlesView extends Query {
   constructor() {
-    const schema: EntitySchema = EntitySchema.Create(
-      'articles',
-      'article_id',
-      'Articles'
-    )
+    const schema: EntitySchema = EntitySchema.Create({
+      entityName: 'articles',
+      keyField: 'article_id',
+      label: 'Articles',
+    })
 
-      .Field('subject', 'Topic')
-      .Field('summary', 'Summary')
-      .Field('image', 'Banner', 'image', ['EntityEditImage'])
-      .Field('article', 'Article')
+      .AddField({
+        label: 'Topic',
+        column: 'subject',
+        type: 'text',
+        options: ['EntityEditText', 'ongrid'],
+      })
+      .AddField({
+        label: 'Summary',
+        column: 'summary',
+        type: 'text',
+        options: ['EntityEditText'],
+      })
+      .AddField({
+        label: 'Banner',
+        column: 'image',
+        type: 'image',
+        options: ['EntityEditImage'],
+      })
+      .AddField({
+        label: 'Article',
+        column: 'article',
+        type: 'text',
+        options: ['EntityEditText'],
+      })
 
-      .Fetch('members', 'created_by', 'member', 'member_id firstname lastname')
-      .Flatten('member.firstname member.lastname', 'Author')
-      .UseEnum('article_status', 'status_id', 'status')
+      .Fetch({
+        label: 'Author',
+        target_schema: 'members',
+        source_key: 'created_by',
+        source_object: 'member',
+        columns: 'member_id firstname lastname',
+      })
+      .Flatten({
+        field_paths: 'member.firstname member.lastname',
+        label: 'Author',
+        column_name: 'author',
+      })
+      .UseEnum({
+        schemaName: 'article_status',
+        source_id_column: 'status_id',
+        preferred_join_name: 'status',
+        label: 'Published Status',
+      });
 
     super(schema, true);
   }

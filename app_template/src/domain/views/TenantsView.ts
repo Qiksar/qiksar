@@ -3,7 +3,7 @@ import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
 class TenantsView extends Query {
   constructor() {
-    const schema: EntitySchema = EntitySchema.CreateEnum('tenants', 'Tenant');
+    const schema: EntitySchema = EntitySchema.CreateEnum({entityName: 'tenants', label:'Tenant'});
 
     super(schema, true);
   }

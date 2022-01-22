@@ -19,8 +19,9 @@ import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
 
 const props = defineProps<{
-  field: EntityField;
-  entity: GqlRecord;
+  field: EntityField,
+  entity: GqlRecord,
+  update_mode: boolean
 }>();
 
 if (!props.field.IsRelation)

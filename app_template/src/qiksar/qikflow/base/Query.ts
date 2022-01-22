@@ -164,10 +164,12 @@ export default class Query {
   }
 
   get TableColumns(): ITableColumn[] {
-    const fields: ITableColumn[] = [];
+    const columns: ITableColumn[] = [];
 
-    this.Schema.Fields.filter((f) => f.IsOnTable && !f.IsRelation).map((f) => {
-      fields.push({
+    this.Schema.Fields
+    .filter((f) => f.IsOnGrid && !f.IsRelation)
+    .map((f) => {
+      columns.push({
         name: f.Name,
         label: t(f.Label),
         field: f.Name,
@@ -176,7 +178,7 @@ export default class Query {
       });
     });
 
-    return fields;
+    return columns;
   }
 
   //#endregion
@@ -240,14 +242,14 @@ export default class Query {
 		}
 	}`;
 
+    console.log('*** GRAPHQL QUERY');
+    console.log(query);
+
     const q = gql(query);
 
     const doc = {
       query: q,
     };
-
-    //console.log('*** GRAPHQL QUERY');
-    //console.log(query);
 
     return doc;
   }
@@ -354,7 +356,7 @@ export default class Query {
 
     // process flattened fields, where values are pulled up to the current object from
     // related objects
-    this.FieldsOfType('alias').map((alias_field) => {
+    this.FieldsOfType('alias').map((alias_field: EntityField) => {
       let alias_value = '';
 
       if (alias_field && alias_field.ObjectColumns) {
@@ -376,7 +378,6 @@ export default class Query {
         }
       });
     }
-
     return output;
   }
 

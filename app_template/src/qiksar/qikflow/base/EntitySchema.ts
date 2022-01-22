@@ -1,7 +1,5 @@
 import EntityField, {
-  defaultFieldOptions,
   hiddenFieldOptions,
-  defaultEnumOptions,
   defaultIntFieldOptions,
 } from './EntityField';
 import fieldOptions from './fieldOptions';
@@ -9,7 +7,11 @@ import IFieldDefinition from './IFieldDefinition';
 import { GqlRecord } from './GqlTypes';
 import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
-import IInclude from './IInclude';
+import IFetchDefinition from './IFetchDefinition';
+import IFlattenDefinition from './IFlattenDefinition';
+import IUseEnumDefinition from './IUseEnumDefinition';
+import IEnumDefinition from './IEnumDefinition';
+import ICreateSchemaDefinition from './ICreateSchemaDefinition';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -22,7 +24,7 @@ export default class EntitySchema {
   private _fields: Array<EntityField>;
   private _key: string;
   private _is_enum: boolean;
-  private _includes: IInclude[];
+  private _includes: IFetchDefinition[];
   private _transformers: Record<string, GqlRecord>;
 
   //#endregion
@@ -152,30 +154,24 @@ export default class EntitySchema {
   /**
    * Create a schema
    *
-   * @param entityName Name of the entity type
-   * @param keyField Name of the field which is the database unique ID
-   * @param label Default label
+   * @param definition Create schema details
    * @returns Schema
    */
-  static Create(
-    entityName: string,
-    keyField: string,
-    label: string | undefined
-  ): EntitySchema {
-    entityName = entityName.toLowerCase();
+  static Create(definition: ICreateSchemaDefinition): EntitySchema {
+    const entityName = definition.entityName.toLowerCase();
 
     const schema: EntitySchema = new EntitySchema(
       entityName,
-      keyField,
-      label ?? entityName
+      definition.keyField,
+      definition.label ?? entityName
     );
 
     if (this.GetSchemaForEntity(entityName))
-      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityName}`;
+      throw `ERROR: Schema has already been registered for entity type${schema.EntityName}`;
 
     this._schemas.push(schema);
 
-    return schema.SetKey(keyField);
+    return schema.SetKey(definition.keyField);
   }
 
   /**
@@ -185,17 +181,14 @@ export default class EntitySchema {
    * @param label Default label
    * @returns Schema
    */
-  static CreateEnum(
-    entityName: string,
-    label: string | undefined
-  ): EntitySchema {
+  static CreateEnum(definition: IEnumDefinition): EntitySchema {
     const key = 'id';
-    entityName = entityName.toLowerCase();
+    const entityName = definition.entityName.toLowerCase();
 
     const schema: EntitySchema = new EntitySchema(
       entityName,
       key,
-      label ?? entityName,
+      definition.label ?? entityName,
       true
     );
 
@@ -206,8 +199,8 @@ export default class EntitySchema {
 
     return schema
       .SetKey(key, ['sortable'])
-      .Field('name', 'Label')
-      .Field('comment', 'Description')
+      .AddField({ column: 'name', label: 'Label' })
+      .AddField({ column: 'comment', label: 'Description' })
       .CreateTransform('selector', {
         id: 'id',
         label: 'name',
@@ -228,7 +221,7 @@ export default class EntitySchema {
 
     switch (fetch_mode) {
       case 'grid':
-        fields = fields.filter((f) => f.IsKey || f.IsOnTable);
+        fields = fields.filter((f) => f.IsKey || f.IsOnGrid);
         break;
 
       case 'light':
@@ -310,34 +303,11 @@ export default class EntitySchema {
   }
 
   /**
-   * Add a field to the schema
-   *
-   * @param fieldName Field name
-   * @param label Default label
-   * @param type Data type name
-   * @param options Field options which control when the field is loaded, how it is edited and translated
-   * @returns The schema for fluent API style calls
-   */
-  Field(
-    fieldName: string,
-    label: string,
-    type = 'Text',
-    options = defaultFieldOptions
-  ): EntitySchema {
-    return this.AddField({
-      name: fieldName,
-      label,
-      type,
-      options,
-    } as IFieldDefinition);
-  }
-
-  /**
    * Add a field definition to the schema
    * @param fieldDefinition Field definition
    * @returns The schema for fluent API style calls
    */
-  private AddField(fieldDefinition: IFieldDefinition): EntitySchema {
+  AddField(fieldDefinition: IFieldDefinition): EntitySchema {
     this._fields.push(new EntityField(fieldDefinition));
     return this;
   }
@@ -353,7 +323,13 @@ export default class EntitySchema {
     fo: fieldOptions[] = hiddenFieldOptions
   ): EntitySchema {
     this._key = fieldName;
-    return this.Field(fieldName, 'ID', 'id', fo);
+    
+    return this.AddField({
+      column: fieldName,
+      label: 'ID',
+      type: 'id',
+      options: fo,
+    });
   }
 
   /**
@@ -364,21 +340,23 @@ export default class EntitySchema {
    * @param preferred_join_name The field name on the parent used to refer to the enumeration
    * @returns The schema for fluent API style calls
    */
-  UseEnum(
-    schemaName: string,
-    source_id_column: string,
-    preferred_join_name: string
-  ): EntitySchema {
-    const view = Query.GetView(schemaName);
-    const et = view.Schema.EntityName;
-    const desc = view.Schema.Label;
+  UseEnum(definition: IUseEnumDefinition): EntitySchema {
+    const view = Query.GetView(definition.schemaName);
+    const entity_type = view.Schema.EntityName;
+    const label = definition.label ?? view.Schema.Label;
 
-    return this.Fetch(
-      et,
-      source_id_column,
-      preferred_join_name,
-      'id name comment'
-    ).Flatten(`${preferred_join_name}.name`, desc, defaultIntFieldOptions);
+    return this.Fetch({
+      label: definition.label ?? view.Schema.Label,
+      target_schema: entity_type,
+      source_key: definition.source_id_column,
+      source_object: definition.preferred_join_name,
+      columns: 'id name comment',
+    }).Flatten({
+      field_paths: `${definition.preferred_join_name}.name`,
+      label: label,
+      options: defaultIntFieldOptions,
+      column_name: entity_type
+    });
   }
 
   /**
@@ -390,18 +368,8 @@ export default class EntitySchema {
    * @param required_columns List of columns to fetch from the child
    * @returns The schema for fluent API style calls
    */
-  Fetch(
-    schemaName: string,
-    key_column_name: string,
-    ref_column_name: string,
-    required_columns: string
-  ): EntitySchema {
-    this._includes.push({
-      schema: schemaName,
-      key_column_name,
-      ref_column_name,
-      ref_columns: required_columns,
-    } as IInclude);
+  Fetch(include: IFetchDefinition): EntitySchema {
+    this._includes.push(include);
 
     return this;
   }
@@ -410,20 +378,21 @@ export default class EntitySchema {
    * Resolve connections between this schema and others
    */
   private ResolveConnections() {
-    this._includes.map((i) => {
-      const view = Query.GetView(i.schema);
+    this._includes.map((i: IFetchDefinition) => {
+
+      const view = Query.GetView(i.target_schema);
 
       const fieldDefinition = {
-        name: i.schema,
-        object_schema: i.schema,
-        label: view.Schema.Label,
+        label: i.label ?? view.Schema.Label,
+        column: i.target_schema,
         type: 'obj',
-        options: ['ontable', 'EntityEditSelect'],
-        key_column_name: i.key_column_name,
-        ref_column_name: i.ref_columns,
-        schema: i.schema,
-        object_name: i.ref_column_name,
-        object_columns: i.ref_columns,
+        options: ['ongrid', 'EntityEditSelect'],
+        object_schema: i.target_schema,
+        key_column_name: i.source_key,
+        ref_column_name: i.columns,
+        schema: i.target_schema,
+        object_name: i.source_object,
+        object_columns: i.columns,
       } as IFieldDefinition;
 
       this.AddField(fieldDefinition);
@@ -447,7 +416,7 @@ export default class EntitySchema {
     const view = Query.GetView(schemaName);
 
     const def = {
-      name: schemaName,
+      column: schemaName,
       label: view.Schema.Label,
       type: 'arr',
       object_schema: ref_type,
@@ -458,25 +427,19 @@ export default class EntitySchema {
   }
 
   /**
-   * Merge fields into the current object from child objects
+   * Merge columns into the current object from child objects
    *
-   * @param path Path to the target field, e.g. group.name
-   * @param label Default label
-   * @param options Used to indicate when the field is included, such as 'weight' of the field and fetch mode used
+   * @param definition Definition of the columns to merge in from the source object
    * @returns The schema for fluent API style calls
    */
-  Flatten(
-    path: string,
-    label: string,
-    options = defaultEnumOptions
-  ): EntitySchema {
-    const name = path;
+  Flatten(definition: IFlattenDefinition): EntitySchema {
+
     const def = {
-      name,
-      label,
+      label: definition.label,
+      column: definition.column_name,
       type: 'alias',
-      options,
-      object_columns: path,
+      object_columns: definition.field_paths,
+      options: definition.options,
     } as IFieldDefinition;
 
     return this.AddField(def);

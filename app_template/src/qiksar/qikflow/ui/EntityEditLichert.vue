@@ -24,7 +24,8 @@ import { computed } from 'vue';
 
 const props = defineProps<{
   field: EntityField,
-  entity: GqlRecord
+  entity: GqlRecord,
+  update_mode: boolean
 }>();
 
 const emit = defineEmits<{

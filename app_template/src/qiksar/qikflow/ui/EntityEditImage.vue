@@ -4,7 +4,7 @@
   <div class="row q-mt-lg q-mb-lg">
     <div class="column">
       <label>
-        <b>{{ props.field.Label }}</b>
+        {{ props.field.Label }}
       </label>
       <q-avatar size="150px" class="q-mt-lg q-mb-lg">
         <img :src="(props.entity[props.field.Name] as string)" />
@@ -42,8 +42,9 @@ const IMAGE_QUALITY = 0.6;
 const defaultPreview = 'https://via.placeholder.com/300x300';
 
 const props = defineProps<{
-  field: EntityField;
-  entity: GqlRecord;
+  field: EntityField,
+  entity: GqlRecord,
+  update_mode: boolean
 }>();
 
 const emit = defineEmits<{

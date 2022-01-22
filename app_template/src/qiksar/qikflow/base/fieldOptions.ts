@@ -3,7 +3,7 @@ type fieldOptions =
   | 'sortable'
   | 'required'
   | 'readonly'
-  | 'ontable'
+  | 'ongrid'
   | 'isenum'
   | 'hidden'
   | 'locale'

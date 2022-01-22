@@ -6,6 +6,7 @@
           :is="components[field.Editor]"
           :field="field"
           :entity="reactive_record"
+          :update_mode="UpdateMode"
           @update:modelValue="updateEntity(field, $event)"
         />
       </div>
@@ -54,15 +55,17 @@ const props = defineProps<{
 // eslint-disable-next-line vue/no-setup-props-destructure
 let id: string = props.context.entity_id;
 
+// Indicates if a record is being inserted or updated
+const UpdateMode = ref(false);
+
 // create store for the required view/schema
-const RecordLoaded = ref(false);
 const store = CreateStore(props.context.entity_type);
 
 const reactive_record = ref({} as GqlRecord) as Ref<GqlRecord>;
 
 function setReactiveRecord(entity: GqlRecord): void {
   reactive_record.value = entity;
-  RecordLoaded.value = true;
+  UpdateMode.value = true;
 }
 
 // Fetch the entity to edit

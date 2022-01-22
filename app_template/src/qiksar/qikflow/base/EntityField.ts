@@ -4,13 +4,13 @@ import fieldOptions from './fieldOptions';
 import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
 
-export const defaultFieldOptions: fieldOptions[] = ['ontable', 'sortable'];
+export const defaultFieldOptions: fieldOptions[] = ['ongrid', 'sortable'];
 export const defaultIntFieldOptions: fieldOptions[] = [
   ...defaultFieldOptions,
   'locale',
 ];
 export const defaultEnumOptions: fieldOptions[] = [
-  'ontable',
+  'ongrid',
   'sortable',
   'readonly',
   'EntityEditText',
@@ -19,28 +19,28 @@ export const hiddenFieldOptions: fieldOptions[] = ['hidden'];
 
 export default class EntityField {
   //#region Properties
+  private _label: string;
   private _name: string;
   private _type: fieldType;
+  private _options: fieldOptions[];
   private _key_column_name: string | undefined = undefined;
   private _object_name: string | undefined = undefined;
   private _object_columns: string | undefined = undefined;
   private _object_schema: string | undefined = undefined;
-  private _label: string;
   private _sortable: boolean;
-  private _on_table: boolean;
+  private _on_grid: boolean;
   private _readonly: boolean;
   private _required: boolean;
   private _is_enum: boolean;
   private _heavy: boolean;
   private _locale: boolean;
-  private _options: fieldOptions[];
   private _editor: string;
   //#endregion
 
   constructor(def: IFieldDefinition) {
-    this._name = def.name;
+    this._name = def.column;
     this._label = def.label;
-    this._type = def.type;
+    this._type = def.type ?? 'text';
     this._options = def.options ?? defaultFieldOptions;
 
     this._key_column_name = def.key_column_name;
@@ -52,7 +52,7 @@ export default class EntityField {
       throw `Invalid field definition ${this.Name} - ${this.Type} must specify a schema`;
 
     this._sortable = this.Options.includes('sortable');
-    this._on_table = this.Options.includes('ontable');
+    this._on_grid = this.Options.includes('ongrid');
     this._readonly = this.Options.includes('readonly');
     this._required = this.Options.includes('required');
     this._is_enum = this.Options.includes('isenum');
@@ -79,8 +79,8 @@ export default class EntityField {
     return this._options;
   }
 
-  get IsOnTable(): boolean {
-    return this._on_table;
+  get IsOnGrid(): boolean {
+    return this._on_grid;
   }
   get IsReadonly(): boolean {
     return this._readonly;

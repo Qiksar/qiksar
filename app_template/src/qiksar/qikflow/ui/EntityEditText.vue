@@ -3,9 +3,9 @@
     <div class="col">
       <q-input
         :label="props.field.Label"
-        :model-value="props.entity[props.field.Name]"
+        :model-value="props.entity[props.field.Name] as string"
         @update:modelValue="onUpdate($event)"
-        debounce="300"
+        debounce="1000"
       />
     </div>
   </div>
@@ -17,7 +17,8 @@ import { GqlRecord } from '../base/GqlTypes';
 
 const props = defineProps<{
   field: EntityField,
-  entity: GqlRecord
+  entity: GqlRecord,
+  update_mode: boolean
 }>();
 
 const emit = defineEmits<{
