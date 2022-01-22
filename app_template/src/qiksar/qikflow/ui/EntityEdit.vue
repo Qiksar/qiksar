@@ -32,6 +32,7 @@ import EntityEditMultiCheck from './EntityEditMultiCheck.vue';
 import EntityEditSelect from './EntityEditSelect.vue';
 import EntityEditTags from './EntityEditTags.vue';
 import EntityEditText from './EntityEditText.vue';
+import EntityEditMarkdown  from './EntityEditMarkdown.vue';
 
 import EntityField from '../base/EntityField';
 
@@ -42,6 +43,7 @@ const components = {
   EntityEditSelect,
   EntityEditTags,
   EntityEditText,
+  EntityEditMarkdown,
 } as Dictionary;
 
 const props = defineProps<{

@@ -1,6 +1,7 @@
 <template>
   <div class="row">
     <div class="col">
+    <b>Make this into a Markdown Editor</b>
       <q-input
         :label="props.field.Label"
         :model-value="props.entity[props.field.Name] as string"
