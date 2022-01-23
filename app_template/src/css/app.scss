@@ -1,1 +1,7 @@
 // app global css in SCSS form
+
+// Variables
+@import './variables';
+
+// Custom component styles
+@import './components/fields';

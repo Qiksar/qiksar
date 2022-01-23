@@ -1,3 +1,4 @@
+#!/bin/sh
 # run initial installation
 clear
 echo "Qiksar installer - runs yarn to install the base tools and packages"
@@ -19,6 +20,7 @@ echo
 echo "Install qiksar dependencies..."
 yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscriptions-transport-ws flatted keycloak-js pinia date-fns axios
 yarn add --silent compressorjs 
+yarn add --silent -D @quasar/quasar-app-extension-qmarkdown@^2.0.0-beta.2
 echo
 echo
 

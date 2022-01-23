@@ -1,0 +1,48 @@
+.q-markdown-input__field {
+  > .q-field {
+    .q-field__control {
+      height: calc(100% - 72px);
+    }
+
+    .q-field__control-container {
+      height: 100%;
+    }
+
+    .q-field__native {
+      padding-left: 15px;
+      padding-right: 15px;
+      resize: none;
+    }
+  }
+}
+
+.q-markdown-input__preview {
+  height: 400px;
+  border-left: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+
+  .q-markdown {
+    padding: 0 15px 15px 15px;
+    border-bottom: 1px solid $border-color;
+  }
+}
+
+.q-markdown-input__header {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  padding: 0 15px;
+  border-top: 1px solid $border-color;
+  border-bottom: 1px solid $border-color;
+
+  span {
+    font-size: 0.8rem;
+    color: #a0aabf;
+  }
+}
+
+.q-markdown-input__block-dropdown {
+  label {
+    color: #a0aabf;
+  }
+}
