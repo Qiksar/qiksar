@@ -8,13 +8,11 @@
 --
 -- Having a human readable ID column also makes it easy to seed the data, where assigning enum ids to other records becomes trivial.
 --
-INSERT INTO
-    membership.tenants ("id", "name", "comment")
-VALUES ('admin', 'admin', 'Platform Administrator'), ('perth', 'perth', 'Hopping mad people'), (
-        'arbroath',
-        'arbroath',
-        'Scotlands foremost clinic'
-    );
+INSERT INTO membership.tenants ("id", "name", "comment")
+VALUES 
+('default',  'default',  'B2B Platform'), 
+('perth',    'perth',    'Hopping mad people'), 
+('arbroath', 'arbroath', 'Scotlands foremost clinic');
 
 INSERT INTO
     membership.roles ("id", "name", "comment")
@@ -39,6 +37,8 @@ VALUES ('draft', 'draft', 'Not approved or published'), ('review', 'review', 'Re
         'approved',
         'Article is approved for publishing'
     ), ('published', 'published', 'Article is published');
+
+
 
 --
 -- AUSTRALIAN GROUPS and MEMBERS
@@ -87,10 +87,10 @@ VALUES (
             WHERE
                 name LIKE '%Aussie Group 1%'
         ),
-        'Barry',
-        'perth',
+        'Bruce',
+        'Cobber',
         'Megacorp',
-        'am@ozemail.com.au',
+        'bruce@ozapp.com',
         '0400 111 222',
         'active',
         'member',
@@ -158,7 +158,7 @@ VALUES (
         'Angela',
         'Adelaide',
         'Angies Plumbers',
-        'em@ozemail.com.au',
+        'angela@ozemail.com.au',
         '0400 511 222',
         'active',
         'member',
@@ -181,34 +181,6 @@ VALUES (
         'member',
         'en-AU'
     );
-
-UPDATE
-    membership.groups
-SET
-    leader_id = (
-        SELECT
-            member_id
-        FROM
-            "membership"."members"
-        WHERE
-            firstname LIKE '%Barry%'
-    )
-WHERE
-    name = 'Aussie Group 1';
-
-UPDATE
-    membership.groups
-SET
-    leader_id = (
-        SELECT
-            member_id
-        FROM
-            "membership"."members"
-        WHERE
-            firstname LIKE '%Sheila%'
-    )
-WHERE
-    name = 'Aussie Group 2';
 
 --
 -- SCOTTISH GROUPS and MEMBERS
@@ -352,6 +324,54 @@ VALUES (
         'en-UK'
     );
 
+
+
+--
+-- Assign the keycloak user IDs to the member records, updating the ID so the member ID is the Keycloak user ID
+--
+UPDATE
+    membership.members AS MEMBER
+SET
+    member_id = CAST(id AS uuid)
+FROM
+    keycloak.user_entity
+WHERE
+    keycloak.user_entity.email = MEMBER.email;
+
+--
+-- Assign a leader to each group
+--
+-- 
+
+
+UPDATE
+    membership.groups
+SET
+    leader_id = (
+        SELECT
+            member_id
+        FROM
+            "membership"."members"
+        WHERE
+            firstname LIKE '%Barry%'
+    )
+WHERE
+    name = 'Aussie Group 1';
+
+UPDATE
+    membership.groups
+SET
+    leader_id = (
+        SELECT
+            member_id
+        FROM
+            "membership"."members"
+        WHERE
+            firstname LIKE '%Sheila%'
+    )
+WHERE
+    name = 'Aussie Group 2';
+
 UPDATE
     membership.groups
 SET
@@ -379,6 +399,8 @@ SET
     )
 WHERE
     name = 'Scotland Group 2';
+
+
 
 ---
 --- IOT sample data
@@ -520,7 +542,7 @@ VALUES (
             FROM
                 "membership"."members"
             WHERE
-                firstname LIKE '%Robert%'
+                lastname LIKE '%Bell%'
         )
     ), (
         'draft',
@@ -533,7 +555,7 @@ VALUES (
             FROM
                 "membership"."members"
             WHERE
-                firstname LIKE '%Billy%'
+                lastname LIKE '%Bell%'
         )
     ), (
         'draft',
@@ -546,7 +568,7 @@ VALUES (
             FROM
                 "membership"."members"
             WHERE
-                firstname LIKE '%Helen%'
+                firstname LIKE '%Bruce%'
         )
     ), (
         'draft',
@@ -559,7 +581,7 @@ VALUES (
             FROM
                 "membership"."members"
             WHERE
-                firstname LIKE '%Sheila%'
+                firstname LIKE '%Bruce%'
         )
     );
 

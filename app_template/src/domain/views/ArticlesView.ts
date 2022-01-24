@@ -40,6 +40,7 @@ class ArticlesView extends Query {
         source_key: 'created_by',
         source_object: 'member',
         columns: 'member_id firstname lastname',
+        options: ['readonly', 'hidden']
       })
       .Flatten({
         field_paths: 'member.firstname member.lastname',

@@ -1,6 +1,14 @@
 <template>
   <div class="row">
-    <div class="col">
+    <div class="col" v-if="props.readonly">
+      <label>
+        <b>{{ props.field.Label }}</b>
+        <br />
+        <span>{{ SelectedValue() }}</span>
+      </label>
+    </div>
+
+    <div class="col" v-else>
       <q-select
         :model-value="selectedObject"
         :options="options"
@@ -24,7 +32,7 @@ import { ref, onBeforeMount } from 'vue';
 const props = defineProps<{
   field: EntityField,
   entity: GqlRecord,
-  update_mode: boolean
+  readonly: boolean
 }>();
 
 if (!props.field.IsRelation)
@@ -41,6 +49,18 @@ const emit = defineEmits<{
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 let selectedObject = ref({});
 let options = ref([] as GqlRecords);
+
+function SelectedValue(): string {
+  
+  //console.log(`${props.field.Name} - ${props.readonly ? 'readonly' : 'writeable'}`)
+
+  const obj = selectedObject.value as GqlRecord;
+
+  if (!obj || !obj['label'])
+    return '';
+
+  return obj['label'] as string
+}
 
 onBeforeMount(async () => {
   if (!props.field?.ObjectSchema)

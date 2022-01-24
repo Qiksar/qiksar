@@ -21,7 +21,7 @@ import { ref, onBeforeMount } from 'vue';
 const props = defineProps<{
   field: EntityField,
   entity: GqlRecord,
-  update_mode: boolean
+  readonly: boolean
 }>();
 
 if (!props.field.IsRelation)

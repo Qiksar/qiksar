@@ -94,9 +94,15 @@ echo
 echo "Installing sample config - quasar.conf.js.example -> quasar.conf.js"
 cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
 
+#Note for future if we use Quasar Extensions, we will need to copy this file too
+#echo
+#echo "Installing quasar.extensions.json"
+#cp ${SOURCE_LOCATION}/app_template/quasar.extensions.json ${TARGET}/quasar.extensions.json
+
 echo
 echo "Installing tsconfig.json"
 cp ${SOURCE_LOCATION}/app_template/tsconfig.json ${TARGET}/tsconfig.json
+
 
 echo "Cleanup obsolete files"
 rm ${TARGET}/src/components/models.ts 

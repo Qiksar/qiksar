@@ -13,7 +13,7 @@ echo
 echo
 echo
 echo "Install dev dependencies..."
-yarn add --silent dotenv jest ts-jest @types/jest -D
+yarn add --silent dotenv jest ts-jest @types/jest @quasar/quasar-app-extension-qmarkdown -D
 
 echo
 echo

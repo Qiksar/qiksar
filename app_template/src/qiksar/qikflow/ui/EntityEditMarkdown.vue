@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 <template>
   <div class="q-markdown-input">
     <div class="row">
@@ -58,32 +60,42 @@ type TMarkdownBlock = {
 };
 
 interface IProxy {
-  focus: () => void,
+  focus: () => void;
+  $el: HTMLElement;
 };
 
 const props = defineProps<{
-  field: EntityField;
-  entity: GqlRecord;
-  update_mode: boolean;
+  field: EntityField,
+  entity: GqlRecord,
+  readonly: boolean
 }>();
 
 const state = ref({
   block: '',
 });
+
 const markdownField = ref(null);
 
 const blocks: Array<TMarkdownBlock> = [
   {
-    label: 'BLOCK 1',
-    value: '{{ BLOCK_1 }}',
+    label: 'Governing Law AU',
+    value: '{{ GOV_LAW_AU }}\r\n',
   },
   {
-    label: 'BLOCK 2',
-    value: '{{ BLOCK_2 }}',
+    label: 'Governing Law AU - WA',
+    value: '{{ GOV_LAW_AU_WA }}\r\n',
   },
   {
-    label: 'BLOCK 3',
-    value: '{{ BLOCK_3 }}',
+    label: 'Governing Law AU - VIC',
+    value: '{{ GOV_LAW_AU_VIC }}\r\n',
+  },
+  {
+    label: 'ISO 27001 - Section 12c',
+    value: '{{ ISO27001_S12 }}\r\n',
+  },
+  {
+    label: '',
+    value: '{{ BLOCK_3 }}\r\n',
   },
 ];
 
@@ -98,18 +110,27 @@ function onUpdate(value: string) {
 }
 
 function onSelectBlock() {
-  const block: TMarkdownBlock = state.value.block;
-  insertBlock(block.value);
+  const text = state.value.block;
+  insertBlock(text);
   state.value.block = '';
 }
 
 function insertBlock(block: string) {
-  const currentMarkdown: string = props.entity[props.field.Name];
-  const refProxy: IProxy = markdownField.value;
-  const textareaWrapperEl = refProxy.$el as HTMLElement;
+
+  if(!markdownField.value)
+    return;
+
+  const refProxy = markdownField.value as IProxy;
+  const textareaWrapperEl = refProxy.$el;
   const textareaEl = textareaWrapperEl.querySelector('textarea');
-  const selectionStart = textareaEl.selectionStart;
-  const selectionEnd = textareaEl.selectionEnd;
+
+  if(!textareaEl)
+      return;
+
+  const selectionStart:number = textareaEl.selectionStart;
+  const selectionEnd:number = textareaEl.selectionEnd;
+
+  const currentMarkdown: string = props.entity[props.field.Name] as string;
   const textBefore: string = currentMarkdown.substring(0, selectionStart);
   const textAfter: string = currentMarkdown.substring(selectionEnd, currentMarkdown.length);
   const newMarkdown = `${textBefore}${block}${textAfter}`;

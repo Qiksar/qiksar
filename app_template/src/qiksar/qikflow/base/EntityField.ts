@@ -34,6 +34,7 @@ export default class EntityField {
   private _is_enum: boolean;
   private _heavy: boolean;
   private _locale: boolean;
+  private _writeonce: boolean;
   private _editor: string;
   //#endregion
 
@@ -58,6 +59,7 @@ export default class EntityField {
     this._is_enum = this.Options.includes('isenum');
     this._heavy = this.Options.includes('heavy');
     this._locale = this.Options.includes('locale');
+    this._writeonce = this.Options.includes('writeonce') || this.IsKey;
 
     const editor = this._options.filter((o) => o.startsWith('EntityEdit'));
     this._editor = editor.length > 0 ? editor[0] : 'EntityEditText';
@@ -109,7 +111,9 @@ export default class EntityField {
   get IsAlias(): boolean {
     return this._type === 'alias';
   }
-
+  get IsWriteOnce(): boolean {
+    return this._writeonce;
+  }
   get ObjectName(): string | undefined {
     return this._object_name;
   }

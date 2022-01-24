@@ -47,7 +47,6 @@ insert_permissions:
     - summary
     set:
       created_by: x-hasura-user-id
-      status_id: draft
   role: tenant_admin
 select_permissions:
 - permission:

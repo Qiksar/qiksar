@@ -44,7 +44,7 @@ const defaultPreview = 'https://via.placeholder.com/300x300';
 const props = defineProps<{
   field: EntityField,
   entity: GqlRecord,
-  update_mode: boolean
+  readonly?: boolean
 }>();
 
 const emit = defineEmits<{

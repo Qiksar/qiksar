@@ -107,7 +107,6 @@ select_permissions:
     - status_id
     - tenant_id
     - updated_at
-    - user_id
     filter:
       tenant_id:
         _eq: x-hasura-tenant-id
@@ -130,7 +129,6 @@ select_permissions:
     - status_id
     - tenant_id
     - updated_at
-    - user_id
     filter:
       tenant_id:
         _eq: x-hasura-tenant-id
@@ -155,7 +153,6 @@ update_permissions:
     - status_id
     - tenant_id
     - updated_at
-    - user_id
     filter:
       tenant_id:
         _eq: x-hasura-tenant-id

@@ -18,7 +18,7 @@ import { GqlRecord } from '../base/GqlTypes';
 const props = defineProps<{
   field: EntityField,
   entity: GqlRecord,
-  update_mode: boolean
+  readonly: boolean
 }>();
 
 const emit = defineEmits<{

@@ -17,6 +17,7 @@ import { GqlRecords } from './GqlTypes';
 import ITableColumn from './ITableColumn';
 import fetchMode from './fetchMode';
 import JsonTools from './JsonTools';
+import fieldOptions from './fieldOptions';
 
 export const defaultFetchMode: fetchMode = 'heavy';
 
@@ -151,7 +152,7 @@ export default class Query {
     const fields = {} as Record<string, EntityField>;
 
     this.Schema.Fields.filter((f) => {
-      return f.IsRelation || (!f.IsKey && !f.IsAlias);
+      return f.IsRelation || (!f.IsKey && !f.IsAlias && !f.IsReadonly);
     }).map((f) => (fields[f.Name] = f));
 
     return fields;
@@ -163,12 +164,24 @@ export default class Query {
     });
   }
 
+  FieldsWithOption(
+    option: fieldOptions,
+    isRequired = true
+  ): Array<EntityField> {
+    return this.Schema.Fields.filter((f: EntityField) => {
+      const isPresent = f.Options.lastIndexOf(option) >= 0;
+
+      // true if the caller wants fields that have a specified option
+      // or
+      // true if the caller wants fields that do not have a specified option
+      return (isRequired && isPresent) || (!isRequired && !isPresent);
+    });
+  }
+
   get TableColumns(): ITableColumn[] {
     const columns: ITableColumn[] = [];
 
-    this.Schema.Fields
-    .filter((f) => f.IsOnGrid && !f.IsRelation)
-    .map((f) => {
+    this.Schema.Fields.filter((f) => f.IsOnGrid && !f.IsRelation).map((f) => {
       columns.push({
         name: f.Name,
         label: t(f.Label),
@@ -242,8 +255,8 @@ export default class Query {
 		}
 	}`;
 
-    console.log('*** GRAPHQL QUERY');
-    console.log(query);
+    //console.log('*** GRAPHQL QUERY');
+    //console.log(query);
 
     const q = gql(query);
 
@@ -580,18 +593,17 @@ export default class Query {
   //#region Insert, Update, Delete
 
   async Insert(
-    data: GqlRecord,
+    row: GqlRecord,
     fetch_mode = defaultFetchMode,
     store: any
   ): Promise<GqlRecord> {
-    data = this.PrepareRowForSave(data);
+    const data = this.PrepareRowForSave(row);
 
-    // The user can not set the ID of an entity.
     // For enums, the ID is always the name
     if (this.Schema.IsEnum) data['id'] = data['name'];
 
     const mutation_name = `insert_${this.Schema.EntityName}`;
-    const doc = `
+    const mutation = `
             mutation {
                 ${mutation_name} (
                     objects: [{ ${this.Stringify(data)} }]
@@ -600,7 +612,9 @@ export default class Query {
                 }
             }`;
 
-    const r: GqlRecord = await this.ExecuteMutation(doc, 'insert', store);
+    //console.log(mutation);
+
+    const r: GqlRecord = await this.ExecuteMutation(mutation, 'insert', store);
     const id = JsonTools.ExtractFromPath<string>(r, [
       'data',
       mutation_name,
@@ -615,16 +629,20 @@ export default class Query {
     return store.CurrentRecord;
   }
 
-  // If id is missing, handle as an insert, else do an update
-  async Update(data: GqlRecord, store: any): Promise<GqlRecord> {
+  async Update(row: GqlRecord, store: any): Promise<GqlRecord> {
+    // The data will be manipulated to prevent insertion of primary keys and updates to readonly field
+    let data = { ...row };
+
     const id = data[this.Schema.Key] as string;
     if (!id)
       throw `Unable to get primary key from ${this.Schema.EntityName}:${this.Schema.Key} = "${id}"`;
 
     data = this.PrepareRowForSave(data);
 
-    // Remove the primary key so that the mutation does not attempt to update it
-    delete data[this.Schema.Key];
+    // Remove any fields which are write-once
+    this.FieldsWithOption('writeonce').map((f: EntityField) => {
+      delete data[f.Name];
+    });
 
     let keys = '';
     Object.keys(data).map((k) => (keys += `${k} `));

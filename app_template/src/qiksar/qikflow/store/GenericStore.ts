@@ -72,13 +72,9 @@ export function CreateStore<Id extends string>(name: Id) {
        */
       TransformRows(transformName: string): GqlRecords {
         if (this.Rows.length == 0)
-          console.log(
-            'Unable to build Enum Selections from empty dataset: ' +
-              this.view.Schema.EntityName
-          );
+          console.log('Unable to build Enum Selections from empty dataset: ' + this.view.Schema.EntityName);
 
         const selections = [] as GqlRecords;
-
         const fields = this.view.Schema.GetTransform(transformName);
 
         this.Rows.map((r) => {

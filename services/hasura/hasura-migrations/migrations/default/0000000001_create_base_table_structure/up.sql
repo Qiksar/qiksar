@@ -56,7 +56,6 @@ CREATE TABLE
     membership.members (
         member_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         tenant_id VARCHAR NOT NULL REFERENCES membership.tenants,
-        user_id uuid NULL UNIQUE,
         email text NULL UNIQUE,
         mobile text NOT NULL DEFAULT '',
         group_id uuid NULL REFERENCES membership.groups,

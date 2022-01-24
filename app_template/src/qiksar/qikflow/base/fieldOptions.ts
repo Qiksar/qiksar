@@ -7,6 +7,7 @@ type fieldOptions =
   | 'isenum'
   | 'hidden'
   | 'locale'
+  | 'writeonce'
   | 'EntityEditText'
   | 'EntityEditMarkdown'
   | 'EntityEditSelect'

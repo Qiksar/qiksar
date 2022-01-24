@@ -328,7 +328,7 @@ export default class EntitySchema {
       column: fieldName,
       label: 'ID',
       type: 'id',
-      options: fo,
+      options: [...fo, 'writeonce'],
     });
   }
 
@@ -381,12 +381,13 @@ export default class EntitySchema {
     this._includes.map((i: IFetchDefinition) => {
 
       const view = Query.GetView(i.target_schema);
+      const opts = i.options ?? [];
 
       const fieldDefinition = {
         label: i.label ?? view.Schema.Label,
         column: i.target_schema,
         type: 'obj',
-        options: ['ongrid', 'EntityEditSelect'],
+        options: [...opts, 'ongrid', 'EntityEditSelect'],
         object_schema: i.target_schema,
         key_column_name: i.source_key,
         ref_column_name: i.columns,

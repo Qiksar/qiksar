@@ -6,7 +6,7 @@
           :is="components[field.Editor]"
           :field="field"
           :entity="reactive_record"
-          :update_mode="UpdateMode"
+          :readonly="ReadOnly(field)"
           @update:modelValue="updateEntity(field, $event)"
         />
       </div>
@@ -14,27 +14,36 @@
   </div>
 
   <div class="row">
-    <q-btn v-if="!currentRecordId()" @click="insertEntity()" class="q-mt-xl" label="Save" />
-    <q-btn v-if="currentRecordId()" @click="deleteEntity()" class="q-mt-xl" label="Delete" />
+    <q-btn
+      v-if="!currentRecordId()"
+      @click="insertEntity()"
+      class="q-mt-xl"
+      label="Save"
+    />
+    <q-btn
+      v-if="currentRecordId()"
+      @click="deleteEntity()"
+      class="q-mt-xl"
+      label="Delete"
+    />
     <q-btn to="/" class="q-mt-xl" label="Home" />
   </div>
 </template>
 
 <script lang="ts" setup>
+import { onBeforeMount, ref, Ref } from "vue";
+import { CreateStore } from "src/qiksar/qikflow/store/GenericStore";
+import { Dictionary, GqlRecord } from "../base/GqlTypes";
 
-import { onBeforeMount, ref, Ref } from 'vue';
-import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
-import { Dictionary, GqlRecord } from '../base/GqlTypes';
+import EntityEditImage from "./EntityEditImage.vue";
+import EntityEditLichert from "./EntityEditLichert.vue";
+import EntityEditMultiCheck from "./EntityEditMultiCheck.vue";
+import EntityEditSelect from "./EntityEditSelect.vue";
+import EntityEditTags from "./EntityEditTags.vue";
+import EntityEditText from "./EntityEditText.vue";
+import EntityEditMarkdown from "./EntityEditMarkdown.vue";
 
-import EntityEditImage from './EntityEditImage.vue';
-import EntityEditLichert from './EntityEditLichert.vue';
-import EntityEditMultiCheck from './EntityEditMultiCheck.vue';
-import EntityEditSelect from './EntityEditSelect.vue';
-import EntityEditTags from './EntityEditTags.vue';
-import EntityEditText from './EntityEditText.vue';
-import EntityEditMarkdown  from './EntityEditMarkdown.vue';
-
-import EntityField from '../base/EntityField';
+import EntityField from "../base/EntityField";
 
 const components = {
   EntityEditImage,
@@ -60,6 +69,11 @@ let id: string = props.context.entity_id;
 // Indicates if a record is being inserted or updated
 const UpdateMode = ref(false);
 
+function ReadOnly(field: EntityField): boolean {
+  const readonly = (UpdateMode.value && field.IsWriteOnce) || field.IsReadonly;
+  return readonly;
+}
+
 // create store for the required view/schema
 const store = CreateStore(props.context.entity_type);
 
@@ -67,12 +81,11 @@ const reactive_record = ref({} as GqlRecord) as Ref<GqlRecord>;
 
 function setReactiveRecord(entity: GqlRecord): void {
   reactive_record.value = entity;
-  UpdateMode.value = true;
 }
 
 // Fetch the entity to edit
 onBeforeMount(async () => {
-  if (id && id.length > 0 && id != 'new') {
+  if (id && id.length > 0 && id != "new") {
     await store.FetchById(id, !store.view.IsEnum).then(() => {
       setReactiveRecord(store.CurrentRecord);
     });
@@ -95,6 +108,7 @@ function currentRecordId(): string | undefined {
 
 async function insertEntity(): Promise<void> {
   reactive_record.value = await store.Add(reactive_record.value);
+  UpdateMode.value = true;
 }
 
 function updateEntity(field: EntityField, value: unknown): void {
