@@ -3,9 +3,7 @@
 <template>
   <div class="q-markdown-input">
     <div class="row">
-      <label class="q-mb-md">
-        {{ props.field.Label }}
-      </label>
+      <label class="q-mb-md">{{ props.field.Label }}</label>
     </div>
     <div class="row">
       <div class="col-6">
@@ -19,12 +17,12 @@
                 v-model="state.block"
                 :options="blocks"
                 dense
-                @update:modelValue="onSelectBlock"
+                @update:modelValue="onSelectBlock($event)"
               />
             </div>
           </div>
           <q-input
-            :model-value="props.entity[props.field.Name] as string"
+            :model-value="decodeBlock()"
             @update:modelValue="onUpdate($event)"
             ref="markdownField"
             type="textarea"
@@ -39,10 +37,7 @@
           <div class="q-markdown-input__header">
             <span class="text-uppercase">Preview</span>
           </div>
-          <q-markdown
-            :src="props.entity[props.field.Name] as string"
-            class="full-height overflow-auto"
-          />
+          <q-markdown :src="decodeBlock()" class="full-height overflow-auto" />
         </div>
       </div>
     </div>
@@ -71,7 +66,7 @@ const props = defineProps<{
 }>();
 
 const state = ref({
-  block: '',
+  block: ''
 });
 
 const markdownField = ref(null);
@@ -103,34 +98,54 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
+function decodeBlock(): string {
+  let text: string = (props.entity[props.field.Name] ?? '') as string;
+
+  text = text.replace(/\{\%0A\}/g, '\n');
+  text = text.replace(/\{\%0D\}/g, '\r');
+  text = text.replace(/\{\%09\}/g, '\t');
+  text = text.replace(/\{\%SQ\}/g, '\'');
+  text = text.replace(/\{\%DQ\}/g, '\"');
+
+  return text;
+
+}
+
 function onUpdate(value: string) {
   if (!value) return;
 
-  emit('update:modelValue', value);
+  let save = value.replace(/\'/g, '{%SQ}')
+  save = save.replace(/\"/g, '{%DQ}')
+  save = save.replace(/\t/g, '{%09}')
+  save = save.replace(/\r/g, '{%0D}')
+  save = save.replace(/\n/g, '{%0A}');
+
+  console.log(save)
+
+  emit('update:modelValue', save);
 }
 
-function onSelectBlock() {
-  const text = state.value.block;
-  insertBlock(text);
+function onSelectBlock(e: TMarkdownBlock) {
+  insertBlock(e.value);
   state.value.block = '';
 }
 
 function insertBlock(block: string) {
 
-  if(!markdownField.value)
+  if (!markdownField.value)
     return;
 
   const refProxy = markdownField.value as IProxy;
   const textareaWrapperEl = refProxy.$el;
   const textareaEl = textareaWrapperEl.querySelector('textarea');
 
-  if(!textareaEl)
-      return;
+  if (!textareaEl)
+    return;
 
-  const selectionStart:number = textareaEl.selectionStart;
-  const selectionEnd:number = textareaEl.selectionEnd;
+  const selectionStart: number = textareaEl.selectionStart;
+  const selectionEnd: number = textareaEl.selectionEnd;
 
-  const currentMarkdown: string = props.entity[props.field.Name] as string;
+  const currentMarkdown: string = decodeBlock();
   const textBefore: string = currentMarkdown.substring(0, selectionStart);
   const textAfter: string = currentMarkdown.substring(selectionEnd, currentMarkdown.length);
   const newMarkdown = `${textBefore}${block}${textAfter}`;
