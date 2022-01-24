@@ -33,11 +33,15 @@
         </div>
       </div>
       <div class="col-6">
-        <div class="q-markdown-input__preview overflow-auto">
+        <div class="q-markdown-input__preview overflow-hidden">
           <div class="q-markdown-input__header">
             <span class="text-uppercase">Preview</span>
           </div>
-          <q-markdown :src="decodeBlock()" class="full-height overflow-auto" />
+          <q-markdown
+            :plugins="markdownPlugins"
+            :src="decodeBlock()"
+            class="full-height overflow-auto"
+          />
         </div>
       </div>
     </div>
@@ -46,6 +50,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+import markdownItMermaid from '@datatraccorporation/markdown-it-mermaid';
 import EntityField from '../base/EntityField';
 import { GqlRecord } from '../base/GqlTypes';
 
@@ -70,6 +75,7 @@ const state = ref({
 });
 
 const markdownField = ref(null);
+const markdownPlugins = [markdownItMermaid];
 
 const blocks: Array<TMarkdownBlock> = [
   {
