@@ -24,23 +24,20 @@
 </template>
 
 <script lang="ts" setup>
-
 import { onBeforeMount } from 'vue';
 import { GqlRecord } from 'src/qiksar/qikflow/base/GqlTypes';
 import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
-import { Router } from 'src/router'
+import { Router } from 'src/router';
 
 const props = defineProps<{
-  entity_type: string
-}
->();
+  entity_type: string;
+}>();
 
 const store = CreateStore(props.entity_type);
 
 onBeforeMount(() => {
   void FetchRows();
 });
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const onRowClick = (event: any, row: GqlRecord): void => {
@@ -49,7 +46,7 @@ const onRowClick = (event: any, row: GqlRecord): void => {
     const path = `/${props.entity_type}/edit/${row[key] as string}`;
     void Router.push(path);
   }
-}
+};
 
 function FetchRows() {
   /* TODO move to filters section above grid
@@ -71,5 +68,4 @@ function DeleteRecord(entity: GqlRecord): void {
   void store.deleteWhere('email: {_eq: "' + (entity.email as string) + '"}');
 }
 */
-
 </script>

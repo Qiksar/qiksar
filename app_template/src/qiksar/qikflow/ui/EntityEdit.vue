@@ -31,19 +31,19 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, ref, Ref } from "vue";
-import { CreateStore } from "src/qiksar/qikflow/store/GenericStore";
-import { Dictionary, GqlRecord } from "../base/GqlTypes";
+import { onBeforeMount, ref, Ref } from 'vue';
+import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
+import { Dictionary, GqlRecord } from '../base/GqlTypes';
 
-import EntityEditImage from "./EntityEditImage.vue";
-import EntityEditLichert from "./EntityEditLichert.vue";
-import EntityEditMultiCheck from "./EntityEditMultiCheck.vue";
-import EntityEditSelect from "./EntityEditSelect.vue";
-import EntityEditTags from "./EntityEditTags.vue";
-import EntityEditText from "./EntityEditText.vue";
-import EntityEditMarkdown from "./EntityEditMarkdown.vue";
+import EntityEditImage from './EntityEditImage.vue';
+import EntityEditLichert from './EntityEditLichert.vue';
+import EntityEditMultiCheck from './EntityEditMultiCheck.vue';
+import EntityEditSelect from './EntityEditSelect.vue';
+import EntityEditTags from './EntityEditTags.vue';
+import EntityEditText from './EntityEditText.vue';
+import EntityEditMarkdown from './EntityEditMarkdown.vue';
 
-import EntityField from "../base/EntityField";
+import EntityField from '../base/EntityField';
 
 const components = {
   EntityEditImage,
@@ -85,7 +85,7 @@ function setReactiveRecord(entity: GqlRecord): void {
 
 // Fetch the entity to edit
 onBeforeMount(async () => {
-  if (id && id.length > 0 && id != "new") {
+  if (id && id.length > 0 && id != 'new') {
     await store.FetchById(id, !store.view.IsEnum).then(() => {
       setReactiveRecord(store.CurrentRecord);
     });

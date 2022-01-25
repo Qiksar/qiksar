@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script lang='ts' setup>
+<script lang="ts" setup>
 // eslint-disable @typescript-eslint/no-unused-vars
 
 import EntityField from '../base/EntityField';
@@ -18,9 +18,9 @@ import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
 
 const props = defineProps<{
-  field: EntityField,
-  entity: GqlRecord,
-  readonly: boolean
+  field: EntityField;
+  entity: GqlRecord;
+  readonly: boolean;
 }>();
 
 if (!props.field.IsRelation)
@@ -48,7 +48,9 @@ onBeforeMount(async () => {
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
     options.value = store.TransformRows('selector');
-    selectedObject.value = options.value.filter((f) => f['id'] == fieldValue)[0];
+    selectedObject.value = options.value.filter(
+      (f) => f['id'] == fieldValue
+    )[0];
 
     //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
   });

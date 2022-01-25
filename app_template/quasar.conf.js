@@ -55,18 +55,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       // Import environment variables
-      //env: require('dotenv').config().parsed,
-
-      env :{
-        //'PUBLIC_GRAPHQL_ENDPOINT':'https://graphql.qiksar.com/v1/graphql',
-        //'PUBLIC_AUTH_ENDPOINT':'https://login.qiksar.com/auth',
-
-        'PUBLIC_GRAPHQL_ENDPOINT':'http://localhost:8092/v1/graphql',
-        'PUBLIC_AUTH_ENDPOINT':'http://localhost:8093/auth',
-
-        'I18N_WARNINGS': false,
-        'DEFAULT_LOCALE': 'en-AU'
-      },
+      env: require('dotenv').config().parsed,
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
 

@@ -1,9 +1,9 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div
+    class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center"
+  >
     <div>
-      <div style="font-size: 10vh">
-        Logged Out
-      </div>
+      <div style="font-size: 10vh">Logged Out</div>
 
       <q-btn
         to="/members"
@@ -26,9 +26,8 @@ export default {
   beforeCreate() {
     void AuthWrapper.Logout();
   },
-  setup(){
-    return {
-    }
-  }
-}
+  setup() {
+    return {};
+  },
+};
 </script>

@@ -23,16 +23,15 @@
 </template>
 
 <script lang="ts" setup>
-
 import EntityField from '../base/EntityField';
 import { GqlRecord, GqlRecords } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
 
 const props = defineProps<{
-  field: EntityField,
-  entity: GqlRecord,
-  readonly: boolean
+  field: EntityField;
+  entity: GqlRecord;
+  readonly: boolean;
 }>();
 
 if (!props.field.IsRelation)
@@ -43,7 +42,7 @@ if (!props.field.ObjectSchema)
 
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
 }>();
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -51,42 +50,38 @@ let selectedObject = ref({});
 let options = ref([] as GqlRecords);
 
 function SelectedValue(): string {
-  
   //console.log(`${props.field.Name} - ${props.readonly ? 'readonly' : 'writeable'}`)
 
   const obj = selectedObject.value as GqlRecord;
 
-  if (!obj || !obj['label'])
-    return '';
+  if (!obj || !obj['label']) return '';
 
-  return obj['label'] as string
+  return obj['label'] as string;
 }
 
 onBeforeMount(async () => {
-  if (!props.field?.ObjectSchema)
-    return;
+  if (!props.field?.ObjectSchema) return;
 
   const store = CreateStore(props.field.ObjectSchema);
-  await store.FetchAll()
-    .then(() => {
-      const fieldName = props.field?.AffectedFieldName ?? '';
-      const fieldValue = props.entity[fieldName];
+  await store.FetchAll().then(() => {
+    const fieldName = props.field?.AffectedFieldName ?? '';
+    const fieldValue = props.entity[fieldName];
 
-      // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
-      options.value = store.TransformRows('selector');
-      selectedObject.value = options.value.filter(f => f['id'] == fieldValue)[0];
+    // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
+    options.value = store.TransformRows('selector');
+    selectedObject.value = options.value.filter(
+      (f) => f['id'] == fieldValue
+    )[0];
 
-      //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
-    })
+    //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
+  });
 });
 
 function selectionChanged(value: GqlRecord) {
-  if (!value)
-    return;
+  if (!value) return;
 
   selectedObject.value = value;
   const selectedId = value['id'] as string;
   emit('update:modelValue', selectedId);
 }
-
 </script>

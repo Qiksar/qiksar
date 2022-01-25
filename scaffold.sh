@@ -80,19 +80,22 @@ cp ${SOURCE_LOCATION}/qiksar_install.sh ${TARGET}
 
 echo
 echo "Copy src folder"
-cp -R  ${SOURCE_LOCATION}/app_template/src/*          ${TARGET}/src
+cp -R  ${SOURCE_LOCATION}/app_template/src/* ${TARGET}/src
 
 echo
 echo "Copy remote dev container config "
-cp -Ra ${SOURCE_LOCATION}/app_template/.devcontainer  ${TARGET}
+cp -Ra ${SOURCE_LOCATION}/app_template/.devcontainer ${TARGET}
 
 echo
 echo "Rename quasar.conf.js -> quasar.conf.js.keep"
 mv ${TARGET}/quasar.conf.js ${TARGET}/quasar.conf.js.keep
 
 echo
-echo "Installing sample config - quasar.conf.js.example -> quasar.conf.js"
-cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
+echo "Installing quasar.conf.js"
+cp ${SOURCE_LOCATION}/app_template/quasar.conf.js ${TARGET}/quasar.conf.js
+echo
+echo "Installing .env"
+cp ${SOURCE_LOCATION}/app_template/dev.env ${TARGET}/.env
 
 echo
 echo "Installing quasar.extensions.json"
@@ -129,4 +132,5 @@ echo
 echo 
 
 read -p "Press CTRL-C to end the process, or ENTER to run the new app..."
+cd $TARGET
 quasar dev

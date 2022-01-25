@@ -42,9 +42,9 @@ const IMAGE_QUALITY = 0.6;
 const defaultPreview = 'https://via.placeholder.com/300x300';
 
 const props = defineProps<{
-  field: EntityField,
-  entity: GqlRecord,
-  readonly?: boolean
+  field: EntityField;
+  entity: GqlRecord;
+  readonly?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -66,8 +66,7 @@ function onUpdate(value: string) {
 function onChange() {
   const file = state.value.imageFile;
 
-  if (!file)
-    return;
+  if (!file) return;
 
   const on_read_complete = (event: ProgressEvent) => {
     const target = event.target as FileReader;
@@ -82,11 +81,7 @@ function onChange() {
     success(compressedFile) {
       try {
         const reader = new FileReader();
-        reader.addEventListener(
-          'load',
-          on_read_complete,
-          false
-        );
+        reader.addEventListener('load', on_read_complete, false);
         reader.readAsDataURL(compressedFile);
       } catch (error) {
         throw new Error(error as string);

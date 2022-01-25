@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */ /* eslint-disable
+@typescript-eslint/no-unsafe-assignment */
 <template>
   <div class="q-markdown-input">
     <div class="row">
@@ -62,16 +62,16 @@ type TMarkdownBlock = {
 interface IProxy {
   focus: () => void;
   $el: HTMLElement;
-};
+}
 
 const props = defineProps<{
-  field: EntityField,
-  entity: GqlRecord,
-  readonly: boolean
+  field: EntityField;
+  entity: GqlRecord;
+  readonly: boolean;
 }>();
 
 const state = ref({
-  block: ''
+  block: '',
 });
 
 const markdownField = ref(null);
@@ -110,20 +110,19 @@ function decodeBlock(): string {
   text = text.replace(/\{\%0A\}/g, '\n');
   text = text.replace(/\{\%0D\}/g, '\r');
   text = text.replace(/\{\%09\}/g, '\t');
-  text = text.replace(/\{\%SQ\}/g, '\'');
-  text = text.replace(/\{\%DQ\}/g, '\"');
+  text = text.replace(/\{\%SQ\}/g, "'");
+  text = text.replace(/\{\%DQ\}/g, '"');
 
   return text;
-
 }
 
 function onUpdate(value: string) {
   if (!value) return;
 
-  let save = value.replace(/\'/g, '{%SQ}')
-  save = save.replace(/\"/g, '{%DQ}')
-  save = save.replace(/\t/g, '{%09}')
-  save = save.replace(/\r/g, '{%0D}')
+  let save = value.replace(/\'/g, '{%SQ}');
+  save = save.replace(/\"/g, '{%DQ}');
+  save = save.replace(/\t/g, '{%09}');
+  save = save.replace(/\r/g, '{%0D}');
   save = save.replace(/\n/g, '{%0A}');
 
   emit('update:modelValue', save);
@@ -135,23 +134,23 @@ function onSelectBlock(e: TMarkdownBlock) {
 }
 
 function insertBlock(block: string) {
-
-  if (!markdownField.value)
-    return;
+  if (!markdownField.value) return;
 
   const refProxy = markdownField.value as IProxy;
   const textareaWrapperEl = refProxy.$el;
   const textareaEl = textareaWrapperEl.querySelector('textarea');
 
-  if (!textareaEl)
-    return;
+  if (!textareaEl) return;
 
   const selectionStart: number = textareaEl.selectionStart;
   const selectionEnd: number = textareaEl.selectionEnd;
 
   const currentMarkdown: string = decodeBlock();
   const textBefore: string = currentMarkdown.substring(0, selectionStart);
-  const textAfter: string = currentMarkdown.substring(selectionEnd, currentMarkdown.length);
+  const textAfter: string = currentMarkdown.substring(
+    selectionEnd,
+    currentMarkdown.length
+  );
   const newMarkdown = `${textBefore}${block}${textAfter}`;
 
   // Call update

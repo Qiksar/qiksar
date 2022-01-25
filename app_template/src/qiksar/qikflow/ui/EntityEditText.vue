@@ -16,20 +16,18 @@ import EntityField from '../base/EntityField';
 import { GqlRecord } from '../base/GqlTypes';
 
 const props = defineProps<{
-  field: EntityField,
-  entity: GqlRecord,
-  readonly: boolean
+  field: EntityField;
+  entity: GqlRecord;
+  readonly: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
+  (e: 'update:modelValue', value: string): void;
 }>();
 
 function onUpdate(value: string) {
-  if (!value)
-    return;
+  if (!value) return;
 
   emit('update:modelValue', value);
 }
-
 </script>
