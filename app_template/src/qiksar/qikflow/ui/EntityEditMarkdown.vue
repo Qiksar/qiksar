@@ -126,8 +126,6 @@ function onUpdate(value: string) {
   save = save.replace(/\r/g, '{%0D}')
   save = save.replace(/\n/g, '{%0A}');
 
-  console.log(save)
-
   emit('update:modelValue', save);
 }
 
