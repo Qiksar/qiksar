@@ -11,7 +11,7 @@ export default interface QiksarAuthWrapper {
    * Initialise the authorisation service, but does not trigger the aiuth flow
    * @param userStore Store which containers the user profile
    */
-  Init(userStore: any): Promise<void>;
+  Init(router: vueRouter): Promise<void>;
 
   /**
    * he authorisation token provided by the service after login
@@ -41,6 +41,11 @@ export default interface QiksarAuthWrapper {
    * @param role Indicates
    */
   HasRealmRole(role: string): boolean;
+
+  /**
+   * The active user profile
+   */
+  get User(): User;
 
   /**
    * Get the list of roles assigned to the user

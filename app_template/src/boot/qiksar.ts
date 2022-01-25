@@ -3,13 +3,10 @@
 
 import { boot } from 'quasar/wrappers';
 import { Router } from 'src/router';
-import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
-import { QiksarKeycloakWrapper } from 'src/qiksar/auth/QiksarKeycloakWrapper';
-
 import { createPinia } from 'pinia';
-import useUserStore from 'src/qiksar/auth/userStore';
 
-export let userStore = {};
+import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
+import QiksarKeycloakWrapper from 'src/qiksar/auth/QiksarKeycloakWrapper';
 
 // Set the auth wrapper to an instance of the Qiksar Keycloak wrapper
 export const AuthWrapper: QiksarAuthWrapper = new QiksarKeycloakWrapper();
@@ -25,9 +22,5 @@ export const AuthWrapper: QiksarAuthWrapper = new QiksarKeycloakWrapper();
 //
 export default boot(async ({ app }) => {
   app.use(createPinia());
-  userStore = useUserStore();
-
-  await AuthWrapper.Init(userStore);
-
-  AuthWrapper.SetupRouterGuards(Router);
+  await AuthWrapper.Init(Router);
 });

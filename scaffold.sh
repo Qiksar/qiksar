@@ -118,13 +118,6 @@ echo
 echo
 echo "Qiksar scaffolding process complete!"
 echo
-echo "Next Steps"
-echo "----------"
-echo
-echo "1. Run VSCODE and open the dev container"
-echo "2. Start the app with 'quasar dev'"
-echo
-echo
 echo "Thank you for exploring Qiksar!"
 echo
 echo "- Checkout our YouTube channel: https://www.youtube.com/channel/UCHZYiuLLj82asRqoj4tYe5A"
@@ -134,3 +127,6 @@ echo
 echo "Remember to become a member of the Quasar community, and add your support at https://donate.quasar.dev. You'll feel good about it :)"
 echo 
 echo 
+
+read -p "Press CTRL-C to end the process, or ENTER to run the new app..."
+quasar dev

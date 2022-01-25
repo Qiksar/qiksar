@@ -7,15 +7,15 @@
         <q-toolbar-title>QIKSAR DEMO APP</q-toolbar-title>
 
         <q-btn-dropdown
-          v-if='userStore.loggedIn'
+          v-if='AuthWrapper?.user.loggedIn ?? false'
           color='primary'
           icon='account_circle'
-          :label='userStore.user.username'
+          :label="AuthWrapper?.user.username ?? ''"
         >
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label>Locale: {{ userStore.user.locale }}</q-item-label>
+                <q-item-label>Locale: {{ AuthWrapper.user.locale }}</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -60,7 +60,6 @@
 import EssentialLink from 'components/EssentialLink.vue';
 import { defineComponent, ref } from 'vue';
 import { AuthWrapper } from 'src/boot/qiksar';
-import { userStore } from 'src/boot/qiksar';
 
 const linksList = [
   {
@@ -127,8 +126,6 @@ export default defineComponent({
       onLogoutClick() {
         AuthWrapper.Logout();
       },
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      userStore,
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {

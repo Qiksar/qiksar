@@ -8,6 +8,7 @@ import { Router as vueRouter } from 'vue-router';
 import Keycloak, { KeycloakProfile } from 'keycloak-js';
 
 import QiksarAuthWrapper from './QiksarAuthWrapper';
+import useUserStore from './userStore';
 import User from './user';
 import Translator from '../Translator/Translator';
 import TokenStore from '../Translator/TokenStore';
@@ -16,7 +17,7 @@ import { GqlRecord } from '../qikflow/base/GqlTypes';
 /**
  * Keycloak implementation of authentication and authorisation
  */
-export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
+export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   //#region Properties
 
   // actual instance of keycloak
@@ -175,8 +176,8 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
    * Initialise the authorisation service, but does not trigger the aiuth flow
    * @param userStore Store which containers the user profile
    */
-  async Init(userStore: any): Promise<void> {
-    this.userStore = userStore;
+  async Init(router: vueRouter): Promise<void> {
+    this.userStore = useUserStore();
 
     // Initialisation options
     const kc_init_options: Keycloak.KeycloakInitOptions = {
@@ -184,8 +185,11 @@ export class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       checkLoginIframe: false,
     };
 
-    await this.keycloak.init(kc_init_options).then(async (auth_result) => {
+    await this.keycloak
+    .init(kc_init_options)
+    .then(async (auth_result) => {
       await this.AuthComplete(auth_result);
+      this.SetupRouterGuards(router);
     });
   }
 
