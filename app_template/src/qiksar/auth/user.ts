@@ -47,9 +47,8 @@ export default class User {
    */
   locale = process.env.DEFAULT_LOCALE ?? 'en-AU';
 
-  
   /**
    * Locale or user specific terminology
    */
-   mobile = '';
+  mobile = '';
 }

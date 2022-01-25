@@ -323,7 +323,7 @@ export default class EntitySchema {
     fo: fieldOptions[] = hiddenFieldOptions
   ): EntitySchema {
     this._key = fieldName;
-    
+
     return this.AddField({
       column: fieldName,
       label: 'ID',
@@ -355,7 +355,7 @@ export default class EntitySchema {
       field_paths: `${definition.preferred_join_name}.name`,
       label: label,
       options: defaultIntFieldOptions,
-      column_name: entity_type
+      column_name: entity_type,
     });
   }
 
@@ -379,7 +379,6 @@ export default class EntitySchema {
    */
   private ResolveConnections() {
     this._includes.map((i: IFetchDefinition) => {
-
       const view = Query.GetView(i.target_schema);
       const opts = i.options ?? [];
 
@@ -434,7 +433,6 @@ export default class EntitySchema {
    * @returns The schema for fluent API style calls
    */
   Flatten(definition: IFlattenDefinition): EntitySchema {
-
     const def = {
       label: definition.label,
       column: definition.column_name,

@@ -48,7 +48,7 @@ export default class JsonTools {
 
   /**
    * Return an element from an array of objects, where an object field equals a specified value
-   * 
+   *
    * @param source Array of JSON objects
    * @param field Field name to match
    * @param searchValue Required value
@@ -59,7 +59,6 @@ export default class JsonTools {
     field: string,
     searchValue: string
   ): GqlRecord | null {
-
     if (!(source instanceof Array)) return null;
 
     let output = null;
@@ -67,7 +66,8 @@ export default class JsonTools {
     source.map((i) => {
       const val = i[field] as string;
 
-      if (val && val.trim().toLowerCase() === searchValue.trim().toLowerCase()) output = i;
+      if (val && val.trim().toLowerCase() === searchValue.trim().toLowerCase())
+        output = i;
     });
 
     return output;

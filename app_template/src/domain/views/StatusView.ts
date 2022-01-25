@@ -3,7 +3,10 @@ import EntitySchema from '../../qiksar/qikflow/base/EntitySchema';
 
 class StatusView extends Query {
   constructor() {
-    const schema: EntitySchema = EntitySchema.CreateEnum({entityName: 'status', label:'Status'});
+    const schema: EntitySchema = EntitySchema.CreateEnum({
+      entityName: 'status',
+      label: 'Status',
+    });
 
     super(schema, true);
   }

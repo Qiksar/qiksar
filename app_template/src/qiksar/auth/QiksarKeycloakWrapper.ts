@@ -138,7 +138,7 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
     const metadata = (kc_profile as GqlRecord).userProfileMetadata as GqlRecord;
     const attributes = metadata.attributes as GqlRecord;
-    
+
     const user_profile: User = {
       auth_id: (kc_profile.id as string) ?? '',
       realm: this.realm,
@@ -148,8 +148,8 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       firstname: (kc_profile.firstName as string) ?? '',
       lastname: (kc_profile.lastName as string) ?? '',
       roles: this.GetUserRoles(),
-      mobile: attributes['mobile_phone'] as string ?? '',
-      locale: attributes['locale'] as string ?? process.env.DEFAULT_LOCALE,
+      mobile: (attributes['mobile_phone'] as string) ?? '',
+      locale: (attributes['locale'] as string) ?? process.env.DEFAULT_LOCALE,
     };
 
     //console.log('PROFILE **************************');
@@ -185,9 +185,7 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       checkLoginIframe: false,
     };
 
-    await this.keycloak
-    .init(kc_init_options)
-    .then(async (auth_result) => {
+    await this.keycloak.init(kc_init_options).then(async (auth_result) => {
       await this.AuthComplete(auth_result);
       this.SetupRouterGuards(router);
     });
