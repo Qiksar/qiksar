@@ -94,10 +94,9 @@ echo
 echo "Installing sample config - quasar.conf.js.example -> quasar.conf.js"
 cp ${SOURCE_LOCATION}/quasar.conf.js.example ${TARGET}/quasar.conf.js
 
-#Note for future if we use Quasar Extensions, we will need to copy this file too
-#echo
-#echo "Installing quasar.extensions.json"
-#cp ${SOURCE_LOCATION}/app_template/quasar.extensions.json ${TARGET}/quasar.extensions.json
+echo
+echo "Installing quasar.extensions.json"
+cp ${SOURCE_LOCATION}/app_template/quasar.extensions.json ${TARGET}/quasar.extensions.json
 
 echo
 echo "Installing tsconfig.json"
@@ -110,16 +109,20 @@ rm ${TARGET}/src/components/CompositionComponent.vue
 rm ${TARGET}/src/router/routes.ts 
 
 echo
+echo Installing app packages...
+cd ${TARGET}
+chmod u+x ./qiksar_install.sh
+./qiksar_install.sh
+
+echo
 echo
 echo "Qiksar scaffolding process complete!"
 echo
 echo "Next Steps"
 echo "----------"
 echo
-echo "1. Execute build_services.sh to automatically build the database, graphql and authentication services"
-echo "2. Run VSCODE and open the dev container"
-echo "3. Execute qiksar_install.sh"
-echo "4. Start the app with 'quasar dev'"
+echo "1. Run VSCODE and open the dev container"
+echo "2. Start the app with 'quasar dev'"
 echo
 echo
 echo "Thank you for exploring Qiksar!"
