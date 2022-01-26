@@ -24,8 +24,7 @@
 		"bierner.markdown-mermaid",
 		"gruntfuggly.todo-tree",
 		"johnsoncodehk.volar",
-		"esbenp.prettier-vscode",
-		"inferrinizzard.prettier-sql-vscode"
+		"esbenp.prettier-vscode"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
