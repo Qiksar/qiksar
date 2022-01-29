@@ -32,6 +32,7 @@ cat $OUTPUT_PATH/template_realm.json |\
  sed "s|{{CLIENT}}|${CLIENT}|" | \
  sed "s|{{REALM_UUID}}|${REALM_UUID}|" | \
  sed "s|{{REALM_ID}}|${REALM_ID}|" | \
+ sed "s|{{KEYCLOAK_API_CREDENTIAL}}|${KEYCLOAK_API_CREDENTIAL}|" | \
  sed "s|{{REALM_NAME}}|${REALM_NAME}|" | \
  sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | \
  sed "s|{{SMTP_SENDER_NAME}}|${SMTP_SENDER_NAME}|"  \
@@ -43,10 +44,6 @@ echo "Create the realm: "${REALM_ID}
 kcadm.sh create realms -s realm=${REALM_ID} -s enabled=true
 kcadm.sh create partialImport -r ${REALM_ID} -s ifResourceExists=SKIP -f ${REALM_JSON}
 echo
-
-echo "Create API user: "${description}" with password: "${API_PASSWORD}
-kcadm.sh create users -r ${REALM_ID} -s username=${API_USER} -s enabled=true -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName={{REALM_UUID}}" -s "attributes.lastName=none" -s "email=api@api.com"
-kcadm.sh set-password -r ${REALM_ID} --username=${API_USER} --new-password ${API_PASSWORD}
 
 
 echo
@@ -101,6 +98,7 @@ export KEY_TEXT=$(curl -s --request GET --url http://localhost:8080/auth/realms/
 export PUBLIC_KEY='-----BEGIN PUBLIC KEY-----\n'${KEY_TEXT}'\n-----END PUBLIC KEY-----' 
 export KC_KEY='HASURA_GRAPHQL_JWT_SECRET={"type": "RS256", "key": "'${PUBLIC_KEY}'"}'
 
+echo "KEYCLOAK_REALM_KEY="${KEY_TEXT} > ${OUTPUT_PATH}/private_data/realm_public_key.env
 echo ${KC_KEY} > ${OUTPUT_PATH}/private_data/token.env
 echo "Captured the realm public key into:"${OUTPUT_PATH}"/private_data/token.env"
 
