@@ -490,7 +490,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "{{KEYCLOAK_API_CREDENTIAL}}",
+      "secret": "{{KEYCLOAK_CLIENT_SECRET}}",
       "redirectUris": [
         "{{APP_URL}}/*"
       ],
