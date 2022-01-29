@@ -41,6 +41,18 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]> {
     },
 
     {
+      path: '/dashboard',
+      component: () => import('layouts/MainLayout.vue'),
+      children: [
+        {
+          path: '',
+          component: () => import('pages/Dashboard.vue'),
+          meta: { anonymous: true },
+        },
+      ],
+    },
+
+    {
       meta: { anonymous: true },
       path: '/unauthorized',
       component: () => import('pages/Unauthorized.vue'),

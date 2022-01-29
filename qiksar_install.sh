@@ -22,6 +22,8 @@ yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscr
 yarn add --silent compressorjs 
 yarn add --silent -D @quasar/quasar-app-extension-qmarkdown@^2.0.0-beta.2
 yarn add --silent @datatraccorporation/markdown-it-mermaid
+yarn add --silent apexcharts 
+yarn add --silent vue3-apexcharts 
 echo
 echo
 
