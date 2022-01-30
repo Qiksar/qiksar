@@ -69,7 +69,7 @@ const linksList = [
     icon: 'house',
     link: '/',
   },
-{
+  {
     title: 'Dashboard',
     caption: 'Data Analytics',
     icon: 'dashboard',

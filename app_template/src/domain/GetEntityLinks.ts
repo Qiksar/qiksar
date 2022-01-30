@@ -5,14 +5,12 @@ export default function getEntityLinks(): IEntityLink[] {
   const links: IEntityLink[] = [];
 
   EntitySchema.Schemas.map((s: EntitySchema) => {
-    links.push(
-      {
-        title: s.Label,
-        caption: `View ${s.Label}`,
-        icon: s.Icon,
-        link: `/${s.EntityName}`
-      }
-    );
+    links.push({
+      title: s.Label,
+      caption: `View ${s.Label}`,
+      icon: s.Icon,
+      link: `/${s.EntityName}`,
+    });
   });
 
   return links;

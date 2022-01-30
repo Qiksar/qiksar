@@ -4,6 +4,7 @@
 import { boot } from 'quasar/wrappers';
 import { Router } from 'src/router';
 import { createPinia } from 'pinia';
+import VueApexCharts from 'vue3-apexcharts';
 
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 import QiksarKeycloakWrapper from 'src/qiksar/auth/QiksarKeycloakWrapper';
@@ -22,5 +23,7 @@ export const AuthWrapper: QiksarAuthWrapper = new QiksarKeycloakWrapper();
 //
 export default boot(async ({ app }) => {
   app.use(createPinia());
+  app.use(VueApexCharts);
+
   await AuthWrapper.Init(Router);
 });

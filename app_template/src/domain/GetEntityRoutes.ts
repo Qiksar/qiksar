@@ -48,8 +48,8 @@ function getRoutesForEntity(
 }
 
 /**
- * 
- * @returns Return 
+ *
+ * @returns Return
  */
 export default function getEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
@@ -60,6 +60,3 @@ export default function getEntityRoutes(): RouteRecordRaw[] {
 
   return routes;
 }
-
-
-
