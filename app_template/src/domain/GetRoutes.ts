@@ -37,6 +37,8 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]> {
           component: () => import('pages/Index.vue'),
           meta: { anonymous: true },
         },
+
+      ...generatedRoutes,
       ],
     },
 
@@ -71,7 +73,5 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]> {
       path: '/:catchAll(.*)*',
       component: () => import('pages/Error404.vue'),
     },
-
-    ...generatedRoutes,
   ];
 }

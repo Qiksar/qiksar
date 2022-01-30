@@ -13,37 +13,31 @@ import EntitySchema from '../qiksar/qikflow/base/EntitySchema';
 function getRoutesForEntity(
   entityName: string,
   requiredRole: string
-): RouteRecordRaw {
-  return {
-    path: `/${entityName}`,
+): RouteRecordRaw[] {
+  return [
+    {
+      meta: { role: requiredRole },
+      path: `/${entityName}`,
+      component: () => import('src/qiksar/qikflow/ui/EntityList.vue'),
+      props: { entity_type: entityName },
+    },
+    {
+      meta: { role: requiredRole },
+      path: `/${entityName}/edit/:id`,
+      component: () => import('src/qiksar/qikflow/ui/EntityEdit.vue'),
+      props: (route: any) => {
+        const props = {
+          context: {
+            entity_type: entityName,
+            entity_id: route.params.id as string,
+            real_time: true,
+          },
+        };
 
-    component: () => import('src/layouts/MainLayout.vue'),
-
-    meta: { role: requiredRole },
-
-    children: [
-      {
-        path: '',
-        component: () => import('src/qiksar/qikflow/ui/EntityList.vue'),
-        props: { entity_type: entityName },
+        return props;
       },
-      {
-        path: 'edit/:id',
-        component: () => import('src/qiksar/qikflow/ui/EntityEdit.vue'),
-        props: (route: any) => {
-          const props = {
-            context: {
-              entity_type: entityName,
-              entity_id: route.params.id as string,
-              real_time: true,
-            },
-          };
-
-          return props;
-        },
-      },
-    ],
-  };
+    },
+  ];
 }
 
 /**
@@ -54,7 +48,7 @@ export default function getEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
 
   EntitySchema.Schemas.map((s: EntitySchema) => {
-    routes.push(getRoutesForEntity(s.EntityName, 'tenant_admin'));
+    getRoutesForEntity(s.EntityName, 'tenant_admin').map(r => routes.push(r));
   });
 
   return routes;
