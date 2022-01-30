@@ -6,6 +6,7 @@ class ArticleStatusView extends Query {
     const schema: EntitySchema = EntitySchema.CreateEnum({
       entityName: 'article_status',
       label: 'Publish Status',
+      icon: 'record_voice_over',
     });
 
     super(schema, true);

@@ -7,6 +7,7 @@ class MembersView extends Query {
       entityName: 'members',
       keyField: 'member_id',
       label: 'Member',
+      icon: 'record_voice_over',
     })
 
       .AddField({ label: 'First Name', column: 'firstname', type: 'text' })

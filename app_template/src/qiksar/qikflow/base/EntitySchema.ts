@@ -23,6 +23,7 @@ export default class EntitySchema {
   private _entityType: string;
   private _fields: Array<EntityField>;
   private _key: string;
+  private _icon: string;
   private _is_enum: boolean;
   private _includes: IFetchDefinition[];
   private _transformers: Record<string, GqlRecord>;
@@ -73,6 +74,13 @@ export default class EntitySchema {
   }
 
   /**
+   * Icon to be used in UI
+   */
+   get Icon(): string {
+    return this._icon;
+  }
+
+  /**
    * Name of the entity
    */
   get EntityName(): string {
@@ -117,11 +125,13 @@ export default class EntitySchema {
   constructor(
     entityName: string,
     keyField: string,
+    icon: string,
     label: string,
     isEnum = false
   ) {
     this._entityType = entityName.toLowerCase();
     this._key = keyField;
+    this._icon = icon;
     this._description = label;
     this._fields = new Array<EntityField>();
     this._is_enum = isEnum;
@@ -163,7 +173,8 @@ export default class EntitySchema {
     const schema: EntitySchema = new EntitySchema(
       entityName,
       definition.keyField,
-      definition.label ?? entityName
+      definition.icon,
+      definition.label ?? entityName,
     );
 
     if (this.GetSchemaForEntity(entityName))
@@ -188,6 +199,7 @@ export default class EntitySchema {
     const schema: EntitySchema = new EntitySchema(
       entityName,
       key,
+      definition.icon,
       definition.label ?? entityName,
       true
     );

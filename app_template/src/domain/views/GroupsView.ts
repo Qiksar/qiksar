@@ -7,6 +7,7 @@ class GroupsView extends Query {
       entityName: 'groups',
       keyField: 'group_id',
       label: 'Membership Groups',
+      icon: 'record_voice_over',
     })
 
       .AddField({ column: 'name', label: 'Group Name' })

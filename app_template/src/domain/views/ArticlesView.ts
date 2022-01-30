@@ -7,6 +7,7 @@ class ArticlesView extends Query {
       entityName: 'articles',
       keyField: 'article_id',
       label: 'Articles',
+      icon: 'record_voice_over',
     })
 
       .AddField({

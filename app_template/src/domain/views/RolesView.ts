@@ -6,6 +6,7 @@ class RolesView extends Query {
     const schema: EntitySchema = EntitySchema.CreateEnum({
       entityName: 'roles',
       label: 'Role',
+      icon: 'record_voice_over',
     });
 
     super(schema, true);
