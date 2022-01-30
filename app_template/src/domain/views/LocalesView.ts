@@ -6,7 +6,7 @@ class LocalesView extends Query {
     const schema: EntitySchema = EntitySchema.CreateEnum({
       entityName: 'locales',
       label: 'Locale',
-      icon: 'record_voice_over',
+      icon: 'flag',
     });
 
     super(schema, true);

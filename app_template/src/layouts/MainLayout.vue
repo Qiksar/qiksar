@@ -7,15 +7,15 @@
         <q-toolbar-title>QIKSAR DEMO APP</q-toolbar-title>
 
         <q-btn-dropdown
-          v-if="AuthWrapper?.user.loggedIn ?? false"
+          v-if="AuthWrapper?.IsAuthenticated()"
           color="primary"
           icon="account_circle"
-          :label="AuthWrapper?.user.username ?? ''"
+          :label="AuthWrapper?.User.username ?? ''"
         >
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label>Locale: {{ AuthWrapper.user.locale }}</q-item-label>
+                <q-item-label>Locale: {{ AuthWrapper.User.locale }}</q-item-label>
               </q-item-section>
             </q-item>
 
@@ -57,30 +57,30 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from 'components/EssentialLink.vue';
-import { defineComponent, ref } from 'vue';
-import { AuthWrapper } from 'src/boot/qiksar';
-import getEntityLinks from 'src/domain/GetEntityLinks';
+import EssentialLink from "components/EssentialLink.vue";
+import { defineComponent, ref } from "vue";
+import { AuthWrapper } from "src/boot/qiksar";
+import getEntityLinks from "src/domain/GetEntityLinks";
 
 const linksList = [
   {
-    title: 'Home',
-    caption: 'Home page',
-    icon: 'house',
-    link: '/',
+    title: "Home",
+    caption: "Home page",
+    icon: "house",
+    link: "/",
   },
   {
-    title: 'Dashboard',
-    caption: 'Data Analytics',
-    icon: 'dashboard',
-    link: '/dashboard',
+    title: "Dashboard",
+    caption: "Data Analytics",
+    icon: "dashboard",
+    link: "/dashboard",
   },
 
   ...getEntityLinks(),
 ];
 
 export default defineComponent({
-  name: 'MainLayout',
+  name: "MainLayout",
 
   components: {
     EssentialLink,
@@ -94,7 +94,7 @@ export default defineComponent({
         // console.log('Clicked on an Item')
       },
       onLogInClick() {
-        AuthWrapper.Login('/');
+        AuthWrapper.Login("/");
       },
       onLogoutClick() {
         AuthWrapper.Logout();
@@ -104,6 +104,7 @@ export default defineComponent({
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
+      AuthWrapper,
     };
   },
 });

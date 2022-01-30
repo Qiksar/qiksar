@@ -6,7 +6,7 @@ class StatusView extends Query {
     const schema: EntitySchema = EntitySchema.CreateEnum({
       entityName: 'status',
       label: 'Status',
-      icon: 'record_voice_over',
+      icon: 'flaky',
     });
 
     super(schema, true);

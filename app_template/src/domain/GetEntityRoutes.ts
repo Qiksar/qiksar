@@ -1,4 +1,3 @@
-import { Dictionary } from './../qiksar/qikflow/base/GqlTypes';
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';

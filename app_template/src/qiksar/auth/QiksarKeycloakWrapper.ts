@@ -85,6 +85,7 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
   /**
    * he authorisation token provided by the service after login
+   *
    */
   GetAuthToken(): string {
     //console.log(keycloak.token);
@@ -217,6 +218,8 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   private async AuthComplete(auth: boolean): Promise<void> {
     if (auth) {
       const profile = await this.GetUserProfile();
+      this.user = profile;
+
       this.userStore.setUser(profile);
       this.userStore.setLoggedIn(this.IsAuthenticated());
 

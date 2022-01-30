@@ -13,7 +13,7 @@ echo
 echo
 echo
 echo "Install dev dependencies..."
-yarn add --silent dotenv jest ts-jest @types/jest @quasar/quasar-app-extension-qmarkdown -D
+yarn add --silent dotenv jest ts-jest @types/jest -D
 
 echo
 echo
@@ -22,8 +22,8 @@ yarn add --silent vue-i18n@next @apollo/client apollo@next apollo-link-ws subscr
 yarn add --silent compressorjs 
 yarn add --silent -D @quasar/quasar-app-extension-qmarkdown@^2.0.0-beta.2
 yarn add --silent @datatraccorporation/markdown-it-mermaid
-yarn add --silent apexcharts 
-yarn add --silent vue3-apexcharts 
+yarn add --silent apexcharts vue3-apexcharts 
+yarn add --silent @quasar/extras
 echo
 echo
 
