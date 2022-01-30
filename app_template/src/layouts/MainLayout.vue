@@ -2,7 +2,14 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
+        <q-btn
+          flat
+          dense
+          round
+          icon="menu"
+          aria-label="Menu"
+          @click="toggleLeftDrawer"
+        />
 
         <q-toolbar-title>QIKSAR DEMO APP</q-toolbar-title>
 
@@ -15,7 +22,9 @@
           <q-list>
             <q-item>
               <q-item-section>
-                <q-item-label>Locale: {{ AuthWrapper.User.locale }}</q-item-label>
+                <q-item-label
+                  >Locale: {{ AuthWrapper.User.locale }}</q-item-label
+                >
               </q-item-section>
             </q-item>
 
@@ -46,7 +55,11 @@
       <q-list>
         <q-item-label header class="text-grey-8">Essential Links</q-item-label>
 
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
+        <EssentialLink
+          v-for="link in essentialLinks"
+          :key="link.title"
+          v-bind="link"
+        />
       </q-list>
     </q-drawer>
 
@@ -57,30 +70,30 @@
 </template>
 
 <script lang="ts">
-import EssentialLink from "components/EssentialLink.vue";
-import { defineComponent, ref } from "vue";
-import { AuthWrapper } from "src/boot/qiksar";
-import getEntityLinks from "src/domain/GetEntityLinks";
+import EssentialLink from 'components/EssentialLink.vue';
+import { defineComponent, ref } from 'vue';
+import { AuthWrapper } from 'src/boot/qiksar';
+import getEntityLinks from 'src/domain/GetEntityLinks';
 
 const linksList = [
   {
-    title: "Home",
-    caption: "Home page",
-    icon: "house",
-    link: "/",
+    title: 'Home',
+    caption: 'Home page',
+    icon: 'house',
+    link: '/',
   },
   {
-    title: "Dashboard",
-    caption: "Data Analytics",
-    icon: "dashboard",
-    link: "/dashboard",
+    title: 'Dashboard',
+    caption: 'Data Analytics',
+    icon: 'dashboard',
+    link: '/dashboard',
   },
 
   ...getEntityLinks(),
 ];
 
 export default defineComponent({
-  name: "MainLayout",
+  name: 'MainLayout',
 
   components: {
     EssentialLink,
@@ -94,7 +107,7 @@ export default defineComponent({
         // console.log('Clicked on an Item')
       },
       onLogInClick() {
-        AuthWrapper.Login("/");
+        AuthWrapper.Login('/');
       },
       onLogoutClick() {
         AuthWrapper.Logout();

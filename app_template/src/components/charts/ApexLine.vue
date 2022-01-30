@@ -95,8 +95,8 @@ export default defineComponent({
     // this.setDataLineChart(true)
   },
   methods: {
-    getRandomArbitrary(min: number, max: number):number {
-      return Math.floor(Math.random() *  (max-min)) + min;
+    getRandomArbitrary(min: number, max: number): number {
+      return Math.floor(Math.random() * (max - min)) + min;
     },
     setDataLineChart(stop: boolean) {
       const interval = setInterval(() => {

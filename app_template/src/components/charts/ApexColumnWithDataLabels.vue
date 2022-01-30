@@ -1,41 +1,48 @@
 <template>
-  <apexchart type="bar" height="230" :options="chartOptions" :series="series"></apexchart>
+  <apexchart
+    type="bar"
+    height="230"
+    :options="chartOptions"
+    :series="series"
+  ></apexchart>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-export default defineComponent ({
+export default defineComponent({
   name: 'ApexColumnWithDataLabels',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Inflation',
-        data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2]
-      }],
+      series: [
+        {
+          name: 'Inflation',
+          data: [2.3, 3.1, 4.0, 10.1, 4.0, 3.6, 3.2, 2.3, 1.4, 0.8, 0.5, 0.2],
+        },
+      ],
       chartOptions: {
         colors: ['#FCCF31', '#17ead9', '#f02fc2'],
         animations: {
           enabled: true,
           easing: 'easeinout',
-          speed: 1000
+          speed: 1000,
         },
         title: {
           text: 'Column With Data Labels',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         chart: {
           height: 350,
-          type: 'bar'
+          type: 'bar',
         },
         plotOptions: {
           bar: {
             dataLabels: {
-              position: 'top' // top, center, bottom
-            }
-          }
+              position: 'top', // top, center, bottom
+            },
+          },
         },
         dataLabels: {
           enabled: true,
@@ -45,22 +52,35 @@ export default defineComponent ({
           offsetY: -20,
           style: {
             fontSize: '12px',
-            colors: ['#FFF']
-          }
+            colors: ['#FFF'],
+          },
         },
         xaxis: {
-          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          categories: [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ],
           position: 'top',
           labels: {
             style: {
-              colors: '#fff'
-            }
+              colors: '#fff',
+            },
           },
           axisBorder: {
-            show: false
+            show: false,
           },
           axisTicks: {
-            show: false
+            show: false,
           },
           crosshairs: {
             fill: {
@@ -70,20 +90,20 @@ export default defineComponent ({
                 colorTo: '#BED1E6',
                 stops: [0, 100],
                 opacityFrom: 0.4,
-                opacityTo: 0.5
-              }
-            }
+                opacityTo: 0.5,
+              },
+            },
           },
           tooltip: {
-            enabled: true
-          }
+            enabled: true,
+          },
         },
         yaxis: {
           axisBorder: {
-            show: false
+            show: false,
           },
           axisTicks: {
-            show: false
+            show: false,
           },
           labels: {
             show: false,
@@ -91,12 +111,12 @@ export default defineComponent ({
               return `${val}%`;
             },
             style: {
-              colors: '#fff'
-            }
-          }
-        }
-      }
-    }
-  }
+              colors: '#fff',
+            },
+          },
+        },
+      },
+    };
+  },
 });
 </script>

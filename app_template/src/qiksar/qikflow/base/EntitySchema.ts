@@ -76,7 +76,7 @@ export default class EntitySchema {
   /**
    * Icon to be used in UI
    */
-   get Icon(): string {
+  get Icon(): string {
     return this._icon;
   }
 
@@ -174,7 +174,7 @@ export default class EntitySchema {
       entityName,
       definition.keyField,
       definition.icon,
-      definition.label ?? entityName,
+      definition.label ?? entityName
     );
 
     if (this.GetSchemaForEntity(entityName))

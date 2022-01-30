@@ -1,50 +1,65 @@
 <template>
-  <apexchart type="polarArea" height=200 :options="chartOptions" :series="series"/>
+  <apexchart
+    type="polarArea"
+    height="200"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexPolarMap',
-  data () {
+  data() {
     return {
       series: [14, 23, 21, 17, 15, 10, 12, 17, 21],
       chartOptions: {
-        labels: ['GitHub', 'Facebook', 'Twitter', 'WhatsApp', 'Linkedin', 'Messenger', 'Bitbucket', 'Hubstaff', 'Jira'],
+        labels: [
+          'GitHub',
+          'Facebook',
+          'Twitter',
+          'WhatsApp',
+          'Linkedin',
+          'Messenger',
+          'Bitbucket',
+          'Hubstaff',
+          'Jira',
+        ],
         title: {
           text: 'Polar Area',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         chart: {
           type: 'polarArea',
           toolbar: {
-            show: true
-          }
+            show: true,
+          },
         },
         stroke: {
-          colors: ['#fff']
+          colors: ['#fff'],
         },
         legend: {
           labels: {
-            colors: '#FFF'
+            colors: '#FFF',
           },
-          offsetY: -1
+          offsetY: -1,
         },
         fill: {
-          opacity: 0.8
+          opacity: 0.8,
         },
         yaxis: {
           labels: {
             style: {
-              colors: '#FFF'
-            }
-          }
-        }
-      }
-    }
-  }
+              colors: '#FFF',
+            },
+          },
+        },
+      },
+    };
+  },
 });
 </script>

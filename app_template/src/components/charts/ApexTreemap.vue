@@ -1,80 +1,87 @@
 <template>
-  <apexchart type="treemap" height="230px" :options="chartOptions" :series="series" />
+  <apexchart
+    type="treemap"
+    height="230px"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexTreemap',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Series 1',
-        data: [
-          {
-            x: 'Vue.js Norte',
-            y: 218
-          },
-          {
-            x: 'Kolkata',
-            y: 149
-          },
-          {
-            x: 'Mumbai',
-            y: 184
-          },
-          {
-            x: 'Ahmedabad',
-            y: 55
-          },
-          {
-            x: 'Bangaluru',
-            y: 84
-          },
-          {
-            x: 'Pune',
-            y: 31
-          },
-          {
-            x: 'Chennai',
-            y: 70
-          },
-          {
-            x: 'Jaipur',
-            y: 30
-          },
-          {
-            x: 'Açaí',
-            y: 44
-          },
-          {
-            x: 'Hyderabad',
-            y: 68
-          },
-          {
-            x: 'Lucknow',
-            y: 28
-          },
-          {
-            x: 'Indore',
-            y: 19
-          },
-          {
-            x: 'Kanpur',
-            y: 29
-          }
-        ]
-      }],
+      series: [
+        {
+          name: 'Series 1',
+          data: [
+            {
+              x: 'Vue.js Norte',
+              y: 218,
+            },
+            {
+              x: 'Kolkata',
+              y: 149,
+            },
+            {
+              x: 'Mumbai',
+              y: 184,
+            },
+            {
+              x: 'Ahmedabad',
+              y: 55,
+            },
+            {
+              x: 'Bangaluru',
+              y: 84,
+            },
+            {
+              x: 'Pune',
+              y: 31,
+            },
+            {
+              x: 'Chennai',
+              y: 70,
+            },
+            {
+              x: 'Jaipur',
+              y: 30,
+            },
+            {
+              x: 'Açaí',
+              y: 44,
+            },
+            {
+              x: 'Hyderabad',
+              y: 68,
+            },
+            {
+              x: 'Lucknow',
+              y: 28,
+            },
+            {
+              x: 'Indore',
+              y: 19,
+            },
+            {
+              x: 'Kanpur',
+              y: 29,
+            },
+          ],
+        },
+      ],
       chartOptions: {
         title: {
           text: 'Distributed Treemap',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         legend: {
-          show: false
+          show: false,
         },
         colors: [
           '#3B93A5',
@@ -88,16 +95,16 @@ export default defineComponent({
           '#421243',
           '#7F94B0',
           '#EF6537',
-          '#C0ADDB'
+          '#C0ADDB',
         ],
         plotOptions: {
           treemap: {
             distributed: true,
-            enableShades: false
-          }
-        }
-      }
-    }
-  }
+            enableShades: false,
+          },
+        },
+      },
+    };
+  },
 });
 </script>

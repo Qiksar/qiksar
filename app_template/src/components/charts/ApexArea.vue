@@ -1,21 +1,28 @@
 <template>
-  <apexchart type="area" height="230" :options="chartOptions" :series="series"></apexchart>
+  <apexchart
+    type="area"
+    height="230"
+    :options="chartOptions"
+    :series="series"
+  ></apexchart>
 </template>
 
 <script>
 export default {
   name: 'ApexArea',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Active users',
-        data: [79, 48, 39, 92, 67, 32, 94, 120]
-      }],
+      series: [
+        {
+          name: 'Active users',
+          data: [79, 48, 39, 92, 67, 32, 94, 120],
+        },
+      ],
       chartOptions: {
         animations: {
           enabled: true,
           easing: 'easeinout',
-          speed: 1000
+          speed: 1000,
         },
         fill: {
           gradient: {
@@ -26,40 +33,38 @@ export default {
             inverseColors: false,
             opacityFrom: 0.9,
             opacityTo: 0.7,
-            stops: [0, 100]
-          }
+            stops: [0, 100],
+          },
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         title: {
           text: 'Area',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         xaxis: {
           categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         yaxis: {
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
-        }
-      }
-    }
-  }
-}
+              colors: '#fff',
+            },
+          },
+        },
+      },
+    };
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

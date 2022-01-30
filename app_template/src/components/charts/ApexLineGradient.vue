@@ -1,35 +1,43 @@
 <template>
-  <apexchart ref="realtimeChart" type="line" height="200" :options="chartOptions" :series="series" />
+  <apexchart
+    ref="realtimeChart"
+    type="line"
+    height="200"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexLineGradient',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Desktops',
-        data: [10, 41, 35, 51, 49, 62, 30, 98, 15]
-      }],
+      series: [
+        {
+          name: 'Desktops',
+          data: [10, 41, 35, 51, 49, 62, 30, 98, 15],
+        },
+      ],
       chartOptions: {
         colors: ['#FCCF31', '#17ead9', '#f02fc2'],
         chart: {
           height: 350,
-          type: 'line'
+          type: 'line',
         },
         grid: {
           show: false,
           strokeDashArray: 0,
           xaxis: {
             lines: {
-              show: true
-            }
-          }
+              show: true,
+            },
+          },
         },
         stroke: {
           curve: 'smooth',
-          width: 10
+          width: 10,
         },
         fill: {
           type: 'gradient',
@@ -40,8 +48,8 @@ export default defineComponent({
             type: 'horizontal',
             opacityFrom: 0.1,
             opacityTo: 1,
-            stops: [0, 100, 100, 100]
-          }
+            stops: [0, 100, 100, 100],
+          },
         },
         // dropShadow: {
         //   enabled: true,
@@ -51,15 +59,15 @@ export default defineComponent({
         //   top: 22
         // },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         title: {
           text: 'Line Gradient',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
-        }
+            color: '#FFF',
+          },
+        },
         // xaxis: {
         //   categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
         //   labels: {
@@ -75,8 +83,8 @@ export default defineComponent({
         //     }
         //   }
         // }
-      }
-    }
-  }
+      },
+    };
+  },
 });
 </script>

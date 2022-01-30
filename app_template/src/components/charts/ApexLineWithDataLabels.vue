@@ -1,20 +1,28 @@
 <template>
-  <apexchart type="line" height="230" :options="chartOptions" :series="series"></apexchart>
+  <apexchart
+    type="line"
+    height="230"
+    :options="chartOptions"
+    :series="series"
+  ></apexchart>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexLineWithDataLabels',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'High - 2013',
-        data: [28, 29, 33, 36, 32, 32, 33]
-      }, {
-        name: 'Low - 2013',
-        data: [12, 11, 14, 50, 45, 13, 13]
-      }],
+      series: [
+        {
+          name: 'High - 2013',
+          data: [28, 29, 33, 36, 32, 32, 33],
+        },
+        {
+          name: 'Low - 2013',
+          data: [12, 11, 14, 50, 45, 13, 13],
+        },
+      ],
       chartOptions: {
         chart: {
           height: 350,
@@ -25,55 +33,55 @@ export default defineComponent({
             top: 18,
             left: 7,
             blur: 10,
-            opacity: 0.2
+            opacity: 0.2,
           },
           toolbar: {
-            show: false
-          }
+            show: false,
+          },
         },
         colors: ['#77B6EA', '#545454'],
         dataLabels: {
-          enabled: true
+          enabled: true,
         },
         stroke: {
-          curve: 'smooth'
+          curve: 'smooth',
         },
         title: {
           text: 'Line with data labels',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         grid: {
           borderColor: '#e7e7e7',
           row: {
             colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-            opacity: 0.5
-          }
+            opacity: 0.5,
+          },
         },
         markers: {
-          size: 1
+          size: 1,
         },
         xaxis: {
           categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         yaxis: {
           title: {
-            text: 'Temperature'
+            text: 'Temperature',
           },
           labels: {
             style: {
-              colors: '#fff'
-            }
+              colors: '#fff',
+            },
           },
           min: 5,
-          max: 60
+          max: 60,
         },
         legend: {
           position: 'top',
@@ -82,11 +90,11 @@ export default defineComponent({
           offsetY: -25,
           offsetX: -5,
           labels: {
-            colors: '#FFF'
-          }
-        }
-      }
-    }
-  }
+            colors: '#FFF',
+          },
+        },
+      },
+    };
+  },
 });
 </script>

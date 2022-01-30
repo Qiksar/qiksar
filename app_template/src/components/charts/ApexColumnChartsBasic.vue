@@ -1,93 +1,112 @@
 <template>
-  <apexchart type="bar" height="230" :options="chartOptions" :series="series"></apexchart>
+  <apexchart
+    type="bar"
+    height="230"
+    :options="chartOptions"
+    :series="series"
+  ></apexchart>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-export default defineComponent ({
+export default defineComponent({
   name: 'ApexColumnChartsBasic',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Net Profit',
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-      }, {
-        name: 'Revenue',
-        data: [76, 85, 101, 98, 87, 105, 91, 114, 94]
-      }, {
-        name: 'Free Cash Flow',
-        data: [35, 41, 36, 26, 45, 48, 52, 53, 41]
-      }],
+      series: [
+        {
+          name: 'Net Profit',
+          data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+        },
+        {
+          name: 'Revenue',
+          data: [76, 85, 101, 98, 87, 105, 91, 114, 94],
+        },
+        {
+          name: 'Free Cash Flow',
+          data: [35, 41, 36, 26, 45, 48, 52, 53, 41],
+        },
+      ],
       chartOptions: {
         animations: {
           enabled: true,
           easing: 'easeinout',
-          speed: 1000
+          speed: 1000,
         },
         title: {
           text: 'Column Charts Basic',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         legend: {
           labels: {
-            colors: '#FFF'
-          }
+            colors: '#FFF',
+          },
         },
         chart: {
           type: 'bar',
-          height: 350
+          height: 350,
         },
         plotOptions: {
           bar: {
             horizontal: false,
             columnWidth: '55%',
-            endingShape: 'rounded'
-          }
+            endingShape: 'rounded',
+          },
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
           show: true,
           width: 2,
-          colors: ['transparent']
+          colors: ['transparent'],
         },
         xaxis: {
-          categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          categories: [
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+          ],
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         yaxis: {
           title: {
             text: '$ (thousands)',
             style: {
-              color: '#FFF'
-            }
+              color: '#FFF',
+            },
           },
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         fill: {
-          opacity: 1
+          opacity: 1,
         },
         tooltip: {
           y: {
             formatter: function (val: string | number) {
               return `$ ${val} thousands`;
-            }
-          }
-        }
-      }
-    }
-  }
+            },
+          },
+        },
+      },
+    };
+  },
 });
 </script>

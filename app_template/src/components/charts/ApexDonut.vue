@@ -1,12 +1,17 @@
 <template>
-  <apexchart type="donut" height="211" :options="chartOptions" :series="series" />
+  <apexchart
+    type="donut"
+    height="211"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-export default defineComponent ({
+export default defineComponent({
   name: 'ApexDonut',
-  data () {
+  data() {
     return {
       series: [44, 55, 41, 17, 15],
       chartOptions: {
@@ -14,7 +19,7 @@ export default defineComponent ({
         animations: {
           enabled: true,
           easing: 'easeinout',
-          speed: 1000
+          speed: 1000,
         },
         fill: {
           type: 'gradient',
@@ -25,40 +30,42 @@ export default defineComponent ({
             inverseColors: false,
             opacityFrom: 1,
             opacityTo: 0.9,
-            stops: [0, 100]
-          }
+            stops: [0, 100],
+          },
         },
         chart: {
           toolbar: {
-            show: true
-          }
+            show: true,
+          },
         },
         title: {
           text: 'Donut',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         labels: ['Apple', 'Mango', 'Orange', 'Watermelon', 'Strawberry'],
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 250
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 250,
+              },
+              legend: {
+                position: 'bottom',
+              },
             },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }],
+          },
+        ],
         legend: {
           labels: {
-            colors: '#FFF'
-          }
-        }
-      }
-    }
-  }
+            colors: '#FFF',
+          },
+        },
+      },
+    };
+  },
 });
 </script>

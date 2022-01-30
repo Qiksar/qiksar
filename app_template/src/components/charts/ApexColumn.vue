@@ -6,34 +6,36 @@
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexColumn',
-  data () {
+  data() {
     return {
-      series: [{
-        name: 'Net Profit',
-        data: [44, 55, 57, 56, 61, 58, 63, 60, 66]
-      }],
+      series: [
+        {
+          name: 'Net Profit',
+          data: [44, 55, 57, 56, 61, 58, 63, 60, 66],
+        },
+      ],
       chartOptions: {
         colors: ['#FCCF31', '#17ead9', '#f02fc2'],
         animations: {
           enabled: true,
           easing: 'easeinout',
-          speed: 1000
+          speed: 1000,
         },
         grid: {
           show: true,
           strokeDashArray: 0,
           xaxis: {
             lines: {
-              show: true
-            }
-          }
+              show: true,
+            },
+          },
         },
         title: {
           text: 'Column',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         fill: {
           type: 'gradient',
@@ -44,45 +46,55 @@ export default defineComponent({
             inverseColors: false,
             opacityFrom: 1,
             opacityTo: 0.8,
-            stops: [0, 100]
-          }
+            stops: [0, 100],
+          },
         },
         dataLabels: {
-          enabled: false
+          enabled: false,
         },
         stroke: {
-          width: 0
+          width: 0,
         },
         xaxis: {
-          categories: ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          categories: [
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+          ],
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         yaxis: {
           title: {
             text: '$ (thousands)',
             style: {
-              color: '#FFF'
-            }
+              color: '#FFF',
+            },
           },
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         tooltip: {
           y: {
             formatter: function (val: number | string) {
               return `$ ${val} thousands`;
-            }
-          }
-        }
-      }
-    }
-  }
+            },
+          },
+        },
+      },
+    };
+  },
 });
 </script>

@@ -1,26 +1,31 @@
 <template>
-  <apexchart type="radialBar" height="200" :options="chartOptions" :series="series" />
+  <apexchart
+    type="radialBar"
+    height="200"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexMultipleRadialBars',
-  data () {
+  data() {
     return {
       series: [75],
       chartOptions: {
         chart: {
           toolbar: {
-            show: true
-          }
+            show: true,
+          },
         },
         title: {
           text: 'Radial Bar',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         plotOptions: {
           radialBar: {
@@ -36,8 +41,8 @@ export default defineComponent({
                 top: 3,
                 left: 0,
                 blur: 4,
-                opacity: 0.24
-              }
+                opacity: 0.24,
+              },
             },
             track: {
               background: '#424242',
@@ -48,12 +53,12 @@ export default defineComponent({
                 top: -3,
                 left: 0,
                 blur: 4,
-                opacity: 0.35
-              }
+                opacity: 0.35,
+              },
             },
             dataLabels: {
               name: {
-                show: false
+                show: false,
               },
               value: {
                 formatter: function (val: string | number) {
@@ -62,10 +67,10 @@ export default defineComponent({
                 color: '#FFF',
                 fontSize: '36px',
                 show: true,
-                offsetY: 13
-              }
-            }
-          }
+                offsetY: 13,
+              },
+            },
+          },
         },
         fill: {
           type: 'gradient',
@@ -77,14 +82,14 @@ export default defineComponent({
             inverseColors: true,
             opacityFrom: 1,
             opacityTo: 1,
-            stops: [0, 100]
-          }
+            stops: [0, 100],
+          },
         },
         stroke: {
-          lineCap: 'round'
-        }
-      }
-    }
-  }
+          lineCap: 'round',
+        },
+      },
+    };
+  },
 });
 </script>

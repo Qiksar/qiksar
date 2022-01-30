@@ -1,12 +1,17 @@
 <template>
-  <apexchart type=heatmap height=200 :options="chartOptions" :series="series" />
+  <apexchart
+    type="heatmap"
+    height="200"
+    :options="chartOptions"
+    :series="series"
+  />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 export default defineComponent({
   name: 'ApexHeatmap',
-  data () {
+  data() {
     return {
       series: [
         {
@@ -18,8 +23,8 @@ export default defineComponent({
             { x: 'W4', y: 22 },
             { x: 'W4', y: 62 },
             { x: 'W4', y: 32 },
-            { x: 'W4', y: 12 }
-          ]
+            { x: 'W4', y: 12 },
+          ],
         },
         {
           name: 'Series 2',
@@ -30,8 +35,8 @@ export default defineComponent({
             { x: 'W4', y: 22 },
             { x: 'W4', y: 62 },
             { x: 'W4', y: 32 },
-            { x: 'W4', y: 12 }
-          ]
+            { x: 'W4', y: 12 },
+          ],
         },
         {
           name: 'Series 2',
@@ -42,8 +47,8 @@ export default defineComponent({
             { x: 'W4', y: 22 },
             { x: 'W4', y: 62 },
             { x: 'W4', y: 32 },
-            { x: 'W4', y: 12 }
-          ]
+            { x: 'W4', y: 12 },
+          ],
         },
         {
           name: 'Series 2',
@@ -54,9 +59,9 @@ export default defineComponent({
             { x: 'W4', y: 12 },
             { x: 'W4', y: 42 },
             { x: 'W4', y: 82 },
-            { x: 'W4', y: 2 }
-          ]
-        }
+            { x: 'W4', y: 2 },
+          ],
+        },
       ],
       chartOptions: {
         fill: {
@@ -68,62 +73,63 @@ export default defineComponent({
             inverseColors: false,
             opacityFrom: 1,
             opacityTo: 0.8,
-            stops: [0, 100]
-          }
+            stops: [0, 100],
+          },
         },
         title: {
           text: 'Heatmap',
           align: 'left',
           style: {
-            color: '#FFF'
-          }
+            color: '#FFF',
+          },
         },
         plotOptions: {
           heatmap: {
             colorScale: {
-              ranges: [{
-                from: -30,
-                to: 5,
-                color: '#008FFB',
-                name: 'low'
-              },
-              {
-                from: 6,
-                to: 20,
-                color: '#00E396',
-                name: 'medium'
-              },
-              {
-                from: 21,
-                to: 45,
-                color: '#FEB019',
-                name: 'high'
-              }
-              ]
-            }
-          }
+              ranges: [
+                {
+                  from: -30,
+                  to: 5,
+                  color: '#008FFB',
+                  name: 'low',
+                },
+                {
+                  from: 6,
+                  to: 20,
+                  color: '#00E396',
+                  name: 'medium',
+                },
+                {
+                  from: 21,
+                  to: 45,
+                  color: '#FEB019',
+                  name: 'high',
+                },
+              ],
+            },
+          },
         },
         legend: {
           labels: {
-            colors: '#FFF'
-          }
+            colors: '#FFF',
+          },
         },
         yaxis: {
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
+              colors: '#fff',
+            },
+          },
         },
         xaxis: {
           labels: {
             style: {
-              colors: '#fff'
-            }
-          }
-        }
-      }
-    }
-  }
+              colors: '#fff',
+            },
+          },
+        },
+      },
+    };
+  },
 });
 </script>
