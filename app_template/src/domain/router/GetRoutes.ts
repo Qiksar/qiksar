@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
 import getEntityRoutes from './GetEntityRoutes';
-import InitialiseDomain from './InitialiseDomain';
+import InitialiseDomain from '../InitialiseDomain';
 
 /**
  * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.

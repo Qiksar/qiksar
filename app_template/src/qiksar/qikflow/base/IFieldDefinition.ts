@@ -6,6 +6,7 @@ import fieldType from './fieldType';
  * @interface IFieldDefinition
  */
 export default interface IFieldDefinition {
+  name: string;
   label: string;
   column: string;
   type?: fieldType;

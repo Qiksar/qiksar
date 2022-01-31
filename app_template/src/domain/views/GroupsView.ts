@@ -10,9 +10,10 @@ class GroupsView extends Query {
       icon: 'people',
     })
 
-      .AddField({ column: 'name', label: 'Group Name' })
-      .AddField({ column: 'state', label: 'State' })
+      .AddField({ name:'name', column: 'name', label: 'Group Name' })
+      .AddField({ name:'state', column: 'state', label: 'State' })
       .Fetch({
+        name: 'leader',
         label: 'Leader',
         target_schema: 'members',
         source_key: 'leader_id',
@@ -20,6 +21,7 @@ class GroupsView extends Query {
         columns: 'member_id firstname lastname',
       })
       .Flatten({
+        name:'leader', 
         field_paths: 'leader.firstname leader.lastname',
         label: 'Leader Name',
         column_name: 'leader',

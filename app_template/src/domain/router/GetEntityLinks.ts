@@ -1,5 +1,5 @@
 import { IEntityLink } from 'src/qiksar/qikflow/base/IEntityLink';
-import EntitySchema from '../qiksar/qikflow/base/EntitySchema';
+import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 
 export default function getEntityLinks(): IEntityLink[] {
   const links: IEntityLink[] = [];

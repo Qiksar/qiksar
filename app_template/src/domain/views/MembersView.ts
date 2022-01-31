@@ -10,23 +10,26 @@ class MembersView extends Query {
       icon: 'person',
     })
 
-      .AddField({ label: 'First Name', column: 'firstname', type: 'text' })
-      .AddField({ label: 'Surame', column: 'lastname' })
-      .AddField({ label: 'Email Address', column: 'email', type: 'email' })
-      .AddField({ label: 'Mobile Number', column: 'mobile', type: 'mobile' })
+      .AddField({ name:'firstname', label: 'First Name', column: 'firstname', type: 'text' })
+      .AddField({ name:'lastname', label: 'Surame', column: 'lastname' })
+      .AddField({ name:'email', label: 'Email Address', column: 'email', type: 'email' })
+      .AddField({ name:'mobile', label: 'Mobile Number', column: 'mobile', type: 'mobile' })
       .AddField({
+        name:'photo', 
         label: 'Profile Photo',
         column: 'photo',
         type: 'image',
         options: ['heavy', 'EntityEditImage'],
       })
       .AddField({
+        name:'rating', 
         label: 'Member Rating',
         column: 'rating',
         type: 'number',
         options: ['EntityEditLichert'],
       })
       .Fetch({
+        name: 'group',
         label: 'Group',
         target_schema: 'groups',
         source_key: 'group_id',
@@ -34,26 +37,31 @@ class MembersView extends Query {
         columns: 'group_id name state',
       })
       .Flatten({
+        name:'group', 
         field_paths: 'group.name',
         label: 'Group',
         column_name: 'group_name',
       })
       .Flatten({
+        name:'state', 
         field_paths: 'group.state',
         label: 'State',
         column_name: 'group_state',
       })
       .UseEnum({
+        name:'role', 
         schemaName: 'roles',
         source_id_column: 'role_id',
         preferred_join_name: 'role',
       })
       .UseEnum({
+        name:'status', 
         schemaName: 'status',
         source_id_column: 'status_id',
         preferred_join_name: 'status',
       })
       .UseEnum({
+        name:'locale', 
         schemaName: 'locales',
         source_id_column: 'locale_id',
         preferred_join_name: 'locale',

@@ -6,7 +6,7 @@ import {
   createWebHistory,
 } from 'vue-router';
 
-import getRoutes from 'src/domain/GetRoutes';
+import getRoutes from 'src/domain/router/GetRoutes';
 
 export let Router = {} as vueRouter;
 

@@ -11,24 +11,28 @@ class ArticlesView extends Query {
     })
 
       .AddField({
+        name: 'topic',
         label: 'Topic',
         column: 'subject',
         type: 'text',
         options: ['EntityEditText', 'ongrid'],
       })
       .AddField({
+        name: 'summary',
         label: 'Summary',
         column: 'summary',
         type: 'text',
         options: ['EntityEditText'],
       })
       .AddField({
+        name: 'banner',
         label: 'Banner',
         column: 'image',
         type: 'image',
         options: ['EntityEditImage'],
       })
       .AddField({
+        name: 'article',
         label: 'Article',
         column: 'article',
         type: 'text',
@@ -36,6 +40,7 @@ class ArticlesView extends Query {
       })
 
       .Fetch({
+        name: 'author',
         label: 'Author',
         target_schema: 'members',
         source_key: 'created_by',
@@ -44,11 +49,13 @@ class ArticlesView extends Query {
         options: ['readonly', 'hidden'],
       })
       .Flatten({
+        name: 'author',
         field_paths: 'member.firstname member.lastname',
         label: 'Author',
         column_name: 'author',
       })
       .UseEnum({
+        name: 'status',
         schemaName: 'article_status',
         source_id_column: 'status_id',
         preferred_join_name: 'status',

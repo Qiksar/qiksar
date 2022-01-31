@@ -211,8 +211,8 @@ export default class EntitySchema {
 
     return schema
       .SetKey(key, ['sortable'])
-      .AddField({ column: 'name', label: 'Label' })
-      .AddField({ column: 'comment', label: 'Description' })
+      .AddField({ name:'name', column: 'name', label: 'Label' })
+      .AddField({ name: 'comment', column: 'comment', label: 'Description' })
       .CreateTransform('selector', {
         id: 'id',
         label: 'name',
@@ -337,6 +337,7 @@ export default class EntitySchema {
     this._key = fieldName;
 
     return this.AddField({
+      name: fieldName,
       column: fieldName,
       label: 'ID',
       type: 'id',
@@ -358,12 +359,14 @@ export default class EntitySchema {
     const label = definition.label ?? view.Schema.Label;
 
     return this.Fetch({
+      name: definition.name,
       label: definition.label ?? view.Schema.Label,
       target_schema: entity_type,
       source_key: definition.source_id_column,
       source_object: definition.preferred_join_name,
       columns: 'id name comment',
     }).Flatten({
+      name: definition.name,
       field_paths: `${definition.preferred_join_name}.name`,
       label: label,
       options: defaultIntFieldOptions,
@@ -395,6 +398,7 @@ export default class EntitySchema {
       const opts = i.options ?? [];
 
       const fieldDefinition = {
+        name: i.name,
         label: i.label ?? view.Schema.Label,
         column: i.target_schema,
         type: 'obj',

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import EntitySchema from '../qiksar/qikflow/base/EntitySchema';
+import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 
 /**
  * This method generates a set of routes for viewing and editing a specific entity

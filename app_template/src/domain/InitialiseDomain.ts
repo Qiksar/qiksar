@@ -12,7 +12,6 @@ import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
  * This method is essential, as it resolves circular references between views. For example members => group  and group=>leader, where leader is a member.
  * Finaly the method initialises the Apollo client, and provides type policies used the caching.
  *
- * @param path subfolder in which the views are defined
  * @param views array of view names to be imported
  */
 export default async function InitialiseDomain(views: string[]): Promise<void> {
