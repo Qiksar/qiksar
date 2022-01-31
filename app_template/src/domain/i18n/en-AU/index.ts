@@ -8,5 +8,7 @@ export default {
     leader: 'Boss',
     State: 'State/Territory',
     member: 'mate',
+    Author: 'Written By',
+    Topic: 'Subject',
   },
 };
