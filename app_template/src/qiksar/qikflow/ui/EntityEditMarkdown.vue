@@ -28,7 +28,7 @@
             type="textarea"
             placeholder="Enter your markdown here"
             class="full-height overflow-auto"
-            debounce="1000"
+            debounce="10000"
           />
         </div>
       </div>
