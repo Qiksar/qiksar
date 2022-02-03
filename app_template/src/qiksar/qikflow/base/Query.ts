@@ -14,7 +14,7 @@ import EntityField from './EntityField';
 import fieldType from './fieldType';
 import EntitySchema from './EntitySchema';
 import { GqlRecords } from './GqlTypes';
-import ITableColumn from './ITableColumn';
+import IGridColumn from './IGridColumn';
 import fetchMode from './fetchMode';
 import JsonTools from './JsonTools';
 import fieldOptions from './fieldOptions';
@@ -178,8 +178,8 @@ export default class Query {
     });
   }
 
-  get TableColumns(): ITableColumn[] {
-    const columns: ITableColumn[] = [];
+  get TableColumns(): IGridColumn[] {
+    const columns: IGridColumn[] = [];
 
     this.Schema.Fields.filter((f) => f.IsOnGrid && !f.IsRelation).map((f) => {
       columns.push({

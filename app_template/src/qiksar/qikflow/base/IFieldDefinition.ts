@@ -3,7 +3,8 @@ import fieldType from './fieldType';
 
 /**
  * Describe a field to be added to a schema
- * @interface IFieldDefinition
+ * 
+ * @interface
  */
 export default interface IFieldDefinition {
   name: string;

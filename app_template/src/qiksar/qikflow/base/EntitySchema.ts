@@ -2,16 +2,17 @@ import EntityField, {
   hiddenFieldOptions,
   defaultIntFieldOptions,
 } from './EntityField';
-import fieldOptions from './fieldOptions';
-import IFieldDefinition from './IFieldDefinition';
-import { GqlRecord } from './GqlTypes';
-import Query, { defaultFetchMode } from './Query';
 import fetchMode from './fetchMode';
-import IFetchDefinition from './IFetchDefinition';
-import IFlattenDefinition from './IFlattenDefinition';
-import IUseEnumDefinition from './IUseEnumDefinition';
+import fieldOptions from './fieldOptions';
+import { GqlRecord } from './GqlTypes';
+import IEntityDefinition from './IEntityDefinition';
 import IEnumDefinition from './IEnumDefinition';
-import ICreateSchemaDefinition from './ICreateSchemaDefinition';
+import IImportDefinition from './IImportDefinition';
+import IFieldDefinition from './IFieldDefinition';
+import IImportFieldDefinition from './IImportFieldDefinition';
+import ITransformDefinition from './ITransformDefinition';
+import IUseEnumDefinition from './IUseEnumDefinition';
+import Query, { defaultFetchMode } from './Query';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -25,7 +26,7 @@ export default class EntitySchema {
   private _key: string;
   private _icon: string;
   private _is_enum: boolean;
-  private _includes: IFetchDefinition[];
+  private _includes: IImportDefinition[];
   private _transformers: Record<string, GqlRecord>;
 
   //#endregion
@@ -48,8 +49,8 @@ export default class EntitySchema {
 
   //#region Transformation
 
-  CreateTransform(name: string, transform: GqlRecord): EntitySchema {
-    this._transformers[name] = transform;
+  CreateTransform(definition: ITransformDefinition): EntitySchema {
+    this._transformers[definition.name] = definition.transform;
 
     return this;
   }
@@ -167,7 +168,7 @@ export default class EntitySchema {
    * @param definition Create schema details
    * @returns Schema
    */
-  static Create(definition: ICreateSchemaDefinition): EntitySchema {
+  static Create(definition: IEntityDefinition): EntitySchema {
     const entityName = definition.entityName.toLowerCase();
 
     const schema: EntitySchema = new EntitySchema(
@@ -180,9 +181,25 @@ export default class EntitySchema {
     if (this.GetSchemaForEntity(entityName))
       throw `ERROR: Schema has already been registered for entity type${schema.EntityName}`;
 
-    this._schemas.push(schema);
+    schema.SetKey(definition.keyField);
 
-    return schema.SetKey(definition.keyField);
+    definition.fields.map(
+      (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
+        // Check if the definition is a field or use of an enum
+        if ((f as IUseEnumDefinition)['schemaName']) {
+          schema.UseEnum(f as IUseEnumDefinition);
+        } else if ((f as IImportDefinition)['import']) {
+          schema.Fetch(f as IImportDefinition);
+        } else {
+          schema.AddField(f as IFieldDefinition);
+        }
+      }
+    );
+
+    definition.transformations?.map((t) => schema.CreateTransform(t));
+
+    this._schemas.push(schema);
+    return schema;
   }
 
   /**
@@ -211,12 +228,15 @@ export default class EntitySchema {
 
     return schema
       .SetKey(key, ['sortable'])
-      .AddField({ name:'name', column: 'name', label: 'Label' })
+      .AddField({ name: 'name', column: 'name', label: 'Label' })
       .AddField({ name: 'comment', column: 'comment', label: 'Description' })
-      .CreateTransform('selector', {
-        id: 'id',
-        label: 'name',
-        comment: 'comment',
+      .CreateTransform({
+        name: 'selector',
+        transform: {
+          id: 'id',
+          label: 'name',
+          comment: 'comment',
+        },
       });
   }
 
@@ -321,6 +341,7 @@ export default class EntitySchema {
    */
   AddField(fieldDefinition: IFieldDefinition): EntitySchema {
     this._fields.push(new EntityField(fieldDefinition));
+
     return this;
   }
 
@@ -359,18 +380,22 @@ export default class EntitySchema {
     const label = definition.label ?? view.Schema.Label;
 
     return this.Fetch({
+      type: 'flatten',
       name: definition.name,
       label: definition.label ?? view.Schema.Label,
       target_schema: entity_type,
       source_key: definition.source_id_column,
       source_object: definition.preferred_join_name,
       columns: 'id name comment',
-    }).Flatten({
-      name: definition.name,
-      field_paths: `${definition.preferred_join_name}.name`,
-      label: label,
-      options: defaultIntFieldOptions,
-      column_name: entity_type,
+      import: [
+        {
+          name: definition.name,
+          field_paths: `${definition.preferred_join_name}.name`,
+          label: label,
+          options: defaultIntFieldOptions,
+          column_name: entity_type,
+        },
+      ],
     });
   }
 
@@ -383,7 +408,7 @@ export default class EntitySchema {
    * @param required_columns List of columns to fetch from the child
    * @returns The schema for fluent API style calls
    */
-  Fetch(include: IFetchDefinition): EntitySchema {
+  Fetch(include: IImportDefinition): EntitySchema {
     this._includes.push(include);
 
     return this;
@@ -393,7 +418,7 @@ export default class EntitySchema {
    * Resolve connections between this schema and others
    */
   private ResolveConnections() {
-    this._includes.map((i: IFetchDefinition) => {
+    this._includes.map((i: IImportDefinition) => {
       const view = Query.GetView(i.target_schema);
       const opts = i.options ?? [];
 
@@ -412,6 +437,8 @@ export default class EntitySchema {
       } as IFieldDefinition;
 
       this.AddField(fieldDefinition);
+
+      i.import.map((f) => this.Flatten(f));
     });
   }
 
@@ -448,7 +475,7 @@ export default class EntitySchema {
    * @param definition Definition of the columns to merge in from the source object
    * @returns The schema for fluent API style calls
    */
-  Flatten(definition: IFlattenDefinition): EntitySchema {
+  Flatten(definition: IImportFieldDefinition): EntitySchema {
     const def = {
       label: definition.label,
       column: definition.column_name,
