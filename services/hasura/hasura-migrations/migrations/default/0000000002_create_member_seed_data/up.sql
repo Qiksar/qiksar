@@ -591,7 +591,7 @@ VALUES ( (
             FROM
                 "membership"."articles"
             WHERE
-                article = 'technology article'
+                LOWER(subject) LIKE '%technology%'
         ), (
             SELECT
                 tag_id
@@ -606,7 +606,7 @@ VALUES ( (
             FROM
                 "membership"."articles"
             WHERE
-                article = 'business article'
+                LOWER(subject) LIKE '%business%'
         ), (
             SELECT
                 tag_id
@@ -621,7 +621,7 @@ VALUES ( (
             FROM
                 "membership"."articles"
             WHERE
-                article = 'health article'
+                LOWER(subject) LIKE '%health%'
         ), (
             SELECT
                 tag_id
@@ -636,7 +636,7 @@ VALUES ( (
             FROM
                 "membership"."articles"
             WHERE
-                article = 'innovation article'
+                LOWER(subject) LIKE '%innovation%'
         ), (
             SELECT
                 tag_id
