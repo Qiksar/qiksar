@@ -38,3 +38,14 @@ server {
         include /etc/nginx/conf.d/location.inc;
     }
 }
+
+server {
+    listen 443 ssl;
+    include /etc/nginx/conf.d/ssl.inc;
+    server_name app.{{DOMAIN}};
+
+    location / {
+        proxy_pass http://{{API_CONTAINER}}:{{API_PORT}};
+        include /etc/nginx/conf.d/location.inc;
+    }
+}
