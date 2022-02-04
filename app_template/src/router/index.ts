@@ -6,12 +6,12 @@ import {
   createWebHistory,
 } from 'vue-router';
 
-import getRoutes from 'src/domain/router/GetRoutes';
+import BuildAppRoutes from 'src/domain/BuildAppRoutes';
 
 export let Router = {} as vueRouter;
 
 export default function createRouter(): vueRouter {
-  const routes =  getRoutes();
+  const routes =  BuildAppRoutes();
 
   const createHistory = process.env.SERVER
     ? createMemoryHistory

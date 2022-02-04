@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import getEntityRoutes from './GetEntityRoutes';
-import InitialiseDomain from '../InitialiseDomain';
+import BuildEntityRoutes from '../qiksar/qikflow/router/BuildEntityRoutes';
+import InitialiseDomain from './InitialiseDomain';
 
 /**
  * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.
  *
  * @returns List of route records
  */
-export default function getRoutes(): RouteRecordRaw[] {
+export default function BuildAppRoutes(): RouteRecordRaw[] {
   // Pre-load all the views for the domain
   InitialiseDomain();
 
-  const generatedRoutes = getEntityRoutes();
+  const generatedRoutes = BuildEntityRoutes();
 
   // At this point the generatedRoutes can be further manipulated to add routes from other generators
 

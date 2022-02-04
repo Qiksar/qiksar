@@ -16,15 +16,15 @@ function getRoutesForEntity(
 ): RouteRecordRaw[] {
   return [
     {
+      component: () => import('src/qiksar/qikflow/ui/EntityList.vue'),
       meta: { role: requiredRole },
       path: `/${entityName}`,
-      component: () => import('src/qiksar/qikflow/ui/EntityList.vue'),
       props: { entity_type: entityName },
     },
     {
+      component: () => import('src/qiksar/qikflow/ui/EntityEdit.vue'),
       meta: { role: requiredRole },
       path: `/${entityName}/edit/:id`,
-      component: () => import('src/qiksar/qikflow/ui/EntityEdit.vue'),
       props: (route: any) => {
         const props = {
           context: {
@@ -41,10 +41,11 @@ function getRoutesForEntity(
 }
 
 /**
- *
+ * Build the VUE Router paths for each dynamic entity to enable list, view and edit
+ * 
  * @returns Return
  */
-export default function getEntityRoutes(): RouteRecordRaw[] {
+export default function BuildEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
 
   EntitySchema.Schemas.map((s: EntitySchema) => {

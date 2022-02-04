@@ -7,7 +7,7 @@ import Query from 'src/qiksar/qikflow/base/Query';
 import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
 
-import schema from './schema';
+import schema from './DomainSchema';
 
 /**
  * Initialise the data domain with views defined in the specifified folder, denoted by the path parameter.

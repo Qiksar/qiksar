@@ -3,7 +3,7 @@
  * 
  * @interface
  */
-export interface IEntityLink {
+export default interface IEntityLink {
   title: string;
   caption: string;
   icon: string;

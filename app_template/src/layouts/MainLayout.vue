@@ -72,8 +72,8 @@
 <script lang="ts">
 import EssentialLink from 'components/EssentialLink.vue';
 import { defineComponent, ref } from 'vue';
+import BuildEntityNavLinks from 'src/qiksar/qikflow/router/BuildEntityNavLinks';
 import { AuthWrapper } from 'src/boot/qiksar';
-import getEntityLinks from 'src/domain/router/GetEntityLinks';
 
 const linksList = [
   {
@@ -89,7 +89,7 @@ const linksList = [
     link: '/dashboard',
   },
 
-  ...getEntityLinks(),
+  ...BuildEntityNavLinks(),
 ];
 
 export default defineComponent({
