@@ -37,6 +37,13 @@ const schema: ISchemaDefinition = {
       fields: [
         {
           type: 'text',
+          name: 'block_code',
+          label: 'Code',
+          column: 'block_code',
+          options: ['EntityEditText', 'ongrid'],
+        },
+        {
+          type: 'text',
           name: 'topic',
           label: 'Topic',
           column: 'subject',

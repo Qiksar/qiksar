@@ -89,6 +89,7 @@ CREATE TABLE
 CREATE TABLE
     membership.articles (
         article_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        block_code text NOT NULL UNIQUE,
         article text NOT NULL,
         subject text NOT NULL,
         summary text NOT NULL,

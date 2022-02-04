@@ -27,6 +27,7 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
+    - block_code
     - article
     - image
     - status_id
@@ -40,6 +41,7 @@ insert_permissions:
     backend_only: false
     check: {}
     columns:
+    - block_code
     - article
     - image
     - status_id
@@ -51,6 +53,7 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
+    - block_code
     - article
     - article_id
     - created_at
@@ -67,6 +70,7 @@ select_permissions:
   role: member
 - permission:
     columns:
+    - block_code
     - article
     - article_id
     - created_at
@@ -85,6 +89,7 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - block_code
     - article
     - image
     - status_id
@@ -97,6 +102,7 @@ update_permissions:
 - permission:
     check: null
     columns:
+    - block_code
     - article
     - image
     - status_id

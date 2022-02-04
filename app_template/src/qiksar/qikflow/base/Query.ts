@@ -460,13 +460,14 @@ export default class Query {
 
     const doc = this.BuildQuery(undefined, undefined, undefined, limit);
 
-    const r = await Query.Apollo.query(doc).catch((e) => {
-      //console.log('<< EXCEPTION! FetchAll')
-
-      throw `FetchAll - Exception ${e as string}`;
+    const result = await Query.Apollo.query(doc).catch((e:string) => {
+      if(e.indexOf('not found in type'))
+        throw `FetchAll - Check the permissions metadata related to this error: ${e}`;
+      else
+        throw `FetchAll - Exception ${e}`;
     });
 
-    this.SetRows(r, store, translate ?? this._auto_translate);
+    this.SetRows(result, store, translate ?? this._auto_translate);
 
     store.SetBusy(false);
     store.SetLoaded(store.Rows.length > 0);
@@ -505,11 +506,11 @@ export default class Query {
     store.SetBusy(true);
     const doc = this.BuildQuery(where, fetch_mode, orderBy, limit);
 
-    const r = await Query.Apollo.query(doc).catch((e) => {
+    const result = await Query.Apollo.query(doc).catch((e) => {
       throw `FetchWhere - Exception ${e as string}`;
     });
 
-    this.SetRows(r, store, translate ?? this._auto_translate);
+    this.SetRows(result, store, translate ?? this._auto_translate);
 
     this._where = where;
     this._fetch_mode = fetch_mode;
@@ -554,11 +555,11 @@ export default class Query {
 
     const doc = { query: gql(query) };
 
-    const r = await Query.Apollo.query(doc).catch((e) => {
+    const result = await Query.Apollo.query(doc).catch((e) => {
       throw `FetchById - Exception ${e as string}`;
     });
 
-    const raw_record = r.data[query_name] as GqlRecord;
+    const raw_record = result.data[query_name] as GqlRecord;
     const record = this.ProcessRow(raw_record, translate);
 
     if (record) {
@@ -673,12 +674,12 @@ export default class Query {
                     { ${this.Schema.Key} ${keys} }
             }`;
 
-    const r = await this.ExecuteMutation(doc, 'update', store);
+    const result = await this.ExecuteMutation(doc, 'update', store);
 
     store.SetBusy(false);
     store.SetLoaded(true);
 
-    return r;
+    return result;
   }
 
   async DeleteById(id: string, store: any): Promise<GqlRecord> {
@@ -731,7 +732,7 @@ export default class Query {
     const doc = { mutation: gql(mutation) };
     store.SetBusy(true);
 
-    const r = await Query.Apollo.mutate(doc).catch((e) => {
+    const result = await Query.Apollo.mutate(doc).catch((e) => {
       throw `doMutation - Exception ${e as string}`;
     });
 
@@ -741,7 +742,7 @@ export default class Query {
 
     //console.log('<< ExecuteMutation')
 
-    return r as GqlRecord;
+    return result as GqlRecord;
   }
 
   //#endregion

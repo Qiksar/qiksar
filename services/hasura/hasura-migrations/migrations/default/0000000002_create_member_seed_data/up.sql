@@ -522,6 +522,7 @@ VALUES ('technology'), ('business'), ('health'), ('innovation');
 
 INSERT INTO
     membership.articles (
+        "block_code",
         "status_id",
         "article",
         "subject",
@@ -530,6 +531,7 @@ INSERT INTO
         "created_by"
     )
 VALUES (
+        'EN_AU_TECH',
         'draft',
         'technology article',
         'Technology update for this year',
@@ -543,6 +545,7 @@ VALUES (
                 lastname LIKE '%Bell%'
         )
     ), (
+        'EN_AU_BUSINESS',
         'draft',
         'business article',
         'Business forecast for next year',
@@ -556,6 +559,7 @@ VALUES (
                 lastname LIKE '%Bell%'
         )
     ), (
+        'EN_AU_HEALTH',
         'draft',
         'health article',
         'How to stay healthy',
@@ -569,6 +573,7 @@ VALUES (
                 firstname LIKE '%Bruce%'
         )
     ), (
+        'EN_AU_INNOVATION',
         'draft',
         'innovation article{%0A}{%0A}# Governing Law{%0A}{{ GOV_LAW_AU_WA }}{%0A}{%0A}{%0A}# Approval Process{%0A}```mermaid Christmas Shopping Process{%0A}graph TD{%0A}A[Christmas] -->|Get money| B(Go shopping){%0A}B --> C{Let me think}{%0A}C -->|One| D[Laptop]{%0A}C -->|Two| E[iPhone]{%0A}C -->|Three| F[Car]{%0A}```{%0A}{%0A}{{ ISO27001_S12 }}{%0D}{%0A}',
         'Innovation is one of the most innovative things you can do!',
