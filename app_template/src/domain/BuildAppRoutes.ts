@@ -15,46 +15,42 @@ export default function BuildAppRoutes(): RouteRecordRaw[] {
 
   const dynamicRoutes = BuildEntityRoutes();
 
-  // At this point the generatedRoutes can be further manipulated to add routes from other generators
+  // At this point the dynamicRoutes can be further manipulated to add routes from other generators, resort the items into a different order than the default sequence, etc.
 
   // Add static routes here...
   return [
     {
       path: '/',
+
       component: () => import('layouts/MainLayout.vue'),
+
       children: [
+        ...dynamicRoutes,
+
         {
           path: '',
           component: () => import('pages/Index.vue'),
           meta: { anonymous: true },
         },
 
-        ...dynamicRoutes,
-      ],
-    },
-
-    {
-      path: '/dashboard',
-      component: () => import('layouts/MainLayout.vue'),
-      children: [
         {
-          path: '',
+          path: '/dashboard',
           component: () => import('pages/Dashboard.vue'),
           meta: { anonymous: true },
         },
+
+        {
+          meta: { anonymous: true },
+          path: '/unauthorized',
+          component: () => import('pages/Unauthorized.vue'),
+        },
+
+        {
+          meta: { anonymous: true },
+          path: '/logout',
+          component: () => import('pages/LoggedOut.vue'),
+        },
       ],
-    },
-
-    {
-      meta: { anonymous: true },
-      path: '/unauthorized',
-      component: () => import('pages/Unauthorized.vue'),
-    },
-
-    {
-      meta: { anonymous: true },
-      path: '/logout',
-      component: () => import('pages/LoggedOut.vue'),
     },
 
     // Always leave this as last one,
