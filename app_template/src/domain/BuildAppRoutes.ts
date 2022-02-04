@@ -13,7 +13,7 @@ export default function BuildAppRoutes(): RouteRecordRaw[] {
   // Pre-load all the views for the domain
   InitialiseDomain();
 
-  const generatedRoutes = BuildEntityRoutes();
+  const dynamicRoutes = BuildEntityRoutes();
 
   // At this point the generatedRoutes can be further manipulated to add routes from other generators
 
@@ -29,7 +29,7 @@ export default function BuildAppRoutes(): RouteRecordRaw[] {
           meta: { anonymous: true },
         },
 
-        ...generatedRoutes,
+        ...dynamicRoutes,
       ],
     },
 
