@@ -9,18 +9,9 @@ import InitialiseDomain from '../InitialiseDomain';
  *
  * @returns List of route records
  */
-export default async function getRoutes(): Promise<RouteRecordRaw[]> {
+export default function getRoutes(): RouteRecordRaw[] {
   // Pre-load all the views for the domain
-  await InitialiseDomain([
-    'TenantsView',
-    'LocalesView',
-    'RolesView',
-    'StatusView',
-    'GroupsView',
-    'MembersView',
-    'ArticleStatusView',
-    'ArticlesView',
-  ]);
+  InitialiseDomain();
 
   const generatedRoutes = getEntityRoutes();
 
@@ -38,7 +29,7 @@ export default async function getRoutes(): Promise<RouteRecordRaw[]> {
           meta: { anonymous: true },
         },
 
-      ...generatedRoutes,
+        ...generatedRoutes,
       ],
     },
 

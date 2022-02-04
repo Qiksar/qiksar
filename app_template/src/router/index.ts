@@ -10,8 +10,8 @@ import getRoutes from 'src/domain/router/GetRoutes';
 
 export let Router = {} as vueRouter;
 
-export default async function createRouter(): Promise<vueRouter> {
-  const routes = await getRoutes();
+export default function createRouter(): vueRouter {
+  const routes =  getRoutes();
 
   const createHistory = process.env.SERVER
     ? createMemoryHistory

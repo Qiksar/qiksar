@@ -27,14 +27,14 @@ export const defaultFetchMode: fetchMode = 'heavy';
 export default class Query {
   //#region properties
 
-  private _offset: number;
-  private _limit: number | undefined;
-  private _sort_by: string;
-  private _asc: boolean;
   private _schema: EntitySchema;
-  private _where: string | undefined;
   private _fetch_mode: fetchMode;
-  private _auto_fetch: boolean;
+  private _auto_fetch = true;
+  private _offset = 0;
+  private _limit: number | undefined;
+  private _sort_by = '';
+  private _asc = true;
+  private _where: string | undefined;
   private _auto_translate = true;
 
   private static _apollo: ApolloClient<NormalizedCacheObject>;
@@ -198,23 +198,35 @@ export default class Query {
 
   //#region constructor
 
-  constructor(
+  constructor(schema: EntitySchema, fetch_mode: fetchMode, auto_fetch = true) {
+    this._schema = schema;
+    this._fetch_mode = fetch_mode;
+    this._auto_fetch = auto_fetch;
+  }
+
+  /**
+   * Create a query which manages data for a specific entity type
+   * 
+   * @param schema Schema definition
+   * @param autoFetch Automatically fetch data when the query is instantiated
+   * @param sort_by Attribute used to sort data
+   * @param asc Sort in ascending order if true
+   * @param limit Limit number of rows fetched
+   */
+  static CreateQuery(
     schema: EntitySchema,
     autoFetch = false,
     sort_by: string | undefined = undefined,
     asc = true,
     limit: number | undefined = undefined
   ) {
-    this._schema = schema;
-    this._sort_by = sort_by ?? schema.Key;
-    this._asc = asc;
-    this._limit = limit;
-    this._offset = 0;
-    this._where = undefined;
-    this._fetch_mode = defaultFetchMode;
-    this._auto_fetch = autoFetch;
+    const query = new Query(schema, defaultFetchMode, autoFetch);
 
-    Query._views.push(this);
+    query._sort_by = sort_by ?? schema.Key;
+    query._asc = asc;
+    query._limit = limit;
+
+    Query._views.push(query);
   }
 
   //#endregion

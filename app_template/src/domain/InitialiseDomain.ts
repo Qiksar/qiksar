@@ -7,6 +7,8 @@ import Query from 'src/qiksar/qikflow/base/Query';
 import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
 import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
 
+import schema from './schema';
+
 /**
  * Initialise the data domain with views defined in the specifified folder, denoted by the path parameter.
  * This method is essential, as it resolves circular references between views. For example members => group  and group=>leader, where leader is a member.
@@ -14,11 +16,16 @@ import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
  *
  * @param views array of view names to be imported
  */
-export default async function InitialiseDomain(views: string[]): Promise<void> {
-  // Load the views in the sequence that they are declared in and await each to completely load before going to the next
-  for (const viewName of views) {
-    await import('./views/' + viewName + '.ts');
-  }
+export default function InitialiseDomain(): void {
+  // Process all of the enumeration types
+  schema.enums.map((e) => {
+    Query.CreateQuery(EntitySchema.CreateEnum(e), true);
+  });
+
+  // Process all of the more complex entities
+  schema.entities.map((e) => {
+    Query.CreateQuery(EntitySchema.Create(e), true);
+  });
 
   // Connect schema that reference each other, e.g. members->groups   groups->leaders
   EntitySchema.ResolveReferences();

@@ -171,15 +171,15 @@ export default class EntitySchema {
   static Create(definition: IEntityDefinition): EntitySchema {
     const entityName = definition.entityName.toLowerCase();
 
+    if (this.GetSchemaForEntity(entityName))
+      throw `ERROR: Schema has already been registered for entity type${entityName}`;
+
     const schema: EntitySchema = new EntitySchema(
       entityName,
       definition.keyField,
       definition.icon,
       definition.label ?? entityName
     );
-
-    if (this.GetSchemaForEntity(entityName))
-      throw `ERROR: Schema has already been registered for entity type${schema.EntityName}`;
 
     schema.SetKey(definition.keyField);
 
@@ -213,6 +213,9 @@ export default class EntitySchema {
     const key = 'id';
     const entityName = definition.entityName.toLowerCase();
 
+    if (this.GetSchemaForEntity(entityName))
+      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
+
     const schema: EntitySchema = new EntitySchema(
       entityName,
       key,
@@ -220,9 +223,6 @@ export default class EntitySchema {
       definition.label ?? entityName,
       true
     );
-
-    if (this.GetSchemaForEntity(entityName))
-      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${schema.EntityName}`;
 
     this._schemas.push(schema);
 
