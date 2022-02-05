@@ -137,8 +137,14 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
         );
       });
 
-    const metadata = (kc_profile as GqlRecord).userProfileMetadata as GqlRecord;
-    const attributes = metadata.attributes as GqlRecord;
+    const metadata = (kc_profile as GqlRecord).attributes as GqlRecord;
+    const locale_array = (metadata['locale'] as string[]) ?? [
+      process.env.DEFAULT_LOCALE,
+    ];
+    const locale = locale_array[0];
+
+    const mobile_array = (metadata['mobile_phone'] as string[]) ?? [''];
+    const mobile = mobile_array[0];
 
     const user_profile: User = {
       auth_id: (kc_profile.id as string) ?? '',
@@ -149,8 +155,8 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       firstname: (kc_profile.firstName as string) ?? '',
       lastname: (kc_profile.lastName as string) ?? '',
       roles: this.GetUserRoles(),
-      mobile: (attributes['mobile_phone'] as string) ?? '',
-      locale: (attributes['locale'] as string) ?? process.env.DEFAULT_LOCALE,
+      mobile: mobile,
+      locale: locale,
     };
 
     //console.log('PROFILE **************************');
