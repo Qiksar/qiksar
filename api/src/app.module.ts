@@ -52,12 +52,12 @@ import { TenantModule } from './tenant.module';
 })
 export class AppModule {
   constructor() {
+    /*
     console.log(`authServerUrl: ${process.env.PROD_KEYCLOAK_ENDPOINT}`);
     console.log(`realm: ${process.env.KEYCLOAK_REALM}`);
     console.log(`realmPublicKey: ${process.env.KEYCLOAK_REALM_KEY}`);
     console.log(`clientId: ${process.env.KEYCLOAK_APICLIENT}`);
     console.log(`secret: ${process.env.KEYCLOAK_CLIENT_SECRET}`);
-    /*
      */
   }
 }
