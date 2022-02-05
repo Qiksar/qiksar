@@ -17,7 +17,6 @@ echo
 # Setup all the environment variables in the env file
 echo "Transform environment variables from './template.env'"
 bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
-cat ./initkc/kc_data/private_data/realm_public_key.env >> .env
 
 
 echo "Import environment variables from './.env'"
@@ -78,12 +77,13 @@ echo
 echo "Configure Keycloak"
 docker exec -u 0 q_auth bash -c "chmod a+x /kc_init.sh; bash -c /kc_init.sh"
 echo
+cat ./initkc/kc_data/private_data/realm_public_key.env >> .env
 
 
 # Start the graphql container
 # then give it time to settle
 echo "Start Hasura GraphQL container"
-docker-compose up -d --quiet-pull --build proxy gql
+docker-compose up -d --quiet-pull --build proxy gql api
 echo "Allow Hasura container to stabilise"
 sleep 15
 echo
