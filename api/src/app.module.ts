@@ -2,24 +2,17 @@ import { KeycloakConnectModule, ResourceGuard, RoleGuard, AuthGuard } from 'nest
 
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
-import { ConfigModule } from '@nestjs/config';
 
-import configuration from './ApiConfig';
 import { TenantModule } from './tenant.module';
 
 @Module({
   imports: [
     TenantModule,
-    ConfigModule.forRoot({
-      load: [configuration],
-      isGlobal: true,
-      cache: true,
-    }),
     KeycloakConnectModule.register({
       authServerUrl: process.env.KEYCLOAK_ENDPOINT,
       realm: process.env.KEYCLOAK_REALM,
       realmPublicKey: process.env.KEYCLOAK_REALM_KEY,
-      clientId: process.env.KEYCLOAK_CLIENT,
+      clientId: process.env.KEYCLOAK_APICLIENT,
       secret: process.env.KEYCLOAK_CLIENT_SECRET,
       bearerOnly: true,
     }),

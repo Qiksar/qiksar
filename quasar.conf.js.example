@@ -58,8 +58,8 @@ module.exports = configure(function (ctx) {
       //env: require('dotenv').config().parsed,
 
       env :{
-        'PUBLIC_GRAPHQL_ENDPOINT':'http://localhost:8092/v1/graphql',
-        'PUBLIC_AUTH_ENDPOINT':'http://localhost:8093/auth',
+        'HASURA_ENDPOINT':'http://localhost:8092/v1/graphql',
+        'KEYCLOAK_ENDPOINT':'http://localhost:8093/auth',
         'API_PATH':'http://localhost:8091/api',
         'I18N_WARNINGS': false,
         'DEFAULT_LOCALE': 'en-AU'

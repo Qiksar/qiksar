@@ -60,8 +60,12 @@ cd ${TARGET}
 
 echo
 echo
-echo "Import environment variables from 'services/.env'"
-export $(cat ${SOURCE_LOCATION}/services/.env | xargs)
+echo "Copy environment variables to new app"
+cp ${SOURCE_LOCATION}/services/.env ${TARGET}/.env
+
+echo
+echo "Import environment variables from .env file"
+export $(cat ${TARGET}/.env | xargs)
 
 
 echo
@@ -94,8 +98,6 @@ echo
 echo "Installing quasar.conf.js"
 cp ${SOURCE_LOCATION}/app_template/quasar.conf.js ${TARGET}/quasar.conf.js
 echo
-echo "Installing .env"
-cp ${SOURCE_LOCATION}/app_template/dev.env ${TARGET}/.env
 
 echo
 echo "Installing quasar.extensions.json"

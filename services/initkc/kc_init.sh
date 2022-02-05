@@ -27,51 +27,51 @@ kcadm.sh config credentials --server http://localhost:8080/auth --realm master -
 
 # Generate realm template
 cat $OUTPUT_PATH/template_realm.json |\
- sed "s|{{PUBLIC_AUTH_ENDPOINT}}|${PUBLIC_AUTH_ENDPOINT}|" | \
+ sed "s|{{KEYCLOAK_ENDPOINT}}|${KEYCLOAK_ENDPOINT}|" | \
  sed "s|{{APP_URL}}|${APP_URL}|" | \
- sed "s|{{CLIENT}}|${CLIENT}|" | \
- sed "s|{{REALM_UUID}}|${REALM_UUID}|" | \
- sed "s|{{REALM_ID}}|${REALM_ID}|" | \
- sed "s|{{KEYCLOAK_API_CREDENTIAL}}|${KEYCLOAK_API_CREDENTIAL}|" | \
- sed "s|{{REALM_NAME}}|${REALM_NAME}|" | \
+ sed "s|{{KEYCLOAK_CLIENT}}|${KEYCLOAK_CLIENT}|" | \
+ sed "s|{{KEYCLOAK_REALM_UUID}}|${KEYCLOAK_REALM_UUID}|" | \
+ sed "s|{{KEYCLOAK_REALM}}|${KEYCLOAK_REALM}|" | \
+ sed "s|{{KEYCLOAK_CLIENT_SECRET}}|${KEYCLOAK_CLIENT_SECRET}|" | \
+ sed "s|{{KEYCLOAK_REALM_NAME}}|${KEYCLOAK_REALM_NAME}|" | \
  sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | \
  sed "s|{{SMTP_SENDER_NAME}}|${SMTP_SENDER_NAME}|"  \
  > ${OUTPUT_PATH}/realm.json
 
 # Create the realm
 echo
-echo "Create the realm: "${REALM_ID}
-kcadm.sh create realms -s realm=${REALM_ID} -s enabled=true
-kcadm.sh create partialImport -r ${REALM_ID} -s ifResourceExists=SKIP -f ${REALM_JSON}
+echo "Create the realm: "${KEYCLOAK_REALM}
+kcadm.sh create realms -s realm=${KEYCLOAK_REALM} -s enabled=true
+kcadm.sh create partialImport -r ${KEYCLOAK_REALM} -s ifResourceExists=SKIP -f ${REALM_JSON}
 echo
 
 
 echo
 echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
-kcadm.sh set-password -r ${REALM_ID} --username=${APP_ADMIN} --new-password ${USER_PW}
+kcadm.sh create users -r ${KEYCLOAK_REALM} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin roles: "${APP_ADMIN}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
 
 
 echo
 echo "Create Australian tenant admin user: oz_"${APP_ADMIN}" with password: "${USER_PW}
 # -s 'requiredActions=["UPDATE_PROFILE"]'
-kcadm.sh create users -r ${REALM_ID} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.mobile_phone=+61 0456 789 012" -s "attributes.locale=en-AU" 
-kcadm.sh set-password -r ${REALM_ID} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
+kcadm.sh create users -r ${KEYCLOAK_REALM} -s username="oz_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s "attributes.firstName=Bruce" -s "attributes.lastName=Cobber" -s "email=bruce@ozapp.com" -s "attributes.mobile_phone=+61 0456 789 012" -s "attributes.locale=en-AU" 
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: oz_"${APP_ADMIN}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername="oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername="oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 echo
 echo "Create Australian tenant admin user: "ozadmin" without key attributes set and password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="ozadmin" -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
-kcadm.sh set-password -r ${REALM_ID} --username="ozadmin" --new-password ${USER_PW}
+kcadm.sh create users -r ${KEYCLOAK_REALM} -s username="ozadmin" -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=perth"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username="ozadmin" --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: ozadmin"
-kcadm.sh add-roles    -r ${REALM_ID} --uusername="ozadmin" --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername="ozadmin" --rolename ${TENANT_ADMIN_ROLE} 
 
 
 
@@ -80,23 +80,23 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="ozadmin" --rolename ${TENANT_A
 echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
 # -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]' 
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"  -s "attributes.firstName=Alexander Graham" -s "attributes.lastName=Bell" -s "email=alex@scotmail.co.uk" -s "attributes.mobile_phone=+44 7766 123 456" -s "attributes.locale=en-UK" 
-kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
+kcadm.sh create users -r ${KEYCLOAK_REALM} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"  -s "attributes.firstName=Alexander Graham" -s "attributes.lastName=Bell" -s "email=alex@scotmail.co.uk" -s "attributes.mobile_phone=+44 7766 123 456" -s "attributes.locale=en-UK" 
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername="scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername="scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 echo
 echo "Create test user for 'perth' tenant: "${APP_USER}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth" -s "firstName=Angela" -s "lastName=Adelaide" -s "email=angela@ozemail.com.au" 
-kcadm.sh set-password -r ${REALM_ID} --username=${APP_USER} --new-password ${USER_PW}
-kcadm.sh add-roles    -r ${REALM_ID} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
+kcadm.sh create users -r ${KEYCLOAK_REALM} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth" -s "firstName=Angela" -s "lastName=Adelaide" -s "email=angela@ozemail.com.au" 
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username=${APP_USER} --new-password ${USER_PW}
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
 
 echo
 echo "Capture the realm public key..."
 #export the public key 
-export KEY_TEXT=$(curl -s --request GET --url http://localhost:8080/auth/realms/${REALM_ID} | jq -r -c .public_key | sed -e 's/"//g')
+export KEY_TEXT=$(curl -s --request GET --url http://localhost:8080/auth/realms/${KEYCLOAK_REALM} | jq -r -c .public_key | sed -e 's/"//g')
 export PUBLIC_KEY='-----BEGIN PUBLIC KEY-----\n'${KEY_TEXT}'\n-----END PUBLIC KEY-----' 
 export KC_KEY='HASURA_GRAPHQL_JWT_SECRET={"type": "RS256", "key": "'${PUBLIC_KEY}'"}'
 
@@ -107,7 +107,7 @@ echo "Captured the realm public key into:"${OUTPUT_PATH}"/private_data/token.env
 # Test login with user credentials
 echo 'Test authentication - request token for: oz_'${APP_ADMIN}
 echo
-export AUTH_TOKEN=$(curl -s --request POST --url http://localhost:8080/auth/realms/${REALM_ID}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username="oz_"${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
+export AUTH_TOKEN=$(curl -s --request POST --url http://localhost:8080/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token   --header 'Content-Type: application/x-www-form-urlencoded'   --data username="oz_"${APP_ADMIN}   --data password=${USER_PW}   --data grant_type=password   --data client_id=${KEYCLOAK_CLIENT}  | jq -r -c .access_token | sed -e 's/"//g')
 echo "Bearer "${AUTH_TOKEN} > ${OUTPUT_PATH}/private_data/auth_token.json
 echo "Bearer token captured into: "${OUTPUT_PATH}"/private_data/auth_token.json"
 echo
@@ -118,4 +118,4 @@ echo
 
 # Note for future if needed during test cycles...
 # This command will delete the whole realm, users, clients...everything
-#kcadm.sh delete realms/${REALM_ID}
+#kcadm.sh delete realms/${KEYCLOAK_REALM}

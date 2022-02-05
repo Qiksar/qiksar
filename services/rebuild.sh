@@ -17,6 +17,8 @@ echo
 # Setup all the environment variables in the env file
 echo "Transform environment variables from './template.env'"
 bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
+cat ./initkc/kc_data/private_data/realm_public_key.env >> .env
+
 
 echo "Import environment variables from './.env'"
 export $(cat .env | xargs)

@@ -25,10 +25,10 @@ import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 export default function CreateApolloClient(
   auth: QiksarAuthWrapper
 ): ApolloClient<NormalizedCacheObject> {
-  if (!process.env.PUBLIC_GRAPHQL_ENDPOINT)
-    throw 'PUBLIC_GRAPHQL_ENDPOINT is undefined';
+  if (!process.env.HASURA_ENDPOINT)
+    throw 'HASURA_ENDPOINT is undefined';
 
-  const httpURI = process.env.PUBLIC_GRAPHQL_ENDPOINT;
+  const httpURI = process.env.HASURA_ENDPOINT;
   const protocol = httpURI.includes('localhost') ? 'ws://' : 'wss://';
   const wsURI = httpURI.replace(/http(s)?:\/\//, protocol);
 

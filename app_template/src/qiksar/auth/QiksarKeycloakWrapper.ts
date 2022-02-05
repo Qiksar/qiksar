@@ -44,19 +44,19 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
   //#endregion
 
   constructor() {
-    if (!process.env.PUBLIC_AUTH_ENDPOINT)
-      throw 'PUBLIC_AUTH_ENDPOINT is not defined';
+    if (!process.env.KEYCLOAK_ENDPOINT)
+      throw 'KEYCLOAK_ENDPOINT is not defined';
 
     const [, , subdomain] = window.location.hostname.split('.').reverse();
 
-    if (!subdomain || subdomain.length == 0) this.realm = 'app';
+    if (!subdomain || subdomain.length == 0) this.realm = process.env.KEYCLOAK_REALM ?? 'app';
     else this.realm = subdomain;
 
     //console.log('Realm: >' + this.realm + '<');
 
     // Configuration details for REALM and CLIENT
     const kc_config: Keycloak.KeycloakConfig = {
-      url: process.env.PUBLIC_AUTH_ENDPOINT,
+      url: process.env.KEYCLOAK_ENDPOINT,
       realm: this.realm,
       clientId: 'app-client',
     };
