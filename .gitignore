@@ -6,6 +6,7 @@ app/
 
 #ignore the generated environment variable file
 **/.env 
+**/yarn.lock
 **/services/initnginx/conf.d/app.conf
 
 # compiled output

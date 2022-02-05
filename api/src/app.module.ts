@@ -1,4 +1,4 @@
-import { KeycloakConnectModule, ResourceGuard, RoleGuard, AuthGuard } from 'nest-keycloak-connect';
+import { KeycloakConnectModule, ResourceGuard, RoleGuard, AuthGuard, TokenValidation } from 'nest-keycloak-connect';
 
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
@@ -9,12 +9,14 @@ import { TenantModule } from './tenant.module';
   imports: [
     TenantModule,
     KeycloakConnectModule.register({
-      authServerUrl: process.env.KEYCLOAK_ENDPOINT,
+      authServerUrl: process.env.PROD_KEYCLOAK_ENDPOINT,
       realm: process.env.KEYCLOAK_REALM,
       realmPublicKey: process.env.KEYCLOAK_REALM_KEY,
       clientId: process.env.KEYCLOAK_APICLIENT,
       secret: process.env.KEYCLOAK_CLIENT_SECRET,
       bearerOnly: true,
+      tokenValidation: TokenValidation.ONLINE,
+      useNestLogger: true,
     }),
   ],
   controllers: [],
@@ -48,4 +50,14 @@ import { TenantModule } from './tenant.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  constructor() {
+    console.log(`authServerUrl: ${process.env.PROD_KEYCLOAK_ENDPOINT}`);
+    console.log(`realm: ${process.env.KEYCLOAK_REALM}`);
+    console.log(`realmPublicKey: ${process.env.KEYCLOAK_REALM_KEY}`);
+    console.log(`clientId: ${process.env.KEYCLOAK_APICLIENT}`);
+    console.log(`secret: ${process.env.KEYCLOAK_CLIENT_SECRET}`);
+    /*
+     */
+  }
+}
