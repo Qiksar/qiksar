@@ -85,7 +85,7 @@ services:
         container_name: q_api
         
         build: 
-            context: ./api
+            context: ../api
 
         links: 
             - auth
