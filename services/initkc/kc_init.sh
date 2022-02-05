@@ -78,7 +78,7 @@ kcadm.sh add-roles    -r ${REALM_ID} --uusername="ozadmin" --rolename ${TENANT_A
 
 echo
 echo "Create Scottish tenant admin user: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'  -s "attributes.firstName=Alexander Graham" -s "attributes.lastName=Bell" -s "email=alex@scotmail.co.uk"
+kcadm.sh create users -r ${REALM_ID} -s username="scot_"${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=${TENANT_ADMIN_ROLE}" -s "attributes.tenant_id=arbroath"  -s 'requiredActions=["UPDATE_PROFILE","CONFIGURE_TOTP"]'  -s "attributes.firstName=Alexander Graham" -s "attributes.lastName=Bell" -s "email=alex@scotmail.co.uk" -s "attributes.mobile_phone=+44 7766 123 456" -s "attributes.locale=en-UK" 
 kcadm.sh set-password -r ${REALM_ID} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
