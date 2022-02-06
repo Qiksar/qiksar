@@ -626,7 +626,6 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "{{KEYCLOAK_CLIENT_SECRET}}",
       "redirectUris": [
         "{{APP_URL}}/*"
       ],

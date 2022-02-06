@@ -15,7 +15,7 @@ echo
 
 
 # Setup all the environment variables in the env file
-echo "Transform environment variables from './template.env'"
+echo "Transform environment variables from './template.env' into local '.env' file"
 bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
 
 
@@ -74,11 +74,21 @@ echo
 
 # Initialise the keycloak environment
 # This will create a realm for the app, and create an admin and none admin user
-echo "Configure Keycloak"
+echo "Execute Keycloak configuration"
+echo 
 docker exec -u 0 q_auth bash -c "chmod a+x /kc_init.sh; bash -c /kc_init.sh"
 echo
+echo "Append Keycloak realm and client secrets to .env file"
 cat ./initkc/kc_data/private_data/realm_public_key.env >> .env
-
+cat ./initkc/kc_data/private_data/client_secret.env >> .env
+echo
+echo
+echo "** NOTE FOR RELATED PROJECTS"
+echo "You may wish to review the contents of the .env file as this can be used in"
+echo "docker compose processes to configure services, or the .env file can be copied"
+echo "and used in other projects to ensure consistent configuration."
+echo 
+echo
 
 # Start the graphql container
 # then give it time to settle
