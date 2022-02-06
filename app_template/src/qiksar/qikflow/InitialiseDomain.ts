@@ -2,21 +2,27 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
-import { AuthWrapper } from 'src/boot/qiksar';
+import { RouteRecordRaw } from 'vue-router';
+import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
+
 import Query from 'src/qiksar/qikflow/base/Query';
 import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
-import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
-
-import schema from './DomainSchema';
+import ISchemaDefinition from 'src/qiksar/qikflow/base/ISchemaDefinition';
+import BuildEntityRoutes from 'src/qiksar/qikflow/router/BuildEntityRoutes';
 
 /**
  * Initialise the data domain with views defined in the specifified folder, denoted by the path parameter.
  * This method is essential, as it resolves circular references between views. For example members => group  and group=>leader, where leader is a member.
- * Finaly the method initialises the Apollo client, and provides type policies used the caching.
+ * The method initialises the Apollo client, and provides type policies used the caching.
+ * 
  *
- * @param views array of view names to be imported
+ * @param schema schema definition
+ * @param apolloClient Apollo client for GraphQL
+ * 
+ * @returns Array of routes for dynamically created UI
  */
-export default function InitialiseDomain(): void {
+export default function InitialiseDomain(schema:ISchemaDefinition, apolloClient: ApolloClient<NormalizedCacheObject> ): RouteRecordRaw[] {
+  
   // Process all of the enumeration types
   schema.enums.map((e) => {
     Query.CreateQuery(EntitySchema.CreateEnum(e), true);
@@ -31,5 +37,9 @@ export default function InitialiseDomain(): void {
   EntitySchema.ResolveReferences();
 
   // create the apollo client, which creates TypePolicies according to the views registered above
-  Query.Apollo = CreateApolloClient(AuthWrapper);
+  Query.Apollo = apolloClient;
+
+  const dynamicRoutes = BuildEntityRoutes();
+  
+  return dynamicRoutes;
 }
