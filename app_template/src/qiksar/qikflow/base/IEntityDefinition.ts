@@ -4,8 +4,8 @@ import ITransformDefinition from './ITransformDefinition';
 import IUseEnumDefinition from './IUseEnumDefinition';
 
 /**
- * Define an entity which assist in server driven, or at least dynamically created, user interfaces 
- * 
+ * Define an entity which assist in server driven, or at least dynamically created, user interfaces
+ *
  * @interface
  */
 export default interface IEntityDefinition {

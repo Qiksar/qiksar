@@ -1,6 +1,6 @@
 /**
  * Define a grid column (table)
- * 
+ *
  * @interface
  */
 export default interface IGridColumn {

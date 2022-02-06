@@ -2,7 +2,7 @@ import fieldOptions from './fieldOptions';
 
 /**
  * Define the fields of a source entity which are to be imported to a target entity
- * 
+ *
  * @interface
  */
 export default interface IImportFieldDefinition {

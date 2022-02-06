@@ -49,7 +49,8 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
 
     const [, , subdomain] = window.location.hostname.split('.').reverse();
 
-    if (!subdomain || subdomain.length == 0) this.realm = process.env.KEYCLOAK_REALM ?? 'app';
+    if (!subdomain || subdomain.length == 0)
+      this.realm = process.env.KEYCLOAK_REALM ?? 'app';
     else this.realm = subdomain;
 
     //console.log('Realm: >' + this.realm + '<');

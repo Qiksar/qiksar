@@ -5,7 +5,7 @@ export type enumType = 'enum';
  * @interface
  */
 export default interface IUseEnumDefinition {
-  type: enumType,
+  type: enumType;
   name: string;
   label?: string;
   schemaName: string;

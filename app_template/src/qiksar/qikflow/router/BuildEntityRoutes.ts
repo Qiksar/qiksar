@@ -42,14 +42,14 @@ function getRoutesForEntity(
 
 /**
  * Build the VUE Router paths for each dynamic entity to enable list, view and edit
- * 
+ *
  * @returns Return
  */
 export default function BuildEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
 
   EntitySchema.Schemas.map((s: EntitySchema) => {
-    getRoutesForEntity(s.EntityName, 'tenant_admin').map(r => routes.push(r));
+    getRoutesForEntity(s.EntityName, 'tenant_admin').map((r) => routes.push(r));
   });
 
   return routes;

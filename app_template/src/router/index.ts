@@ -11,7 +11,7 @@ import BuildAppRoutes from 'src/domain/BuildAppRoutes';
 export let Router = {} as vueRouter;
 
 export default function createRouter(): vueRouter {
-  const routes =  BuildAppRoutes();
+  const routes = BuildAppRoutes();
 
   const createHistory = process.env.SERVER
     ? createMemoryHistory

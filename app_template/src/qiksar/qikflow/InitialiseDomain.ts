@@ -14,15 +14,17 @@ import BuildEntityRoutes from 'src/qiksar/qikflow/router/BuildEntityRoutes';
  * Initialise the data domain with views defined in the specifified folder, denoted by the path parameter.
  * This method is essential, as it resolves circular references between views. For example members => group  and group=>leader, where leader is a member.
  * The method initialises the Apollo client, and provides type policies used the caching.
- * 
+ *
  *
  * @param schema schema definition
  * @param apolloClient Apollo client for GraphQL
- * 
+ *
  * @returns Array of routes for dynamically created UI
  */
-export default function InitialiseDomain(schema:ISchemaDefinition, apolloClient: ApolloClient<NormalizedCacheObject> ): RouteRecordRaw[] {
-  
+export default function InitialiseDomain(
+  schema: ISchemaDefinition,
+  apolloClient: ApolloClient<NormalizedCacheObject>
+): RouteRecordRaw[] {
   // Process all of the enumeration types
   schema.enums.map((e) => {
     Query.CreateQuery(EntitySchema.CreateEnum(e), true);
@@ -40,6 +42,6 @@ export default function InitialiseDomain(schema:ISchemaDefinition, apolloClient:
   Query.Apollo = apolloClient;
 
   const dynamicRoutes = BuildEntityRoutes();
-  
+
   return dynamicRoutes;
 }

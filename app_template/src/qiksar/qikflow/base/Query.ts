@@ -206,7 +206,7 @@ export default class Query {
 
   /**
    * Create a query which manages data for a specific entity type
-   * 
+   *
    * @param schema Schema definition
    * @param autoFetch Automatically fetch data when the query is instantiated
    * @param sort_by Attribute used to sort data
@@ -460,11 +460,10 @@ export default class Query {
 
     const doc = this.BuildQuery(undefined, undefined, undefined, limit);
 
-    const result = await Query.Apollo.query(doc).catch((e:string) => {
-      if(e.indexOf('not found in type'))
+    const result = await Query.Apollo.query(doc).catch((e: string) => {
+      if (e.indexOf('not found in type'))
         throw `FetchAll - Check the permissions metadata related to this error: ${e}`;
-      else
-        throw `FetchAll - Exception ${e}`;
+      else throw `FetchAll - Exception ${e}`;
     });
 
     this.SetRows(result, store, translate ?? this._auto_translate);

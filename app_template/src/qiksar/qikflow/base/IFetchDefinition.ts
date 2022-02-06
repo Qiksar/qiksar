@@ -4,7 +4,7 @@ import IFlattenDefinition from './IFlattenDefinition';
 export type flattenType = 'flatten';
 
 export default interface IFetchDefinition {
-  type: flattenType,
+  type: flattenType;
   name: string;
   label: string;
   target_schema: string;

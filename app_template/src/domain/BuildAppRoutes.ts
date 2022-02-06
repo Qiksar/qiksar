@@ -12,7 +12,6 @@ import DomainSchema from './DomainSchema';
  * @returns List of route records
  */
 export default function BuildAppRoutes(): RouteRecordRaw[] {
-
   // Create the apollo client, then initialise the domain with the schema and get the dynamically created routes
   const apolloClient = CreateApolloClient(AuthWrapper);
   const dynamicRoutes = InitialiseDomain(DomainSchema, apolloClient);
