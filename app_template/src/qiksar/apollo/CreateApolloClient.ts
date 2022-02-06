@@ -13,8 +13,8 @@ import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
 import { AuthWrapper } from 'src/boot/qiksar';
-import Query from 'src/qiksar/qikflow/base/Query';
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
+import Query from 'src/qiksar/qikflow/base/Query';
 
 /**
  * Create the apollo client and use the auth wrapper to acquire a token
