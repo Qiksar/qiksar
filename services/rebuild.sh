@@ -56,6 +56,8 @@ cat initnginx/app.conf.template \
     | sed "s|{{GQL_SERVER}}|$GQL_SERVER|"\
     | sed "s|{{GQL_PORT}}|$GQL_PORT|" \
     | sed "s|{{GQL_PORT_PUBLIC}}|$GQL_PORT_PUBLIC|" \
+    | sed "s|{{API_CONTAINER}}|$API_CONTAINER|" \
+    | sed "s|{{API_PORT}}|$API_PORT|" \
     > initnginx/conf.d/app.conf
 echo
 
@@ -67,8 +69,11 @@ cat hasura/hasura-migrations/config.template \
     > hasura/hasura-migrations/config.yaml
 echo
 
-echo "Start database and authentication containers"
-docker-compose up -d --quiet-pull --build db auth 
+# The DB container is only needed locally, not on the host as the postgres database cluster is used in production
+[ ! -f "/root/qiksar_host.tag" ] && echo "Start database container" && docker-compose up -d --quiet-pull --build db 
+
+echo "Start authentication containers"
+docker-compose up -d --quiet-pull --build auth 
 echo
 
 
