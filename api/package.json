@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "dotenv": "^14.3.2",
     "global": "^4.4.0",
+    "keycloak-js": "^16.1.1",
     "nest-keycloak-connect": "^1.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
