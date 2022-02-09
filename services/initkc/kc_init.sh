@@ -32,7 +32,7 @@ cat $OUTPUT_PATH/template_realm.json |\
  sed "s|{{KEYCLOAK_CLIENT}}|${KEYCLOAK_CLIENT}|" | \
  sed "s|{{KEYCLOAK_REALM_UUID}}|${KEYCLOAK_REALM_UUID}|" | \
  sed "s|{{KEYCLOAK_REALM}}|${KEYCLOAK_REALM}|" | \
- sed "s|{{KEYCLOAK_CLIENT_SECRET}}|${KEYCLOAK_CLIENT_SECRET}|" | \
+ sed "s|{{KEYCLOAK_APICLIENT_SECRET}}|${KEYCLOAK_APICLIENT_SECRET}|" | \
  sed "s|{{KEYCLOAK_REALM_NAME}}|${KEYCLOAK_REALM_NAME}|" | \
  sed "s|{{SMTP_PASSWORD}}|${SMTP_PASSWORD}|" | \
  sed "s|{{SMTP_SENDER_NAME}}|${SMTP_SENDER_NAME}|"  \
@@ -76,7 +76,7 @@ export SECRET_PATH=clients/${API_CLIENT_ID}/client-secret
 export API_CLIENT_SECRET=$(kcadm.sh get -r ${KEYCLOAK_REALM} ${SECRET_PATH} | jq '.value' | sed -e 's/"//g') 
 
 echo
-echo "KEYCLOAK_CLIENT_SECRET="${API_CLIENT_SECRET} > ${OUTPUT_PATH}/private_data/client_secret.env
+echo "KEYCLOAK_APICLIENT_SECRET="${API_CLIENT_SECRET} > ${OUTPUT_PATH}/private_data/client_secret.env
 echo "API client secret stored in: "${OUTPUT_PATH}"/private_data/client_secret.env"
 
 echo

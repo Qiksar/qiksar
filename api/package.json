@@ -10,6 +10,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start NODE_ENV=dev",
+    "start:local": "docker container rm -f q_api && nest start NODE_ENV=dev --watch",
     "start:dev": "nest start NODE_ENV=dev --watch",
     "start:debug": "nest start  NODE_ENV=dev --debug --watch",
     "start:prod": "node NODE_ENV=prod dist/main",
@@ -25,12 +26,12 @@
     "@nestjs/config": "^1.1.6",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "dotenv": "^14.3.2",
     "global": "^4.4.0",
     "nest-keycloak-connect": "^1.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0",
-    "dotenv": "^14.3.2"
+    "rxjs": "^7.2.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^8.2.0",

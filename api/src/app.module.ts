@@ -9,11 +9,11 @@ import { TenantModule } from './tenant.module';
   imports: [
     TenantModule,
     KeycloakConnectModule.register({
-      authServerUrl: process.env.PROD_KEYCLOAK_ENDPOINT,
+      authServerUrl: process.env.KEYCLOAK_ENDPOINT,
       realm: process.env.KEYCLOAK_REALM,
       realmPublicKey: process.env.KEYCLOAK_REALM_KEY,
       clientId: process.env.KEYCLOAK_APICLIENT,
-      secret: process.env.KEYCLOAK_CLIENT_SECRET,
+      secret: process.env.KEYCLOAK_APICLIENT_SECRET,
       bearerOnly: true,
       tokenValidation: TokenValidation.ONLINE,
       useNestLogger: true,
@@ -53,11 +53,11 @@ import { TenantModule } from './tenant.module';
 export class AppModule {
   constructor() {
     /*
-    console.log(`authServerUrl: ${process.env.PROD_KEYCLOAK_ENDPOINT}`);
+    console.log(`authServerUrl: ${process.env.KEYCLOAK_ENDPOINT}`);
     console.log(`realm: ${process.env.KEYCLOAK_REALM}`);
     console.log(`realmPublicKey: ${process.env.KEYCLOAK_REALM_KEY}`);
     console.log(`clientId: ${process.env.KEYCLOAK_APICLIENT}`);
-    console.log(`secret: ${process.env.KEYCLOAK_CLIENT_SECRET}`);
+    console.log(`secret: ${process.env.KEYCLOAK_APICLIENT_SECRET}`);
      */
   }
 }

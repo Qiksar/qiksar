@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Scope } from '@nestjs/common';
 import { TenantService } from './tenant.service';
-import { Roles, Unprotected } from 'nest-keycloak-connect';
+import { Resource, Roles, Unprotected } from 'nest-keycloak-connect';
 
-@Controller('tenant')
+@Controller({ path: 'tenant' })
+@Resource('app-api')
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}
   @Get('/public')

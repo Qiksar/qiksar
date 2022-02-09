@@ -7,6 +7,6 @@ In order to run the API you must:
    point the API at the cloud deployed auth server. An env variable has already been setup for this purpose... PROD_KEYCLOAK_ENDPOINT
 3. Login to keycloak (same URL as PROD_KEYCLOAK_ENDPOINT)
 4. Copy the public key from the rsa-generated RS256 key and use the Public Key value to set KEYCLOAK_REALM_KEY
-5. Open the app-api client, and under the Credentials tab, copy the Secret value (regenerate the secret if it is blank) then use this value to set KEYCLOAK_CLIENT_SECRET
+5. Open the app-api client, and under the Credentials tab, copy the Secret value (regenerate the secret if it is blank) then use this value to set KEYCLOAK_APICLIENT_SECRET
 
 Use the Postman test suite to authenticate with the cloud based server, then call an API method which required the role associated with the auth token.
