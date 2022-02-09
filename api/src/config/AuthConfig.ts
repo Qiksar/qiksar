@@ -1,6 +1,6 @@
-import { KeycloakConnectOptions, TokenValidation } from 'nest-keycloak-connect';
+import { KeycloakConnectConfig, TokenValidation } from 'nest-keycloak-connect';
 
-const keycloak_config: KeycloakConnectOptions = {
+const keycloak_config: KeycloakConnectConfig = {
   authServerUrl: process.env.KEYCLOAK_ENDPOINT,
   realm: process.env.KEYCLOAK_REALM,
   realmPublicKey: process.env.KEYCLOAK_REALM_KEY,
