@@ -6,9 +6,11 @@
       <label>
         {{ props.field.Label }}
       </label>
-      <q-avatar size="150px" class="q-mt-lg q-mb-lg">
-        <img :src="(props.entity[props.field.Name] as string)" />
-      </q-avatar>
+      <q-img
+        :src="(props.entity[props.field.Name] as string)"
+        class="q-mt-lg q-mb-lg"
+        style="height: 140px; max-width: 150px"
+      />
       <q-file
         filled
         bottom-slots
