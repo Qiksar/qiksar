@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */ /* eslint-disable
 @typescript-eslint/no-unsafe-assignment */
 <template>
-  <div class="q-markdown-input">
+  <div
+    ref="qMarkdownInput"
+    :class="
+      state.fullscreen
+        ? 'q-markdown-input q-markdown-input--fullscreen'
+        : 'q-markdown-input'
+    "
+  >
     <div class="row">
       <label class="q-mb-md">{{ props.field.Label }}</label>
     </div>
@@ -13,11 +20,11 @@
             <div class="q-markdown-input__block-dropdown row items-center">
               <label class="q-mr-md">Insert block</label>
               <q-select
-                outlined
-                v-model="state.block"
                 :options="blocks"
-                dense
+                v-model="state.block"
                 @update:modelValue="onSelectBlock($event)"
+                outlined
+                dense
               />
             </div>
           </div>
@@ -34,13 +41,20 @@
       </div>
       <div class="col-6">
         <div class="q-markdown-input__preview overflow-hidden">
-          <div class="q-markdown-input__header">
+          <div class="q-markdown-input__header justify-between">
             <span class="text-uppercase">Preview</span>
+            <q-btn
+              color="primary"
+              text-color="white"
+              :icon="state.fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              class="q-markdown-input__fullscreen"
+              @click="toggleFullscreen"
+            />
           </div>
           <q-markdown
             :plugins="markdownPlugins"
             :src="decodeBlock()"
-            class="full-height overflow-auto"
+            class="overflow-auto"
           />
         </div>
       </div>
@@ -70,12 +84,14 @@ const props = defineProps<{
   readonly: boolean;
 }>();
 
-const state = ref({
-  block: '',
-});
-
+const qMarkdownInput = ref(null);
 const markdownField = ref(null);
 const markdownPlugins = [markdownItMermaid];
+
+const state = ref({
+  block: '',
+  fullscreen: false,
+});
 
 const blocks: Array<TMarkdownBlock> = [
   {
@@ -158,5 +174,15 @@ function insertBlock(block: string) {
 
   textareaEl.selectionEnd = selectionEnd + block.length;
   refProxy.focus();
+}
+
+function toggleFullscreen() {
+  if (state.value.fullscreen) {
+    setTimeout(() => {
+      const refProxy = qMarkdownInput.value as HTMLElement;
+      refProxy.scrollIntoView();
+    }, 100);
+  }
+  state.value.fullscreen = !state.value.fullscreen;
 }
 </script>

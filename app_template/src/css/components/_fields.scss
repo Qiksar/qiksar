@@ -22,6 +22,7 @@
   border-bottom: 1px solid $border-color;
 
   .q-markdown {
+    height: 100%;
     padding: 0 15px 100px 15px;
     border-bottom: 1px solid $border-color;
   }
@@ -35,7 +36,7 @@
   border-top: 1px solid $border-color;
   border-bottom: 1px solid $border-color;
 
-  span {
+  > span {
     font-size: 0.8rem;
     color: #a0aabf;
   }
@@ -44,5 +45,23 @@
 .q-markdown-input__block-dropdown {
   label {
     color: #a0aabf;
+  }
+}
+
+.q-markdown-input--fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  background-color: #fff;
+
+  .q-markdown-input__preview {
+    height: 100%;
+  }
+
+  .q-markdown {
+    height: 100vh;
   }
 }
