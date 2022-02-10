@@ -36,4 +36,9 @@ export default class AuthController {
 
     return details;
   }
+
+  @Post('create')
+  async create(email: string){
+
+  }
 }
