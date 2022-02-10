@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, Param, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Unprotected } from 'nest-keycloak-connect';
 
@@ -28,7 +28,10 @@ export default class AuthController {
 
   @Get('me')
   async me(@Req() req: Http2ServerRequest, @Body('realm') realm: string): Promise<Record<string, any>> {
-    const token = req.headers['authorization'].substring(7).trim();
+    const token = req.headers['authorization']?.substring(7).trim();
+
+    if (!token) throw new HttpException('Invalid token', 401);
+
     const details = await this.AuthService.me(realm, token);
 
     return details;

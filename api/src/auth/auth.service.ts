@@ -26,7 +26,6 @@ export default class AuthService {
   }
 
   public async me(realm: string, token: string): Promise<Record<string, any>> {
-    const params = new URLSearchParams();
     const url = this.url(realm, 'protocol/openid-connect/userinfo');
     const r = await axios.get(url, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.data);
 
