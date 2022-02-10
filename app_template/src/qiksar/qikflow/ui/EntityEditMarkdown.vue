@@ -12,8 +12,8 @@
     <div class="row">
       <label class="q-mb-md">{{ props.field.Label }}</label>
     </div>
-    <div class="row">
-      <div class="col-6">
+    <q-splitter v-model="splitterModel" style="height: 400px">
+      <template v-slot:before>
         <div class="q-markdown-input__field full-height">
           <div class="q-markdown-input__header justify-between">
             <span class="text-uppercase">Markdown</span>
@@ -38,8 +38,8 @@
             debounce="10000"
           />
         </div>
-      </div>
-      <div class="col-6">
+      </template>
+      <template v-slot:after>
         <div class="q-markdown-input__preview overflow-hidden">
           <div class="q-markdown-input__header justify-between">
             <span class="text-uppercase">Preview</span>
@@ -57,8 +57,8 @@
             class="overflow-auto"
           />
         </div>
-      </div>
-    </div>
+      </template>
+    </q-splitter>
   </div>
 </template>
 
@@ -84,6 +84,7 @@ const props = defineProps<{
   readonly: boolean;
 }>();
 
+const splitterModel = ref(50);
 const qMarkdownInput = ref(null);
 const markdownField = ref(null);
 const markdownPlugins = [markdownItMermaid];
