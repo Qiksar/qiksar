@@ -4,7 +4,7 @@
   <div
     ref="qMarkdownInput"
     :class="
-      state.fullscreen
+      fullscreen
         ? 'q-markdown-input q-markdown-input--fullscreen'
         : 'q-markdown-input'
     "
@@ -21,7 +21,7 @@
               <label class="q-mr-md">Insert block</label>
               <q-select
                 :options="blocks"
-                v-model="state.block"
+                v-model="selectedBlock"
                 @update:modelValue="onSelectBlock($event)"
                 outlined
                 dense
@@ -46,7 +46,7 @@
             <q-btn
               color="primary"
               text-color="white"
-              :icon="state.fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+              :icon="fullscreen ? 'fullscreen_exit' : 'fullscreen'"
               class="q-markdown-input__fullscreen"
               @click="toggleFullscreen"
             />
@@ -88,11 +88,8 @@ const splitterModel = ref(50);
 const qMarkdownInput = ref(null);
 const markdownField = ref(null);
 const markdownPlugins = [markdownItMermaid];
-
-const state = ref({
-  block: '',
-  fullscreen: false,
-});
+const selectedBlock = ref('');
+const fullscreen = ref(false);
 
 const blocks: Array<TMarkdownBlock> = [
   {
@@ -147,7 +144,7 @@ function onUpdate(value: string) {
 
 function onSelectBlock(e: TMarkdownBlock) {
   insertBlock(e.value);
-  state.value.block = '';
+  selectedBlock.value = '';
 }
 
 function insertBlock(block: string) {
@@ -178,12 +175,13 @@ function insertBlock(block: string) {
 }
 
 function toggleFullscreen() {
-  if (state.value.fullscreen) {
+  if (fullscreen.value) {
     setTimeout(() => {
       const refProxy = qMarkdownInput.value as HTMLElement;
       refProxy.scrollIntoView();
     }, 100);
   }
-  state.value.fullscreen = !state.value.fullscreen;
+
+  fullscreen.value = !fullscreen.value;
 }
 </script>
