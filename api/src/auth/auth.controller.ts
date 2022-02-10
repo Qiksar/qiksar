@@ -1,5 +1,7 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import { Http2ServerRequest } from 'http2';
 import { Unprotected } from 'nest-keycloak-connect';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AuthService from './auth.service';
 
@@ -20,9 +22,15 @@ export default class AuthController {
     @Body('password') password: string,
   ): Promise<Record<string, any>> {
     const token = await this.AuthService.authenticate(realm, client_id, username, password);
-    
-    console.log(`Token: ${JSON.stringify(token)}`);
-    
+
     return token;
+  }
+
+  @Get('me')
+  async me(@Req() req: Http2ServerRequest, @Body('realm') realm: string): Promise<Record<string, any>> {
+    const token = req.headers['authorization'].substring(7).trim();
+    const details = await this.AuthService.me(realm, token);
+
+    return details;
   }
 }
