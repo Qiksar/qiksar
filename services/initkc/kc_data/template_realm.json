@@ -48,16 +48,21 @@
   "roles": {
     "realm": [
       {
-        "id": "f33cd89a-5b3e-48d8-b9f9-2e3a30eae07f",
-        "name": "member",
-        "composite": false,
+        "id": "ae3cf8aa-5c3d-59d8-b9f9-2e3a30eae07f",
+        "name": "tenant_admin",
+        "composite": true,
+        "composites": {
+          "client": {
+            "realm-management": ["query-users", "manage-users", "view-users"]
+          }
+        },
         "clientRole": false,
         "containerId": "{{KEYCLOAK_REALM_UUID}}",
         "attributes": {}
       },
       {
-        "id": "ae3cf8aa-5c3d-59d8-b9f9-2e3a30eae07f",
-        "name": "tenant_admin",
+        "id": "beef82aa-5c3d-59d8-b9f9-2e3a30eae07f",
+        "name": "tenant_user",
         "composite": false,
         "clientRole": false,
         "containerId": "{{KEYCLOAK_REALM_UUID}}",
@@ -71,17 +76,6 @@
           "client": {
             "realm-management": ["query-users", "manage-users", "view-users"]
           }
-        },
-        "clientRole": false,
-        "containerId": "{{KEYCLOAK_REALM_UUID}}",
-        "attributes": {}
-      },
-      {
-        "id": "1f937686-031f-4f98-8210-0b8e372f73e8",
-        "name": "api",
-        "composite": true,
-        "composites": {
-          "realm": ["tenant_admin"]
         },
         "clientRole": false,
         "containerId": "{{KEYCLOAK_REALM_UUID}}",
@@ -111,7 +105,7 @@
         "description": "${role_default-roles}",
         "composite": true,
         "composites": {
-          "realm": ["offline_access", "uma_authorization"],
+          "realm": [],
           "client": {
             "account": ["view-profile", "manage-account"]
           }
@@ -439,12 +433,13 @@
     "containerId": "{{KEYCLOAK_REALM_UUID}}"
   },
   "requiredCredentials": ["password"],
+  "passwordPolicy": "passwordHistory(3) and length(8) and notUsername(undefined) and notEmail(undefined) and upperCase(1) and lowerCase(1) and digits(1)",
   "otpPolicyType": "totp",
   "otpPolicyAlgorithm": "HmacSHA1",
   "otpPolicyInitialCounter": 0,
   "otpPolicyDigits": 6,
   "otpPolicyLookAheadWindow": 1,
-  "otpPolicyPeriod": 30,
+  "otpPolicyPeriod": 60,
   "otpSupportedApplications": ["FreeOTP", "Google Authenticator"],
   "webAuthnPolicyRpEntityName": "keycloak",
   "webAuthnPolicySignatureAlgorithms": ["ES256"],
@@ -492,8 +487,8 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": ["{{APP_URL}}/*"],
-      "webOrigins": ["*"],
+      "redirectUris": ["{{APP_URL}}/*", "http://localhost:8080/*"],
+      "webOrigins": ["+"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -2279,8 +2274,8 @@
       "alias": "terms_and_conditions",
       "name": "Terms and Conditions",
       "providerId": "terms_and_conditions",
-      "enabled": false,
-      "defaultAction": false,
+      "enabled": true,
+      "defaultAction": true,
       "priority": 20,
       "config": {}
     },
@@ -2289,7 +2284,7 @@
       "name": "Update Password",
       "providerId": "UPDATE_PASSWORD",
       "enabled": true,
-      "defaultAction": false,
+      "defaultAction": true,
       "priority": 30,
       "config": {}
     },
@@ -2298,7 +2293,7 @@
       "name": "Update Profile",
       "providerId": "UPDATE_PROFILE",
       "enabled": true,
-      "defaultAction": false,
+      "defaultAction": true,
       "priority": 40,
       "config": {}
     },
@@ -2325,7 +2320,7 @@
       "name": "Update User Locale",
       "providerId": "update_user_locale",
       "enabled": true,
-      "defaultAction": false,
+      "defaultAction": true,
       "priority": 1000,
       "config": {}
     }

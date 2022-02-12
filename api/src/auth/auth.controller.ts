@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Unprotected } from 'nest-keycloak-connect';
 
@@ -7,7 +7,7 @@ import AuthService from './auth.service';
 
 @Controller({ path: 'auth' })
 export default class AuthController {
-  constructor(private readonly AuthService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
   /**
    * Authenticate the user
    *
@@ -15,30 +15,27 @@ export default class AuthController {
    **/
   @Post('login')
   @Unprotected()
-  async auth(
+  async login(
     @Body('realm') realm: string,
     @Body('client_id') client_id: string,
     @Body('username') username: string,
     @Body('password') password: string,
   ): Promise<Record<string, any>> {
-    const token = await this.AuthService.authenticate(realm, client_id, username, password);
+    const token = await this.authService.authenticate(realm, client_id, username, password);
+
+    console.log(JSON.stringify(this.authService.decodeToken(token['access_token'])));
 
     return token;
   }
 
   @Get('me')
-  async me(@Req() req: Http2ServerRequest, @Body('realm') realm: string): Promise<Record<string, any>> {
-    const token = req.headers['authorization']?.substring(7).trim();
+  async me(@Req() req: Http2ServerRequest): Promise<Record<string, any>> {
+    const token = this.authService.tokenFromRequest(req);
+    const decoded = this.authService.decodeToken(token);
+    const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
 
-    if (!token) throw new HttpException('Invalid token', 401);
-
-    const details = await this.AuthService.me(realm, token);
+    const details = await this.authService.me(realm, token);
 
     return details;
-  }
-
-  @Post('create')
-  async create(email: string){
-
   }
 }
