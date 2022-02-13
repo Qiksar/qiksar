@@ -41,6 +41,7 @@ services:
 
         container_name: q_auth
         image: ghcr.io/marcelcoding/keycloak:latest
+        
 
         # mount configuration files
         volumes:
