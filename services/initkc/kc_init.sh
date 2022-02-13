@@ -1,5 +1,7 @@
 echo ------------------------------------------------------------------------------------------------------------------------
+echo
 echo --  KEYCLOAK INITIALISATION SCRIPT
+echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
 echo
@@ -39,13 +41,9 @@ cat $OUTPUT_PATH/template_realm.json |\
 # Create the realm
 echo
 echo "Create the realm: "${KEYCLOAK_REALM}
-kcadm.sh create realms -s realm=${KEYCLOAK_REALM} -s enabled=true 
+kcadm.sh create realms -s realm=${KEYCLOAK_REALM} -s enabled=true
 kcadm.sh create partialImport -r ${KEYCLOAK_REALM} -s ifResourceExists=SKIP -f ${REALM_JSON}
-
-# set password policy as the partial import process fails to do so
-kcadm.sh update realms/${KEYCLOAK_REALM} -b '{"passwordPolicy": "passwordHistory(3) and length(8) and notUsername(undefined) and notEmail(undefined) and upperCase(1) and lowerCase(1) and digits(1)"}'
-  
-
+ 
 echo
 echo
 echo ------------------------
@@ -54,6 +52,9 @@ echo ------------------------
 echo
 echo
 
+echo "Set password policy..."
+kcadm.sh update realms/${KEYCLOAK_REALM} -b '{"passwordPolicy": "passwordHistory(3) and length(8) and notUsername(undefined) and notEmail(undefined) and upperCase(1) and lowerCase(1) and digits(1)"}'
+echo
 
 echo "Capture the realm public key..."
 #export the public key 
@@ -91,7 +92,7 @@ echo
 
 echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh create users -r ${KEYCLOAK_REALM} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
-kcadm.sh set-password -r ${KEYCLOAK_REALM} --username ${APP_ADMIN} --new-password ${USER_PW}
+kcadm.sh set-password -r ${KEYCLOAK_REALM} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin roles: "${APP_ADMIN}
 kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
@@ -104,7 +105,7 @@ kcadm.sh create users -r ${KEYCLOAK_REALM} -s username="oz_"${APP_ADMIN} -s enab
 kcadm.sh set-password -r ${KEYCLOAK_REALM} --username="oz_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: oz_"${APP_ADMIN}
-kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --cclientid ${KEYCLOAK_CLIENT} --uusername "oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername="oz_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 echo
@@ -114,14 +115,14 @@ kcadm.sh create users -r ${KEYCLOAK_REALM} -s username="scot_"${APP_ADMIN} -s en
 kcadm.sh set-password -r ${KEYCLOAK_REALM} --username="scot_"${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign tenant_admin roles: scot_"${APP_ADMIN}" with password: "${USER_PW}
-kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --cclientid ${KEYCLOAK_CLIENT} --uusername "scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername="scot_"${APP_ADMIN} --rolename ${TENANT_ADMIN_ROLE} 
 
 
 echo
 echo "Create test user for 'perth' tenant: "${APP_USER}" with password: "${USER_PW}
 kcadm.sh create users -r ${KEYCLOAK_REALM} -s username=${APP_USER} -s enabled=true -s "attributes.tenant_role=member" -s "attributes.tenant_id=perth" -s "firstName=Angela" -s "lastName=Adelaide" -s "email=angela@ozemail.com.au" 
 kcadm.sh set-password -r ${KEYCLOAK_REALM} --username=${APP_USER} --new-password ${USER_PW}
-kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --cclientid ${KEYCLOAK_CLIENT} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
+kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername ${APP_USER} --rolename ${DEFAULT_ROLE}  
 
 
 # Test login with user credentials
@@ -137,7 +138,9 @@ echo
 echo
 
 echo ------------------------------------------------------------------------------------------------------------------------
+echo
 echo --  KEYCLOAK CONFIGURATION COMPLETE
+echo
 echo ------------------------------------------------------------------------------------------------------------------------
 echo
 echo

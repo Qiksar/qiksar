@@ -38,9 +38,9 @@ export default interface QiksarAuthWrapper {
   /**
    * Indicates if the user has a specified role
    *
-   * @param role Indicates
+   * @param role Required role
    */
-  HasRealmRole(role: string): boolean;
+  HasRole(role: string): boolean;
 
   /**
    * The active user profile

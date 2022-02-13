@@ -98,10 +98,10 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
    *
    * @param role Indicates
    */
-  HasRealmRole(roleName: string | undefined): boolean {
+  HasRole(roleName: string | undefined): boolean {
     const hasRole: boolean = this.keycloak.hasRealmRole(roleName ?? '');
 
-    //console.log('HasRealmRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
+    //console.log('HasRole: ' + (roleName ?? 'none') + ' = ' + hasRole.toString());
 
     return hasRole;
   }
@@ -269,7 +269,7 @@ export default class QiksarKeycloakWrapper implements QiksarAuthWrapper {
       } else if (!this.IsAuthenticated()) {
         // User must be logged in
         this.Login(to.path);
-      } else if (this.HasRealmRole(required_role)) {
+      } else if (this.HasRole(required_role)) {
         // User must have at least the default role
         next();
       } else {

@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
-import { Unprotected } from 'nest-keycloak-connect';
+import { Unprotected, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AuthService from './auth.service';
@@ -29,6 +29,7 @@ export default class AuthController {
   }
 
   @Get('me')
+  @Roles({ roles: ['realm:tenant_admin', 'realm:tenant_user'], mode: RoleMatchingMode.ANY })
   async me(@Req() req: Http2ServerRequest): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
     const decoded = this.authService.decodeToken(token);
