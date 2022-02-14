@@ -15,7 +15,7 @@ export default class TenantController {
   }
 
   @Post('create_user')
-  @Roles({ roles: ['tenant_admin'] })
+  @Roles({ roles: ['realm:tenant_admin'] })
   async createUser(
     @Req() req: Http2ServerRequest,
     @Body('admin') admin: boolean,

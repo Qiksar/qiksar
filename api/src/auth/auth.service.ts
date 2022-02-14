@@ -69,18 +69,38 @@ export default class AuthService {
       },
     };
 
-    const url = this.adminUrl(realm, 'users');
     let userid = '';
+    let role = {};
 
+    // Create the new user
     await axios
-      .post(url, user, this.buildHeader(token))
+      .post(this.realmAdminUrl(realm, 'users'), user, this.buildHeader(token))
       .then((r) => {
         userid = r.headers['location'].split('/')[8];
+        console.log(userid);
       })
       .catch((e) => {
         throw new HttpException(e.response.data['errorMessage'], 409);
       });
 
+    // Keycloak will assign a default role, so get the details of the role so we can delete it
+    await axios
+      .get(this.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), this.buildHeader(token))
+      .then(async (r) => {
+        role = [r.data[0]];
+      })
+      .catch((e) => {
+        throw new HttpException(e.response.data['errorMessage'], 409);
+      });
+
+    const config = { data: role, headers: this.authHeader(token) };
+
+    // Delete the default role mapping
+    await axios.delete(this.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), config).catch((e) => {
+      throw new HttpException(e.response.data['errorMessage'], 409);
+    });
+
+    // Add role
     // set required actions like review profile, reset password and OTP
 
     return userid;
@@ -104,12 +124,16 @@ export default class AuthService {
     return `${this.config.authServerUrl}/realms/${realm}/${action}`;
   }
 
-  private adminUrl(realm: string, action: string): string {
+  private realmAdminUrl(realm: string, action: string): string {
     return `${this.config.authServerUrl}/admin/realms/${realm}/${action}`;
   }
 
   private buildHeader(token: string): Record<string, any> {
-    return { headers: { Authorization: `Bearer ${token}` } };
+    return { headers: this.authHeader(token) };
+  }
+
+  private authHeader(token: string): Record<string, any> {
+    return { Authorization: `Bearer ${token}` };
   }
 
   //#region Validation
