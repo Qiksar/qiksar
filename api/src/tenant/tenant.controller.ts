@@ -8,12 +8,27 @@ import TenantService from './tenant.service';
 @Controller({ path: 'tenant' })
 export default class TenantController {
   constructor(private readonly tenantService: TenantService, private readonly authService: AuthService) {}
+
+  /*
   @Get('/public')
   @Unprotected()
   getPublic(): string {
     return `${this.tenantService.getHello()} the public method`;
   }
+  */
 
+  /**
+   * Create a user
+   *
+   * @param req incoming request
+   * @param admin indicates if the user is to be an admin
+   * @param username unique login id of the user
+   * @param password initial password for the user
+   * @param email email address of the user
+   * @param firstname first name of the user
+   * @param lastname last name of the user
+   * @returns uuid of the user assigned by the auth server
+   */
   @Post('create_user')
   @Roles({ roles: ['realm:tenant_admin'] })
   async createUser(

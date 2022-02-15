@@ -1,8 +1,4 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export default class TenantService {
-  getHello(): string {
-    return 'HELLO FROM THE TENANT SERVICE: YOU CALLED ';
-  }
-}
+export default class TenantService {}

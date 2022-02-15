@@ -28,6 +28,12 @@ export default class AuthController {
     return token;
   }
 
+  /**
+   * Get details of the authenticated user
+   *
+   * @param req incoming request
+   * @returns details as provided by the auth server
+   */
   @Get('me')
   @Roles({ roles: ['realm:tenant_admin', 'realm:tenant_user'], mode: RoleMatchingMode.ANY })
   async me(@Req() req: Http2ServerRequest): Promise<Record<string, any>> {
