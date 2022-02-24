@@ -169,19 +169,19 @@ export default class EntitySchema {
    * @returns Schema
    */
   static Create(definition: IEntityDefinition): EntitySchema {
-    const entityName = definition.entityName.toLowerCase();
+    const entityName = definition.name.toLowerCase();
 
     if (this.GetSchemaForEntity(entityName))
       throw `ERROR: Schema has already been registered for entity type${entityName}`;
 
     const schema: EntitySchema = new EntitySchema(
       entityName,
-      definition.keyField,
+      definition.key,
       definition.icon,
       definition.label ?? entityName
     );
 
-    schema.SetKey(definition.keyField);
+    schema.SetKey(definition.key);
 
     definition.fields.map(
       (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
@@ -211,7 +211,7 @@ export default class EntitySchema {
    */
   static CreateEnum(definition: IEnumDefinition): EntitySchema {
     const key = 'id';
-    const entityName = definition.entityName.toLowerCase();
+    const entityName = definition.name.toLowerCase();
 
     if (this.GetSchemaForEntity(entityName))
       throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;

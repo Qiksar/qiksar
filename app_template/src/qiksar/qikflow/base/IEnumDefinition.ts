@@ -5,6 +5,6 @@
  */
 export default interface IEnumDefinition {
   label?: string;
-  entityName: string;
+  name: string;
   icon: string;
 }

@@ -3,35 +3,35 @@ import ISchemaDefinition from 'src/qiksar/qikflow/base/ISchemaDefinition';
 const schema: ISchemaDefinition = {
   enums: [
     {
-      entityName: 'article_status',
+      name: 'article_status',
       label: 'Publish Status',
       icon: 'task',
     },
     {
-      entityName: 'locales',
+      name: 'locales',
       label: 'Locale',
       icon: 'flag',
     },
     {
-      entityName: 'roles',
+      name: 'roles',
       label: 'Role',
       icon: 'badge',
     },
     {
-      entityName: 'status',
+      name: 'status',
       label: 'Status',
       icon: 'flaky',
     },
     {
-      entityName: 'tenants',
+      name: 'tenants',
       label: 'Tenant',
       icon: 'apartment',
     },
   ],
   entities: [
     {
-      entityName: 'articles',
-      keyField: 'article_id',
+      name: 'articles',
+      key: 'article_id',
       label: 'Articles',
       icon: 'feed',
       fields: [
@@ -99,8 +99,8 @@ const schema: ISchemaDefinition = {
       ],
     },
     {
-      entityName: 'groups',
-      keyField: 'group_id',
+      name: 'groups',
+      key: 'group_id',
       label: 'Membership Groups',
       icon: 'people',
       fields: [
@@ -132,8 +132,8 @@ const schema: ISchemaDefinition = {
       ],
     },
     {
-      entityName: 'members',
-      keyField: 'member_id',
+      name: 'members',
+      key: 'member_id',
       label: 'Member',
       icon: 'person',
       fields: [

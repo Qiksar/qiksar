@@ -1,17 +1,13 @@
-import { HttpException, Injectable } from '@nestjs/common';
 import axios from 'axios';
-
-import AuthConfig from '../config/AuthConfig';
-import { KeycloakConnectConfig } from 'nest-keycloak-connect';
+import { HttpException, Injectable } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
+
+import HttpHelper from 'src/common/HttpHelper';
+import Validator from 'src/common/Validator';
 
 @Injectable()
 export default class AuthService {
-  private config: KeycloakConnectConfig;
-
-  constructor() {
-    this.config = AuthConfig;
-  }
+  constructor(private readonly httpHelper: HttpHelper) {}
 
   /**
    * Authenticate the user against a specified realm
@@ -23,7 +19,7 @@ export default class AuthService {
    * @returns full authentication result from the server
    */
   public async authenticate(realm: string, client: string, username: string, password: string): Promise<Record<string, any>> {
-    const url = this.realmUrl(realm, 'protocol/openid-connect/token');
+    const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/token');
     const params = new URLSearchParams();
     params.append('client_id', client);
     params.append('username', username);
@@ -43,8 +39,8 @@ export default class AuthService {
    * @returns user details as provided by the server
    */
   public async me(realm: string, token: string): Promise<Record<string, any>> {
-    const url = this.realmUrl(realm, 'protocol/openid-connect/userinfo');
-    const r = await axios.get(url, this.buildHeader(token)).then((r: Record<string, any>) => r.data);
+    const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/userinfo');
+    const r = await axios.get(url, this.httpHelper.buildHeader(token)).then((r: Record<string, any>) => r.data);
 
     return r;
   }
@@ -74,7 +70,7 @@ export default class AuthService {
     lastName: string,
     token: string,
   ): Promise<string> {
-    this.IsNotBlank(realm, 'realm must be specified')
+    Validator.IsNotBlank(realm, 'realm must be specified')
       .IsNotBlank(username, 'username must be specified')
       .IsNotBlank(password, 'password must specify a temporary value for user password')
       .IsNotBlank(locale, 'locale must be specified')
@@ -103,7 +99,7 @@ export default class AuthService {
 
     // Create the new user
     await axios
-      .post(this.realmAdminUrl(realm, 'users'), user, this.buildHeader(token))
+      .post(this.httpHelper.realmAdminUrl(realm, 'users'), user, this.httpHelper.buildHeader(token))
       .then((r) => {
         userid = r.headers['location'].split('/')[8];
       })
@@ -137,7 +133,7 @@ export default class AuthService {
     let role = [];
 
     await axios
-      .get(this.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), this.buildHeader(token))
+      .get(this.httpHelper.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), this.httpHelper.buildHeader(token))
       .then(async (r) => {
         role = [this.getRoleByName(r.data, 'default-roles-' + realm)];
       })
@@ -147,9 +143,9 @@ export default class AuthService {
 
     // Delete the default role mapping
     await axios
-      .delete(this.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), {
+      .delete(this.httpHelper.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), {
         data: role,
-        headers: this.authHeader(token),
+        headers: this.httpHelper.authHeader(token),
       })
       .catch((e) => {
         throw new HttpException('Failed to delete default role\r' + JSON.stringify(e.response.data), e.response.status);
@@ -168,9 +164,11 @@ export default class AuthService {
     const roles = await this.getRealmRoles(realm, token);
     const required_role = [this.getRoleByName(roles, admin ? 'tenant_admin' : 'tenant_user')];
 
-    await axios.post(this.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), required_role, this.buildHeader(token)).catch((e) => {
-      throw new HttpException('Failed to assign role to user\r' + JSON.stringify(e.response.data), e.response.status);
-    });
+    await axios
+      .post(this.httpHelper.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), required_role, this.httpHelper.buildHeader(token))
+      .catch((e) => {
+        throw new HttpException('Failed to assign role to user\r' + JSON.stringify(e.response.data), e.response.status);
+      });
   }
 
   /**
@@ -184,7 +182,7 @@ export default class AuthService {
     let roles = [];
 
     await axios
-      .get(this.realmAdminUrl(realm, `roles`), this.buildHeader(token))
+      .get(this.httpHelper.realmAdminUrl(realm, `roles`), this.httpHelper.buildHeader(token))
       .then(async (r) => {
         roles = r.data;
       })
@@ -241,101 +239,6 @@ export default class AuthService {
     const base64 = base64Url.replace('-', '+').replace('_', '/');
 
     return JSON.parse(Buffer.from(base64, 'base64').toString());
-  }
-
-  //#endregion
-
-  //#region URL and header builder
-
-  /**
-   * Build a URL for access to a specific realm
-   *
-   * @param realm name of the realm
-   * @param extensions additional path to append
-   * @returns string with required URL
-   */
-  private realmUrl(realm: string, extensions: string): string {
-    return `${this.config.authServerUrl}/realms/${realm}/${extensions}`;
-  }
-
-  /**
-   * Build a URL for access to administer a specific realm
-   *
-   * @param realm name of the realm
-   * @param extensions additional path to append
-   * @returns string with required URL
-   */
-  private realmAdminUrl(realm: string, extension: string): string {
-    return `${this.config.authServerUrl}/admin/realms/${realm}/${extension}`;
-  }
-
-  /**
-   * Build a basic head for a HTTP request
-   * @param token authorisation token
-   * @returns object containg headers
-   */
-  private buildHeader(token: string): Record<string, any> {
-    return { headers: this.authHeader(token) };
-  }
-
-  /**
-   * Build a header containing the authorization token
-   *
-   * @param token authorization token
-   * @returns authorization header
-   */
-  private authHeader(token: string): Record<string, any> {
-    return { Authorization: `Bearer ${token}` };
-  }
-
-  //#endregion
-
-  //#region Validation
-
-  /**
-   * Validate a username string
-   *
-   * @param username unique user name
-   * @param error message to display if validation fails
-   * @returns true if valid
-   */
-  private IsValidUsername(username: string, error: string): AuthService {
-    if (!/^[0-9a-zA-Z_.-]+$/.test(username)) throw new HttpException(error, 409);
-
-    return this;
-  }
-
-  /**
-   * Validate an email string
-   *
-   * @param email email address of the user name
-   * @param error message to display if validation fails
-   * @returns true if valid
-   */
-  private IsValidEmail(email: string, error: string): AuthService {
-    if (
-      !String(email)
-        .toLowerCase()
-        .match(
-          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-        )
-    )
-      throw new HttpException(error, 409);
-
-    return this;
-  }
-
-  /**
-   * Check a string for being zero length or undefined
-   *
-   * @param value string value to be validated, can accept undefined value
-   * @param error message to display if validation fails
-   * @returns true if valid
-   */
-  private IsNotBlank(value: string | undefined, error: string): AuthService {
-    if (!value?.trim().length) throw new HttpException(error, 409);
-
-    return this;
   }
 
   //#endregion

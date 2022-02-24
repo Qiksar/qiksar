@@ -9,8 +9,8 @@ import IUseEnumDefinition from './IUseEnumDefinition';
  * @interface
  */
 export default interface IEntityDefinition {
-  entityName: string;
-  keyField: string;
+  name: string;
+  key: string;
   label: string | undefined;
   icon: string;
   fields: (IFieldDefinition | IUseEnumDefinition | IImportDefinition)[];

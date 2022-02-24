@@ -8,6 +8,7 @@ import AuthService from './auth.service';
 @Controller({ path: 'auth' })
 export default class AuthController {
   constructor(private readonly authService: AuthService) {}
+
   /**
    * Authenticate the user
    *
@@ -23,7 +24,7 @@ export default class AuthController {
   ): Promise<Record<string, any>> {
     const token = await this.authService.authenticate(realm, client_id, username, password);
 
-    console.log(JSON.stringify(this.authService.decodeToken(token['access_token'])));
+    //console.log(JSON.stringify(this.authService.decodeToken(token['access_token'])));
 
     return token;
   }

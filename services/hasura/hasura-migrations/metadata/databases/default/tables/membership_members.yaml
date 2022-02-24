@@ -135,7 +135,6 @@ select_permissions:
   role: tenant_admin
 update_permissions:
 - permission:
-    check: null
     columns:
     - about_me
     - company

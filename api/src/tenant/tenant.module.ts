@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import AuthService from 'src/auth/auth.service';
 
 import TenantController from './tenant.controller';
-import TenantService from './tenant.service';
+import AuthService from 'src/auth/auth.service';
+import HttpHelper from 'src/common/HttpHelper';
 
 @Module({
   controllers: [TenantController],
-  providers: [AuthService, TenantService],
+  providers: [AuthService, HttpHelper],
 })
 export default class TenantModule {}
