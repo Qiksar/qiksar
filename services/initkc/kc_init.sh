@@ -90,12 +90,22 @@ echo ------------------------------------
 echo
 echo
 
+echo "Create API user: "${ADMIN_API_USER}" with password: "${ADMIN_API_PASSWORD}
+kcadm.sh create users -r master -s username=${ADMIN_API_USER} -s enabled=true 
+kcadm.sh set-password -r master --username=${ADMIN_API_USER} --new-password ${ADMIN_API_PASSWORD}
+
+# TODO - I can't find a way to list realms and get details without using admin level
+kcadm.sh add-roles    -r master --uusername ${ADMIN_API_USER} --rolename "admin"
+
+
 echo "Create platform admin user: "${APP_ADMIN}" with password: "${USER_PW}
 kcadm.sh create users -r ${KEYCLOAK_REALM} -s username=${APP_ADMIN} -s enabled=true -s "attributes.tenant_role=platform_admin" -s "attributes.tenant_id=admin" -s "attributes.tenant_role=tenant_admin" -s "attributes.firstName=Bob" -s "attributes.lastName=Willis" -s "email=bob@appadmin.com"
 kcadm.sh set-password -r ${KEYCLOAK_REALM} --username=${APP_ADMIN} --new-password ${USER_PW}
 
 echo "Assign admin roles: "${APP_ADMIN}
 kcadm.sh add-roles    -r ${KEYCLOAK_REALM} --uusername ${APP_ADMIN} --rolename ${APP_ADMIN_ROLE} 
+
+
 
 
 echo

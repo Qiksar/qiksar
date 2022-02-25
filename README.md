@@ -55,7 +55,6 @@ Please do the right thing...browse the data, make small edits, create your own r
 
 If you destroy the data then you just spoil it for everybody and we will have to lock the app or take it down.
 
-
 # PREPARE TO BUILD THE DEMO APP
 
 ## Pre-requisites

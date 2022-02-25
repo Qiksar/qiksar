@@ -84,7 +84,7 @@ export default class TenantController {
     const token = await GetAdminAuthToken();
 
     await this.createRealm(realm_name, token);
-    await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, token);
+    //await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, token);
   }
 
   public async createRealm(name: string, token: string): Promise<void> {

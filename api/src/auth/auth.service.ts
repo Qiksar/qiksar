@@ -40,9 +40,9 @@ export default class AuthService {
    */
   public async me(realm: string, token: string): Promise<Record<string, any>> {
     const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/userinfo');
-    const r = await axios.get(url, this.httpHelper.buildHeader(token)).then((r: Record<string, any>) => r.data);
+    const my_details = await axios.get(url, this.httpHelper.buildHeader(token)).then((r: Record<string, any>) => r.data);
 
-    return r;
+    return my_details;
   }
 
   /**
