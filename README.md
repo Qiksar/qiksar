@@ -2,17 +2,23 @@
 
 # INTRODUCTION - WELCOME TO QIKSAR
 
-When trying to learn any exciting new framework, like Quasar, you typically need a good example to learn from, and one which helps you to thoroughly explore all of the common concepts, such as data storage, data access and security. These concepts underpin most software applications, and without them there is a large missing piece of the puzzle that helps you understand the usefulness and purpose of the thing you're trying to learn. Which in our case is Quasar.
+In order to help you explore the Quasar framework more thoroughly, you typically need a good example to learn from, and one which helps you to explore all of the common concepts, such as data storage, data access and security. 
 
-Qiksar is a learning environment, that will give you space to explore all of the cool Quasar capabilities and user interface components.
+Qiksar is a learning environment, that will give you space to explore many Quasar capabilities. A demo app enables you to understand what Qiksar does:
 
-You can use the demo app to learn how to deploy a Progressive Web App, or explore how you can create dynamic user interfaces, which are automatically built based on the types of data your are working with.
+* How do we build a Quasar app and add the usual services like data, authentication and internationalisation?
+* How do we have a code base that can run locally and in the cloud?
+* Most importantly, how can we rapidly prototype our apps.
 
-Being by visiting the demo app in the cloud (see below), and then take just a few minutes to build the same app on your own computer! 
+Visit the demo app in the cloud and you can see how it is available as a web app, and a PWA that can be installed on you device.
 
-Finally, subscribe to our YouTube channel to learn about Qiksar and Quasar
+Other concepts explored in Qiksar include howto create dynamic user interfaces, which are automatically built based on the types of data your are working with.
+
+Subscribe to our YouTube channel to learn about Qiksar and Quasar
 
 Visit: https://www.youtube.com/channel/UCHZYiuLLj82asRqoj4tYe5A
+
+Qiksar is constantly evolving, and it is early days now, so these videos will evolve over time as we improve our code base, documentation and getting started process.
 
 ## Learn more about Quasar
 
@@ -25,27 +31,29 @@ Visit : (https://quasar.dev)
 
 Imagine a global platform that enables member based organisations to bring people together. This is what we imagine the Qiksar demo app does.
 
-In the example, one orgsanisation and membership group exists in Australia, whilst another exists in Scotland. 
+In the example, one organisation and membership group exists in Australia, whilst another exists in Scotland. 
 
-So our multi-tenanted app, enables an Australian administrator to login and manage the Australian members, whilst the Scottish administrator looks after members in Scotland.
+Our *multi-tenanted* app, enables an Australian administrator to login and manage the Australian members, whilst the Scottish administrator looks after members in Scotland.
 
-The demo app, provides a very basic example of how a multi-tenanted platform can be built using Postgres, Hasura GraphQL and Keycloak. 
+The demo app, provides a very basic example of how a multi-tenanted platform can be built using Postgres, Hasura GraphQL, Keycloak and Quasar. 
 
-Want to see it running right now? Simply browse to: https://app.qiksar.com
+Browse to: https://app.qiksar.com
+
+```
+User details:
 
 username: **oz_app_admin**
 or
 username: **scot_app_admin**
 
-password: **password**
-
-You can now see the demo app running in the cloud!
+password: **Password123**
+```
 
 **SECURITY NOTICE:**
 
 Please do the right thing...browse the data, make small edits, create your own records so that you can delete them. Don't spoil the system, and the demonstration data for everybody. Don't put any secret information in the worlds worst example of a secure app!!! Everybody has the passwords :)
 
-If you destroy the data then you just spoil it for everybody and I will have to lock the app or take it down.
+If you destroy the data then you just spoil it for everybody and we will have to lock the app or take it down.
 
 
 # PREPARE TO BUILD THE DEMO APP
@@ -53,6 +61,26 @@ If you destroy the data then you just spoil it for everybody and I will have to 
 ## Pre-requisites
 
 You will need some important pre-requisites installed, including VSCODE, Docker and some command line tools.
+
+### Host file
+
+You need to make your host machine available as *devhost*
+
+This step resolves some issues with docker networking when environment variables might use *localhost*, but we want that to mean the host machine not the docker container.
+
+Add your machine's IP address like so...
+
+**host file**
+```
+Windows path: C:\Windows\System32\drivers\etc
+```
+
+```
+# Make local machine available with physical IP address
+# Replace 10.1.1.50 with your own IP address
+
+10.1.1.50 devhost
+```
 
 ### Docker
 

@@ -18,6 +18,9 @@ echo
 echo "Transform environment variables from './template.env' into local '.env' file"
 bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
 
+echo
+echo "Copy .env file to API project"
+cp .env ../api
 
 echo "Import environment variables from './.env'"
 export $(cat .env | xargs)
