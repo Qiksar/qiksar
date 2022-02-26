@@ -1,0 +1,1 @@
+{"folders":[],"sortNum":10000,"colName":"API","_id":"a47a0fe7-6d87-421a-8bb2-59dfc64403b3","created":"2022-02-26T04:48:39.535Z","settings":{"headers":[],"auth":{"type":"bearer","bearer":"{{access_token}}"},"tests":[]}}

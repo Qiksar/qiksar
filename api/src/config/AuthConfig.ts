@@ -80,7 +80,6 @@ export function CacheRealmKeys(): void {
 
 /**
  * This is the configuration of Nest Keycloak Connect
- */
 const keycloak_config: KeycloakConnectConfig = {
   authServerUrl: process.env.KEYCLOAK_ENDPOINT,
   clientId: process.env.KEYCLOAK_APICLIENT,
@@ -105,13 +104,10 @@ const keycloak_config: KeycloakConnectConfig = {
     },
   },
 };
-
-export default keycloak_config;
+ */
 
 // Trigger the realm/public key cache process
 void CacheRealmKeys();
-
-/*
 
 // This is the legacy configuration where one realm was shared with all tenants
 
@@ -125,4 +121,5 @@ const keycloak_config: KeycloakConnectConfig = {
   tokenValidation: TokenValidation.ONLINE,
   useNestLogger: true,
 };
-*/
+
+export default keycloak_config;

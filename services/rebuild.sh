@@ -18,9 +18,6 @@ echo
 echo "Transform environment variables from './template.env' into local '.env' file"
 bash -c 'export $(cat template.env | xargs) && (echo "cat << EOF" ; cat template.env ; echo EOF ) | sh > .env'
 
-echo
-echo "Copy .env file to API project"
-cp .env ../api
 
 echo "Import environment variables from './.env'"
 export $(cat .env | xargs)
@@ -125,6 +122,10 @@ echo
 echo "Listing any metadata inconsistencies..."
 hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} metadata ic list
 
+
+echo
+echo "Copy .env file to API project"
+cp .env ../api
 
 echo 
 echo "Build environment finished."
