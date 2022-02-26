@@ -84,8 +84,8 @@ export function CacheRealmKeys(): void {
 const keycloak_config: KeycloakConnectConfig = {
   authServerUrl: process.env.KEYCLOAK_ENDPOINT,
   clientId: process.env.KEYCLOAK_APICLIENT,
-  secret: 'failed_to_resolve_realm',
-  bearerOnly: true,
+  secret: 'gUtHaVFpni0zNn44xf0ORzbJcZDmlm9m', // harcoded needs to change after each build
+  // bearerOnly: true,
   tokenValidation: TokenValidation.ONLINE,
   useNestLogger: true,
 

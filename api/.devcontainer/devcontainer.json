@@ -20,7 +20,8 @@
 		"bierner.markdown-mermaid",
 		"gruntfuggly.todo-tree",
 		"johnsoncodehk.volar",
-		"esbenp.prettier-vscode"
+		"esbenp.prettier-vscode",
+		"rangav.vscode-thunder-client"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
