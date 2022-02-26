@@ -109,7 +109,7 @@ echo
 
 
 echo "Applying database migrations"
-hasura --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} migrate apply
+hasura --database-name default --project "${PWD}/hasura/hasura-migrations" --endpoint ${HASURA_CLI_ENDPOINT} migrate apply
 
 
 

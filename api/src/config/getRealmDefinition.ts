@@ -53,6 +53,7 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
           name: 'tenant_admin',
           composite: true,
           composites: {
+            realm: ['default-roles-' + realmSettings['KEYCLOAK_REALM']],
             client: {
               'realm-management': ['query-users', 'manage-users', 'view-users'],
             },
@@ -62,7 +63,10 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
         },
         {
           name: 'tenant_user',
-          composite: false,
+          composite: true,
+          composites: {
+            realm: ['default-roles-' + realmSettings['KEYCLOAK_REALM']],
+          },
           clientRole: false,
           attributes: {},
         },
@@ -70,6 +74,7 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
           name: 'app_admin',
           composite: true,
           composites: {
+            realm: ['default-roles-' + realmSettings['KEYCLOAK_REALM']],
             client: {
               'realm-management': ['query-users', 'manage-users', 'view-users'],
             },
@@ -88,19 +93,6 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
           name: 'uma_authorization',
           description: '${role_uma_authorization}',
           composite: false,
-          clientRole: false,
-          attributes: {},
-        },
-        {
-          name: 'default-roles-app',
-          description: '${role_default-roles}',
-          composite: true,
-          composites: {
-            realm: [],
-            client: {
-              account: ['view-profile', 'manage-account'],
-            },
-          },
           clientRole: false,
           attributes: {},
         },
@@ -358,12 +350,6 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
       },
     },
     groups: [],
-    defaultRole: {
-      name: 'default-roles-app',
-      description: '${role_default-roles}',
-      composite: true,
-      clientRole: false,
-    },
     requiredCredentials: ['password'],
     passwordPolicy: 'passwordHistory(3) and length(8) and notUsername(undefined) and notEmail(undefined) and upperCase(1) and lowerCase(1) and digits(1)',
     otpPolicyType: 'totp',
@@ -418,7 +404,7 @@ export default function getRealmDefinition(realmSettings: RealmDefinitionSetting
         enabled: true,
         alwaysDisplayInConsole: false,
         clientAuthenticatorType: 'client-secret',
-        // TODO for dev only add http://localhost:8080/* to allow the redirection from localhost 
+        // TODO for dev only add http://localhost:8080/* to allow the redirection from localhost
         redirectUris: [realmSettings['APP_URL'] + '/*', 'http://localhost:8080/*'],
         webOrigins: ['+'],
         notBefore: 0,
