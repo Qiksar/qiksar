@@ -1,18 +1,13 @@
-import { Body, Controller, HttpException, Post, Req } from '@nestjs/common';
-import axios from 'axios';
+import { Body, Controller, Delete, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Roles } from 'nest-keycloak-connect';
-import HttpHelper from 'src/common/HttpHelper';
-import Validator from 'src/common/Validator';
 import { GetAdminAuthToken } from 'src/config/AuthConfig';
-import getRealmDefinition from 'src/config/getRealmDefinition';
-import getRealmDefinitionSettings from 'src/config/RealmDefinitionSettings';
 
 import AuthService from '../auth/auth.service';
 
 @Controller({ path: 'tenant' })
 export default class TenantController {
-  constructor(private readonly authService: AuthService, private readonly httpHelper: HttpHelper) {}
+  constructor(private readonly authService: AuthService) {}
 
   /*
   @Get('/public')
@@ -44,6 +39,7 @@ export default class TenantController {
     @Body('email') email: string,
     @Body('firstname') firstname: string,
     @Body('lastname') lastname: string,
+    @Body('temporary_password') temporary_password: boolean,
   ): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
     const decoded = this.authService.decodeToken(token);
@@ -52,7 +48,27 @@ export default class TenantController {
     const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
     const locale = decoded['locale'];
 
-    const user = await this.authService.createUser(admin, realm, username, password, locale, email, firstname, lastname, token);
+    const user = await this.authService.createUser(admin, realm, username, password, locale, email, firstname, lastname, temporary_password, token);
+
+    return { userid: user };
+  }
+
+  /**
+   * Delete a user
+   *
+   * @param req incoming request
+   * @param userid unique id of the user
+   */
+  @Delete('delete_user')
+  @Roles({ roles: ['realm:tenant_admin'] })
+  async deleteUser(@Req() req: Http2ServerRequest, @Body('userid') userid: string): Promise<Record<string, any>> {
+    const token = this.authService.tokenFromRequest(req);
+    const decoded = this.authService.decodeToken(token);
+
+    // Realm is implicit, it is the same realm as the calling user
+    const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
+
+    const user = await this.authService.deleteUser(realm, userid, token);
 
     return { userid: user };
   }
@@ -80,35 +96,17 @@ export default class TenantController {
     @Body('email') email: string,
     @Body('firstname') firstname: string,
     @Body('lastname') lastname: string,
+    @Body('temporary_password') temporary_password: boolean,
   ) {
     const token = await GetAdminAuthToken();
 
-    await this.createRealm(realm_name, token);
-    //await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, token);
+    await this.authService.createRealm(realm_name, token);
+    await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, temporary_password, token);
   }
 
-  public async createRealm(name: string, token: string): Promise<void> {
-    Validator.IsNotBlank(name, 'name must be specified').IsNotBlank(token, 'token must be specified');
-
-    const settings = getRealmDefinitionSettings();
-    settings['KEYCLOAK_REALM'] = name;
-
-    const realm = getRealmDefinition(settings);
-
-    const url = `${this.httpHelper.baseServerUrl}/admin/realms`;
-    console.log('POST URL: ' + url);
-    console.log('Creating realm: ' + name);
-
-    // Create the new user
-    await axios
-      .post(url, realm, this.httpHelper.buildHeader(token))
-      .then(() => {
-        //console.log(r.status);
-      })
-      .catch((e) => {
-        console.log('Got error: ' + e);
-
-        throw new HttpException(e.response.data['errorMessage'], 500);
-      });
+  @Delete('delete_tenant')
+  @Roles({ roles: ['realm:tenant_admin'] })
+  async deleteTenant(@Req() req: Http2ServerRequest, @Body('name') realm_name: string) {
+    this.authService.deleteRealm(realm_name);
   }
 }

@@ -5,6 +5,10 @@ import { Http2ServerRequest } from 'http2';
 import HttpHelper from 'src/common/HttpHelper';
 import Validator from 'src/common/Validator';
 
+import getRealmDefinition from 'src/config/getRealmDefinition';
+import getRealmDefinitionSettings from 'src/config/RealmDefinitionSettings';
+import { GetAdminAuthToken } from 'src/config/AuthConfig';
+
 @Injectable()
 export default class AuthService {
   constructor(private readonly httpHelper: HttpHelper) {}
@@ -13,20 +17,25 @@ export default class AuthService {
    * Authenticate the user against a specified realm
    *
    * @param realm name of the realm
-   * @param client name of the client
    * @param username unique login name of the user
    * @param password password in clear text
    * @returns full authentication result from the server
    */
   public async authenticate(realm: string, client: string, username: string, password: string): Promise<Record<string, any>> {
     const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/token');
+    console.log(url);
     const params = new URLSearchParams();
     params.append('client_id', client);
     params.append('username', username);
     params.append('password', password);
     params.append('grant_type', 'password');
 
-    const r = await axios.post(url, params).then((r) => r.data);
+    const r = await axios
+      .post(url, params)
+      .then((r) => r.data)
+      .catch((e) => {
+        throw new HttpException(`login failed: ${e.response.data.error_description}`, e.response.status);
+      });
 
     return r;
   }
@@ -40,7 +49,12 @@ export default class AuthService {
    */
   public async me(realm: string, token: string): Promise<Record<string, any>> {
     const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/userinfo');
-    const my_details = await axios.get(url, this.httpHelper.buildHeader(token)).then((r: Record<string, any>) => r.data);
+    const my_details = await axios
+      .get(url, this.httpHelper.buildHeader(token))
+      .then((r: Record<string, any>) => r.data)
+      .catch((e) => {
+        throw new HttpException(`failed to retrieve user details: ${e.response.data.error_description}`, e.response.status);
+      });
 
     return my_details;
   }
@@ -57,7 +71,7 @@ export default class AuthService {
    * @param firstName first name of the user
    * @param lastName last name of the user
    * @param token authentication token
-   * @returns
+   * @returns uuid of user
    */
   public async createUser(
     admin: boolean,
@@ -68,6 +82,7 @@ export default class AuthService {
     email: string,
     firstName: string,
     lastName: string,
+    temporary_password: boolean,
     token: string,
   ): Promise<string> {
     Validator.IsNotBlank(realm, 'realm must be specified')
@@ -87,7 +102,7 @@ export default class AuthService {
       lastName,
       email,
       enabled: 'true',
-      credentials: [{ type: 'password', value: password, temporary: true }],
+      credentials: [{ type: 'password', value: password, temporary: temporary_password }],
       attributes: {
         tenant_id: realm,
         tenant_role: admin ? 'tenant_admin' : 'tenant_user',
@@ -104,7 +119,7 @@ export default class AuthService {
         userid = r.headers['location'].split('/')[8];
       })
       .catch((e) => {
-        throw new HttpException(e.response.data['errorMessage'], 409);
+        throw new HttpException(`failed to create user: ${e.response.data.error_description}`, e.response.status);
       });
 
     // Get the default role assigned by Keycloak so we can delete it
@@ -113,11 +128,25 @@ export default class AuthService {
     // Add the required role to the user
     await this.addUserRole(realm, admin, userid, token);
 
-    // set required actions like review profile, reset password and OTP
-
     //console.log('New user created with ID: ' + userid);
 
     return userid;
+  }
+
+  /**
+   * Delete user
+   *
+   * @param realm name of the realm
+   * @param userid unique id of the user
+   * @param token authentication token
+   */
+  public async deleteUser(realm: string, userid: string, token: string): Promise<void> {
+    Validator.IsNotBlank(realm, 'realm must be specified').IsValidUsername(userid, 'userid must be specified').IsNotBlank(token, 'token must be specified');
+
+    // Delete the new user
+    await axios.delete(this.httpHelper.realmAdminUrl(realm, 'users/' + userid), this.httpHelper.buildHeader(token)).catch((e) => {
+      throw new HttpException(`failed to delete user: ${e.response.data.error_description}`, e.response.status);
+    });
   }
 
   //#region Role managment
@@ -132,13 +161,14 @@ export default class AuthService {
   private async deleteDefaultKeycloakRole(realm: string, userid: string, token: string): Promise<void> {
     let role = [];
 
+    // Get the default role mapping
     await axios
       .get(this.httpHelper.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), this.httpHelper.buildHeader(token))
       .then(async (r) => {
         role = [this.getRoleByName(r.data, 'default-roles-' + realm)];
       })
       .catch((e) => {
-        throw new HttpException(e.response.data['errorMessage'], 409);
+        throw new HttpException(`failed to get default role: ${e.response.data.error_description}`, e.response.status);
       });
 
     // Delete the default role mapping
@@ -148,7 +178,7 @@ export default class AuthService {
         headers: this.httpHelper.authHeader(token),
       })
       .catch((e) => {
-        throw new HttpException('Failed to delete default role\r' + JSON.stringify(e.response.data), e.response.status);
+        throw new HttpException(`failed to delete default role: ${e.response.data.error_description}`, e.response.status);
       });
   }
 
@@ -167,7 +197,7 @@ export default class AuthService {
     await axios
       .post(this.httpHelper.realmAdminUrl(realm, `users/${userid}/role-mappings/realm`), required_role, this.httpHelper.buildHeader(token))
       .catch((e) => {
-        throw new HttpException('Failed to assign role to user\r' + JSON.stringify(e.response.data), e.response.status);
+        throw new HttpException(`failed to add assigned role: ${e.response.data.error_description}`, e.response.status);
       });
   }
 
@@ -187,7 +217,7 @@ export default class AuthService {
         roles = r.data;
       })
       .catch((e) => {
-        throw new HttpException(e.response.data['errorMessage'], 409);
+        throw new HttpException(`failed to get realm roles: ${e.response.data.error_description}`, e.response.status);
       });
 
     return roles;
@@ -239,6 +269,44 @@ export default class AuthService {
     const base64 = base64Url.replace('-', '+').replace('_', '/');
 
     return JSON.parse(Buffer.from(base64, 'base64').toString());
+  }
+
+  //#endregion
+
+  //#region Realm Management
+
+  public async createRealm(name: string, token: string): Promise<void> {
+    Validator.IsNotBlank(name, 'name must be specified').IsNotBlank(token, 'token must be specified');
+
+    const settings = getRealmDefinitionSettings();
+    settings['KEYCLOAK_REALM'] = name;
+
+    const realm = getRealmDefinition(settings);
+
+    const url = `${this.httpHelper.baseServerUrl}/admin/realms`;
+    console.log('POST URL: ' + url);
+    console.log('Creating realm: ' + name);
+
+    // Create the new user
+    await axios
+      .post(url, realm, this.httpHelper.buildHeader(token))
+      .then(() => {
+        //console.log(r.status);
+      })
+      .catch((e) => {
+        throw new HttpException(`failed to create realm: ${e.response.data.error_description}`, e.response.status);
+      });
+  }
+
+  public async deleteRealm(name: string): Promise<void> {
+    Validator.IsNotBlank(name, 'name must be specified');
+
+    const admin_token = await GetAdminAuthToken();
+    const url = this.httpHelper.realmAdminUrl(name);
+
+    await axios.delete(url, this.httpHelper.buildHeader(admin_token)).catch((e) => {
+      throw new HttpException(`failed to delete realm: ${e.response.data.error_description}`, e.response.status);
+    });
   }
 
   //#endregion

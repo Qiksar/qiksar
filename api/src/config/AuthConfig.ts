@@ -9,6 +9,8 @@ export const AdminCredentials = {
   password: process.env.ADMIN_API_PASSWORD,
 };
 
+export const DefaultAppClient = 'app-client';
+
 /**
  * Acquire an admin level access token which will enable the API to create realms
  *
@@ -83,7 +85,7 @@ export function CacheRealmKeys(): void {
 const keycloak_config: KeycloakConnectConfig = {
   authServerUrl: process.env.KEYCLOAK_ENDPOINT,
   clientId: process.env.KEYCLOAK_APICLIENT,
-  secret: 'gUtHaVFpni0zNn44xf0ORzbJcZDmlm9m', // harcoded needs to change after each build
+  secret: 'fallback',
   // bearerOnly: true,
   tokenValidation: TokenValidation.ONLINE,
   useNestLogger: true,
@@ -104,14 +106,15 @@ const keycloak_config: KeycloakConnectConfig = {
     },
   },
 };
- */
 
 // Trigger the realm/public key cache process
 void CacheRealmKeys();
 
+*/
+
 // This is the legacy configuration where one realm was shared with all tenants
 
-const keycloak_config: KeycloakConnectConfig = {
+const KeycloakConfiguration: KeycloakConnectConfig = {
   authServerUrl: process.env.KEYCLOAK_ENDPOINT,
   realm: process.env.KEYCLOAK_REALM,
   realmPublicKey: process.env.KEYCLOAK_REALM_KEY,
@@ -122,4 +125,4 @@ const keycloak_config: KeycloakConnectConfig = {
   useNestLogger: true,
 };
 
-export default keycloak_config;
+export default KeycloakConfiguration;
