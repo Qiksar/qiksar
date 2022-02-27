@@ -7,6 +7,7 @@ import DataTypeValidator from 'src/common/DataTypeValidator';
 
 import getRealmDefinition from 'src/config/getRealmDefinition';
 import { GetAdminAuthToken } from 'src/config/AuthConfig';
+import CreateUserDto from 'src/tenant/dto/create_user.dto';
 
 @Injectable()
 export default class AuthService {
@@ -60,50 +61,23 @@ export default class AuthService {
   /**
    * Create a new user and assign the required role
    *
-   * @param admin indicates if the user is to be created as a realm admin
+   * @param user user DTO
    * @param realm name of the realm
-   * @param username unique login name of the user
-   * @param password password in clear text
    * @param locale locale of the user
-   * @param email email address of the user
-   * @param firstName first name of the user
-   * @param lastName last name of the user
    * @param token authentication token
    * @returns uuid of user
    */
-  public async createUser(
-    admin: boolean,
-    realm: string,
-    username: string,
-    password: string,
-    locale: string,
-    email: string,
-    firstName: string,
-    lastName: string,
-    temporary_password: boolean,
-    token: string,
-  ): Promise<string> {
-    DataTypeValidator.IsNotBlank(realm, 'realm must be specified')
-      .IsNotBlank(username, 'username must be specified')
-      .IsNotBlank(password, 'password must specify a temporary value for user password')
-      .IsNotBlank(locale, 'locale must be specified')
-      .IsNotBlank(email, 'email must be specified')
-      .IsNotBlank(firstName, 'first name must be specified')
-      .IsNotBlank(lastName, 'last name must be specified')
-      .IsNotBlank(token, 'token must be specified')
-      .IsValidUsername(username, 'username is invalid')
-      .IsValidEmail(email, 'email is invalid');
-
-    const user = {
-      username,
-      firstName,
-      lastName,
-      email,
+  public async createUser(user: CreateUserDto, realm: string, locale: string, token: string): Promise<string> {
+    const newUser = {
+      username: user.username,
+      firstName: user.firstname,
+      lastName: user.lastname,
+      email: user.email,
       enabled: 'true',
-      credentials: [{ type: 'password', value: password, temporary: temporary_password }],
+      credentials: [{ type: 'password', value: user.password, temporary: user.temporary_password }],
       attributes: {
         tenant_id: realm,
-        tenant_role: admin ? 'tenant_admin' : 'tenant_user',
+        tenant_role: user.admin ? 'tenant_admin' : 'tenant_user',
         locale: locale,
       },
     };
@@ -112,11 +86,12 @@ export default class AuthService {
 
     // Create the new user
     await axios
-      .post(this.httpHelper.realmAdminUrl(realm, 'users'), user, this.httpHelper.buildHeader(token))
+      .post(this.httpHelper.realmAdminUrl(realm, 'users'), newUser, this.httpHelper.buildHeader(token))
       .then((r) => {
         userid = r.headers['location'].split('/')[8];
       })
       .catch((e) => {
+        console.log(e.response);
         throw new HttpException(`failed to create user: ${e.response.data.error_description}`, e.response.status);
       });
 
@@ -124,7 +99,7 @@ export default class AuthService {
     void this.deleteDefaultKeycloakRole(realm, userid, token);
 
     // Add the required role to the user
-    await this.addUserRole(realm, admin, userid, token);
+    await this.addUserRole(realm, user.admin, userid, token);
 
     //console.log('New user created with ID: ' + userid);
 
@@ -145,7 +120,8 @@ export default class AuthService {
 
     // Delete the new user
     await axios.delete(this.httpHelper.realmAdminUrl(realm, 'users/' + userid), this.httpHelper.buildHeader(token)).catch((e) => {
-      throw new HttpException(`failed to delete user: ${e.response.data.error_description}`, e.response.status);
+      console.log(e.response);
+      throw new HttpException(`failed to delete user: ${e.response.data.error}`, e.response.status);
     });
   }
 

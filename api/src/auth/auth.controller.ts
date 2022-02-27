@@ -7,6 +7,7 @@ import { DefaultAuthClient } from 'src/config/AuthConfig';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AuthService from './auth.service';
+import LoginDto from './dto/login.dto';
 
 @Controller({ path: 'auth' })
 export default class AuthController {
@@ -19,13 +20,8 @@ export default class AuthController {
    **/
   @Post('login')
   @Unprotected()
-  async login(@Body('realm') realm: string, @Body('username') username: string, @Body('password') password: string): Promise<Record<string, any>> {
-    //console.log('Realm: ' + realm);
-    //console.log('Client: ' + DefaultAppClient);
-    //console.log('User: ' + username);
-    //console.log('Password: ' + password);
-
-    const token = await this.authService.authenticate(realm, DefaultAuthClient, username, password);
+  async login(@Body() body: LoginDto): Promise<Record<string, any>> {
+    const token = await this.authService.authenticate(body.realm, DefaultAuthClient, body.username, body.password);
 
     //console.log(JSON.stringify(this.authService.decodeToken(token['access_token'])));
 

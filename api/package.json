@@ -29,6 +29,8 @@
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
     "axios": "^0.25.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
     "dotenv": "^14.3.2",
     "global": "^4.4.0",
     "keycloak-js": "^16.1.1",

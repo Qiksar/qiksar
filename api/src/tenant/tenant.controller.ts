@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, HttpException, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Roles } from 'nest-keycloak-connect';
 
 import { GetAdminAuthToken } from 'src/config/AuthConfig';
 import AuthService from '../auth/auth.service';
+import CreateUserDto from './dto/create_user.dto';
 
 @Controller({ path: 'tenant' })
 export default class TenantController {
@@ -31,21 +32,12 @@ export default class TenantController {
    */
   @Post('create_user')
   @Roles({ roles: ['realm:tenant_admin'] })
-  async createUser(
-    @Req() req: Http2ServerRequest,
-    @Body('admin') admin: boolean,
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Body('email') email: string,
-    @Body('firstname') firstname: string,
-    @Body('lastname') lastname: string,
-    @Body('temporary_password') temporary_password: boolean,
-  ): Promise<Record<string, any>> {
+  async createUser(@Req() req: Http2ServerRequest, @Body() user: CreateUserDto): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
     const info = this.authService.getTokenInfo(token);
-    const user = await this.authService.createUser(admin, info.realm, username, password, info.locale, email, firstname, lastname, temporary_password, token);
+    const userId = await this.authService.createUser(user, info.realm, info.locale, token);
 
-    return { userid: user };
+    return { userid: userId };
   }
 
   /**
@@ -71,29 +63,18 @@ export default class TenantController {
    * @param req incoming request
    * @param realm_name name of the tenant
    * @param locale default locale
-   * @param username unique login id of the user
-   * @param password initial password for the user
-   * @param email email address of the user
-   * @param firstname first name of the user
-   * @param lastname last name of the user
+   * @param user user DTO
    * @returns uuid of the user assigned by the auth server
    */
   @Post('create_tenant')
   @Roles({ roles: ['realm:tenant_admin'] })
-  async createTenant(
-    @Body('name') realm_name: string,
-    @Body('locale') locale: string,
-    @Body('username') username: string,
-    @Body('password') password: string,
-    @Body('email') email: string,
-    @Body('firstname') firstname: string,
-    @Body('lastname') lastname: string,
-    @Body('temporary_password') temporary_password: boolean,
-  ) {
+  async createTenant(@Body('name') realm_name: string, @Body('locale') locale: string, @Body('user') user: CreateUserDto) {
+    if (!user.admin) throw new HttpException('user must be specified as an admin', 400);
+
     const token = await GetAdminAuthToken();
 
     await this.authService.createRealm(realm_name, token);
-    await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, temporary_password, token);
+    await this.authService.createUser(user, realm_name, locale, token);
   }
 
   /**
