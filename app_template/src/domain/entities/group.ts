@@ -43,7 +43,7 @@ const group: IEntityDefinition = {
   transformations: [
     {
       name: 'selector',
-      transform: { id: 'group_id', label: 'name' },
+      transform: { label: 'name' },
     },
   ],
 };

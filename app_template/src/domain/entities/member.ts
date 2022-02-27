@@ -67,7 +67,6 @@ const member: IEntityDefinition = {
     {
       name: 'selector',
       transform: {
-        id: 'member_id',
         label: 'firstname lastname',
       },
     },

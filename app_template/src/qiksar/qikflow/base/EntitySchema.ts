@@ -1,9 +1,5 @@
 import fetchMode from './fetchMode';
-import fieldOptions, {
-  hideField,
-  localizeField,
-  onGrid,
-} from './fieldOptions';
+import fieldOptions, { hideField, localizeField, onGrid } from './fieldOptions';
 import { GqlRecord } from './GqlTypes';
 import IEntityDefinition from './IEntityDefinition';
 import IEnumDefinition from './IEnumDefinition';
@@ -50,8 +46,12 @@ export default class EntitySchema {
 
   //#region Transformation
 
-  CreateTransform(definition: ITransformDefinition): EntitySchema {
-    this._transformers[definition.name] = definition.transform;
+  CreateTransform(transformation: ITransformDefinition): EntitySchema {
+    // Force the transformation to use the primary key of the entity as its ID field
+    this._transformers[transformation.name] = {
+      ...transformation.transform,
+      id: this.Key,
+    };
 
     return this;
   }
