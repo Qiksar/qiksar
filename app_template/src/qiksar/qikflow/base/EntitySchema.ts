@@ -1,7 +1,7 @@
 import fetchMode from './fetchMode';
 import fieldOptions, {
-  hiddenFieldOptions,
-  localize,
+  hideField,
+  localizeField,
   onGrid,
 } from './fieldOptions';
 import { GqlRecord } from './GqlTypes';
@@ -366,7 +366,7 @@ export default class EntitySchema {
    */
   private SetKey(
     fieldName: string,
-    fo: fieldOptions[] = hiddenFieldOptions
+    fo: fieldOptions[] = hideField
   ): EntitySchema {
     this._key = fieldName;
 
@@ -406,7 +406,7 @@ export default class EntitySchema {
           name: definition.name,
           field_paths: `${definition.preferred_join_name}.name`,
           label: label,
-          options: localize,
+          options: localizeField,
           column_name: entity_type,
         },
       ],

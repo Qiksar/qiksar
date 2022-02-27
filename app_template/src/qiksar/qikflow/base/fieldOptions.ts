@@ -13,6 +13,6 @@ export default fieldOptions;
 
 export const onGrid: fieldOptions[] = ['ongrid', 'sortable'];
 export const defaultFieldOptions: fieldOptions[] = [];
-export const localize: fieldOptions[] = [...onGrid, 'locale'];
 export const defaultEnumOptions: fieldOptions[] = [...onGrid, 'readonly'];
-export const hiddenFieldOptions: fieldOptions[] = ['hidden'];
+export const localizeField: fieldOptions[] = [...onGrid, 'locale'];
+export const hideField: fieldOptions[] = ['hidden'];
