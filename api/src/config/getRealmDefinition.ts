@@ -1,6 +1,14 @@
-import { RealmDefinitionSettings } from './RealmDefinitionSettings';
+import getRealmDefinitionSettings from './RealmDefinitionSettings';
 
-export default function getRealmDefinition(realmSettings: RealmDefinitionSettings): Record<string, any> {
+/**
+ * Create a realm definition
+ * @param name name of realm
+ * @returns a fully defined keycloak realm with values inserted from the realm definition settings
+ */
+export default function getRealmDefinition(name: string): Record<string, any> {
+  const realmSettings = getRealmDefinitionSettings();
+  realmSettings['KEYCLOAK_REALM'] = name;
+
   return {
     realm: realmSettings['KEYCLOAK_REALM'],
     displayName: realmSettings['KEYCLOAK_REALM_NAME'],

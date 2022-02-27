@@ -3,10 +3,9 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 
 import HttpHelper from 'src/common/HttpHelper';
-import Validator from 'src/common/Validator';
+import DataTypeValidator from 'src/common/DataTypeValidator';
 
 import getRealmDefinition from 'src/config/getRealmDefinition';
-import getRealmDefinitionSettings from 'src/config/RealmDefinitionSettings';
 import { GetAdminAuthToken } from 'src/config/AuthConfig';
 
 @Injectable()
@@ -23,7 +22,6 @@ export default class AuthService {
    */
   public async authenticate(realm: string, client: string, username: string, password: string): Promise<Record<string, any>> {
     const url = this.httpHelper.realmUrl(realm, 'protocol/openid-connect/token');
-    console.log(url);
     const params = new URLSearchParams();
     params.append('client_id', client);
     params.append('username', username);
@@ -85,7 +83,7 @@ export default class AuthService {
     temporary_password: boolean,
     token: string,
   ): Promise<string> {
-    Validator.IsNotBlank(realm, 'realm must be specified')
+    DataTypeValidator.IsNotBlank(realm, 'realm must be specified')
       .IsNotBlank(username, 'username must be specified')
       .IsNotBlank(password, 'password must specify a temporary value for user password')
       .IsNotBlank(locale, 'locale must be specified')
@@ -141,7 +139,9 @@ export default class AuthService {
    * @param token authentication token
    */
   public async deleteUser(realm: string, userid: string, token: string): Promise<void> {
-    Validator.IsNotBlank(realm, 'realm must be specified').IsValidUsername(userid, 'userid must be specified').IsNotBlank(token, 'token must be specified');
+    DataTypeValidator.IsNotBlank(realm, 'realm must be specified')
+      .IsValidUsername(userid, 'userid must be specified')
+      .IsNotBlank(token, 'token must be specified');
 
     // Delete the new user
     await axios.delete(this.httpHelper.realmAdminUrl(realm, 'users/' + userid), this.httpHelper.buildHeader(token)).catch((e) => {
@@ -271,21 +271,36 @@ export default class AuthService {
     return JSON.parse(Buffer.from(base64, 'base64').toString());
   }
 
+  /**
+   * Extract the realm from the token
+   *
+   * @param token authorization token
+   * @returns name of the realm
+   */
+  public getTokenInfo(token: string): Record<string, any> {
+    const decoded = this.decodeToken(token);
+
+    return {
+      realm: decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'],
+      locale: decoded['locale'],
+    };
+  }
+
   //#endregion
 
   //#region Realm Management
 
-  public async createRealm(name: string, token: string): Promise<void> {
-    Validator.IsNotBlank(name, 'name must be specified').IsNotBlank(token, 'token must be specified');
+  /**
+   * Create a new realm
+   *
+   * @param realm_name name of the realm to create
+   * @param token authorization token
+   */
+  public async createRealm(realm_name: string, token: string): Promise<void> {
+    DataTypeValidator.IsNotBlank(realm_name, 'name must be specified').IsNotBlank(token, 'token must be specified');
 
-    const settings = getRealmDefinitionSettings();
-    settings['KEYCLOAK_REALM'] = name;
-
-    const realm = getRealmDefinition(settings);
-
+    const realm = getRealmDefinition(realm_name);
     const url = `${this.httpHelper.baseServerUrl}/admin/realms`;
-    console.log('POST URL: ' + url);
-    console.log('Creating realm: ' + name);
 
     // Create the new user
     await axios
@@ -298,11 +313,15 @@ export default class AuthService {
       });
   }
 
-  public async deleteRealm(name: string): Promise<void> {
-    Validator.IsNotBlank(name, 'name must be specified');
+  /**
+   * Delete a realm
+   * @param realm_name name of the realm to delete
+   */
+  public async deleteRealm(realm_name: string): Promise<void> {
+    DataTypeValidator.IsNotBlank(realm_name, 'name must be specified');
 
     const admin_token = await GetAdminAuthToken();
-    const url = this.httpHelper.realmAdminUrl(name);
+    const url = this.httpHelper.realmAdminUrl(realm_name);
 
     await axios.delete(url, this.httpHelper.buildHeader(admin_token)).catch((e) => {
       throw new HttpException(`failed to delete realm: ${e.response.data.error_description}`, e.response.status);

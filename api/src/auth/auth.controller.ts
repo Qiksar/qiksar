@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Unprotected, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
+
 import HttpHelper from 'src/common/HttpHelper';
-import KeycloakConfiguration, { DefaultAppClient } from 'src/config/AuthConfig';
+import { DefaultAuthClient } from 'src/config/AuthConfig';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AuthService from './auth.service';
@@ -24,7 +25,7 @@ export default class AuthController {
     //console.log('User: ' + username);
     //console.log('Password: ' + password);
 
-    const token = await this.authService.authenticate(realm, DefaultAppClient, username, password);
+    const token = await this.authService.authenticate(realm, DefaultAuthClient, username, password);
 
     //console.log(JSON.stringify(this.authService.decodeToken(token['access_token'])));
 
@@ -41,8 +42,7 @@ export default class AuthController {
   @Roles({ roles: ['realm:tenant_admin', 'realm:tenant_user'], mode: RoleMatchingMode.ANY })
   async me(@Req() req: Http2ServerRequest): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
-    const decoded = this.authService.decodeToken(token);
-    const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
+    const { realm } = this.authService.getTokenInfo(token);
 
     const details = await this.authService.me(realm, token);
 

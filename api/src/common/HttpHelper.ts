@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { KeycloakConnectConfig } from 'nest-keycloak-connect';
 import AuthConfig from '../config/AuthConfig';
 
+/**
+ * Helper class for extracting data from requests and tokens
+ */
 @Injectable()
 export default class HttpHelper {
   private config: KeycloakConnectConfig;
@@ -10,10 +13,16 @@ export default class HttpHelper {
     this.config = AuthConfig;
   }
 
+  /**
+   * Get the Keycloak connector configuration
+   */
   get Config(): KeycloakConnectConfig {
     return this.config;
   }
 
+  /**
+   * Get the base address to the Keycloak API
+   */
   public get baseServerUrl(): string {
     return this.config.authServerUrl;
   }

@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Roles } from 'nest-keycloak-connect';
-import { GetAdminAuthToken } from 'src/config/AuthConfig';
 
+import { GetAdminAuthToken } from 'src/config/AuthConfig';
 import AuthService from '../auth/auth.service';
 
 @Controller({ path: 'tenant' })
@@ -42,13 +42,8 @@ export default class TenantController {
     @Body('temporary_password') temporary_password: boolean,
   ): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
-    const decoded = this.authService.decodeToken(token);
-
-    // Realm is implicit, it is the same realm as the calling user
-    const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
-    const locale = decoded['locale'];
-
-    const user = await this.authService.createUser(admin, realm, username, password, locale, email, firstname, lastname, temporary_password, token);
+    const info = this.authService.getTokenInfo(token);
+    const user = await this.authService.createUser(admin, info.realm, username, password, info.locale, email, firstname, lastname, temporary_password, token);
 
     return { userid: user };
   }
@@ -63,14 +58,11 @@ export default class TenantController {
   @Roles({ roles: ['realm:tenant_admin'] })
   async deleteUser(@Req() req: Http2ServerRequest, @Body('userid') userid: string): Promise<Record<string, any>> {
     const token = this.authService.tokenFromRequest(req);
-    const decoded = this.authService.decodeToken(token);
+    const { realm } = this.authService.getTokenInfo(token);
 
-    // Realm is implicit, it is the same realm as the calling user
-    const realm = decoded['https://hasura.io/jwt/claims']['x-hasura-realm-id'];
+    await this.authService.deleteUser(realm, userid, token);
 
-    const user = await this.authService.deleteUser(realm, userid, token);
-
-    return { userid: user };
+    return { userid };
   }
 
   /**
@@ -104,9 +96,14 @@ export default class TenantController {
     await this.authService.createUser(true, realm_name, username, password, locale, email, firstname, lastname, temporary_password, token);
   }
 
+  /**
+   * Delete a tenant
+   *
+   * @param realm_name name of the tenant
+   */
   @Delete('delete_tenant')
   @Roles({ roles: ['realm:tenant_admin'] })
-  async deleteTenant(@Req() req: Http2ServerRequest, @Body('name') realm_name: string) {
+  async deleteTenant(@Body('name') realm_name: string) {
     this.authService.deleteRealm(realm_name);
   }
 }
