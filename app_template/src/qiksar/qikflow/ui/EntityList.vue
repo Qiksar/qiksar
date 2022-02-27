@@ -4,7 +4,7 @@
     <div class="row">
       <q-table
         dense
-        :row-key="store.view.Schema.Key"
+        :row-key="store.Key"
         :rows="store.Rows"
         :columns="store.TableColumns"
         :pagination="store.Pagination"
@@ -42,7 +42,7 @@ onBeforeMount(() => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const onRowClick = (event: any, row: GqlRecord): void => {
   if (event) {
-    const key = store.view.Schema.Key;
+    const key = store.Key;
     const path = `/${props.entity_type}/edit/${row[key] as string}`;
     void Router.push(path);
   }

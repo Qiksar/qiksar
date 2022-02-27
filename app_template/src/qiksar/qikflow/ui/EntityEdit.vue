@@ -102,7 +102,7 @@ function editableFields(): Record<string, EntityField> {
 
 // Extract the ID of the current entity in the store
 function currentRecordId(): string | undefined {
-  const id = reactive_record.value[store.view.Schema.Key] as string;
+  const id = reactive_record.value[store.Key] as string;
   return id;
 }
 
@@ -120,6 +120,6 @@ function updateEntity(field: EntityField, value: unknown): void {
 }
 
 function deleteEntity() {
-  void store.Delete(reactive_record.value[store.view.Schema.Key] as string);
+  void store.Delete(reactive_record.value[store.Key] as string);
 }
 </script>

@@ -4,6 +4,7 @@ type fieldType =
   | 'arr'
   | 'obj'
   | 'text'
+  | 'markdown'
   | 'number'
   | 'date'
   | 'email'

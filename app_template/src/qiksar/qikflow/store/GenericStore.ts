@@ -2,6 +2,15 @@ import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { defineStore } from 'pinia';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
 
+interface IGenericStoreState {
+  Rows: GqlRecords;
+  CurrentRecord: GqlRecord;
+  busy: boolean;
+  hasRecord: boolean;
+  TableColumns: [];
+  view:  Query;
+}
+
 export function CreateStore<Id extends string>(name: Id) {
   const createStore = defineStore(name, {
     state: () => {
@@ -16,24 +25,33 @@ export function CreateStore<Id extends string>(name: Id) {
     },
 
     getters: {
-      Busy: (state) => {
+      Key: (s) => {
+        const state = s as IGenericStoreState;
+        return state.view.Schema.Key;
+      },
+
+      Busy: (s) => {
+        const state = s as IGenericStoreState;
         return state.busy;
       },
 
-      RecordLoaded: (state) => {
+      RecordLoaded: (s) => {
+        const state = s as IGenericStoreState;
         return state.hasRecord;
       },
 
-      Pagination: (state) => {
+      Pagination: (s) => {
+        const state = s as IGenericStoreState;
         return {
-          sortBy: state.view.SortBy,
+        sortBy: state.view.SortBy,
           descending: !state.view.Asc,
           page: 1,
           rowsPerPage: 20,
         };
       },
 
-      NewRecord: (state): GqlRecord => {
+      NewRecord: (s): GqlRecord => {
+        const state = s as IGenericStoreState;
         state.CurrentRecord = {};
 
         state.busy = false;
@@ -137,9 +155,7 @@ export function CreateStore<Id extends string>(name: Id) {
         const diff = {} as GqlRecord;
 
         // Get the primary key
-        diff[this.view.Schema.Key] = this.CurrentRecord[
-          this.view.Schema.Key
-        ] as string;
+        diff[this.Key] = this.CurrentRecord[this.Key] as string;
 
         // Get only the fields which have changed value
         Object.keys(current).map((k: string) => {

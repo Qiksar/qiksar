@@ -36,7 +36,7 @@ const emit = defineEmits<{
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 let selectedObject = ref({});
-let options = ref([] as GqlRecords);
+let selection_records = ref([] as GqlRecords);
 
 onBeforeMount(async () => {
   if (!props.field?.ObjectSchema) return;
@@ -47,8 +47,8 @@ onBeforeMount(async () => {
     const fieldValue = props.entity[fieldName];
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
-    options.value = store.TransformRows('selector');
-    selectedObject.value = options.value.filter(
+    selection_records.value = store.TransformRows('selector');
+    selectedObject.value = selection_records.value.filter(
       (f) => f['id'] == fieldValue
     )[0];
 

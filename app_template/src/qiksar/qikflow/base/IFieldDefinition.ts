@@ -1,3 +1,4 @@
+import EditComponentType from './EditComponentType';
 import fieldOptions from './fieldOptions';
 import fieldType from './fieldType';
 
@@ -12,6 +13,7 @@ export default interface IFieldDefinition {
   column: string;
   type?: fieldType;
   options?: fieldOptions[];
+  editor: EditComponentType;
   key_column_name?: string | undefined;
   object_name?: string | undefined;
   object_columns?: string | undefined;

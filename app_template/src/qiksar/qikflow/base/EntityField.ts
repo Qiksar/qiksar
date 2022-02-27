@@ -1,21 +1,10 @@
+import { defaultFieldOptions } from 'src/qiksar/qikflow/base/fieldOptions';
 import { t } from 'src/qiksar/Translator/Translator';
 
-import fieldOptions from './fieldOptions';
+import fieldOptions, { onGrid } from './fieldOptions';
 import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
 
-export const defaultFieldOptions: fieldOptions[] = ['ongrid', 'sortable'];
-export const defaultIntFieldOptions: fieldOptions[] = [
-  ...defaultFieldOptions,
-  'locale',
-];
-export const defaultEnumOptions: fieldOptions[] = [
-  'ongrid',
-  'sortable',
-  'readonly',
-  'EntityEditText',
-];
-export const hiddenFieldOptions: fieldOptions[] = ['hidden'];
 
 export default class EntityField {
   //#region Properties
@@ -61,8 +50,7 @@ export default class EntityField {
     this._locale = this.Options.includes('locale');
     this._writeonce = this.Options.includes('writeonce') || this.IsKey;
 
-    const editor = this._options.filter((o) => o.startsWith('EntityEdit'));
-    this._editor = editor.length > 0 ? editor[0] : 'EntityEditText';
+    this._editor = def.editor ?? 'EntityEditText';
   }
 
   get Editor(): string {
@@ -82,6 +70,7 @@ export default class EntityField {
   }
 
   get IsOnGrid(): boolean {
+    if (this._on_grid) console.log(this.Name);
     return this._on_grid;
   }
   get IsReadonly(): boolean {
@@ -139,7 +128,7 @@ export default class EntityField {
       else
         throw `Field definition for ${
           this.ObjectSchema ?? '<invalid object schema>'
-        }.${this.Name} has missingKeyColumnName and/or ObjectName`;
+        }.${this.Name} has missing KeyColumnName and/or ObjectName`;
     }
 
     return fieldName;

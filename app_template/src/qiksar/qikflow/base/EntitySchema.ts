@@ -1,9 +1,9 @@
-import EntityField, {
-  hiddenFieldOptions,
-  defaultIntFieldOptions,
-} from './EntityField';
 import fetchMode from './fetchMode';
-import fieldOptions from './fieldOptions';
+import fieldOptions, {
+  hiddenFieldOptions,
+  localize,
+  onGrid,
+} from './fieldOptions';
 import { GqlRecord } from './GqlTypes';
 import IEntityDefinition from './IEntityDefinition';
 import IEnumDefinition from './IEnumDefinition';
@@ -13,6 +13,7 @@ import IImportFieldDefinition from './IImportFieldDefinition';
 import ITransformDefinition from './ITransformDefinition';
 import IUseEnumDefinition from './IUseEnumDefinition';
 import Query, { defaultFetchMode } from './Query';
+import EntityField from './EntityField';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -228,8 +229,20 @@ export default class EntitySchema {
 
     return schema
       .SetKey(key, ['sortable'])
-      .AddField({ name: 'name', column: 'name', label: 'Label' })
-      .AddField({ name: 'comment', column: 'comment', label: 'Description' })
+      .AddField({
+        name: 'name',
+        column: 'name',
+        label: 'Label',
+        editor: 'EntityEditText',
+        options: onGrid,
+      })
+      .AddField({
+        name: 'comment',
+        column: 'comment',
+        label: 'Description',
+        editor: 'EntityEditText',
+        options: onGrid,
+      })
       .CreateTransform({
         name: 'selector',
         transform: {
@@ -363,6 +376,7 @@ export default class EntitySchema {
       label: 'ID',
       type: 'id',
       options: [...fo, 'writeonce'],
+      editor: 'EntityEditText',
     });
   }
 
@@ -392,7 +406,7 @@ export default class EntitySchema {
           name: definition.name,
           field_paths: `${definition.preferred_join_name}.name`,
           label: label,
-          options: defaultIntFieldOptions,
+          options: localize,
           column_name: entity_type,
         },
       ],
@@ -427,13 +441,14 @@ export default class EntitySchema {
         label: i.label ?? view.Schema.Label,
         column: i.target_schema,
         type: 'obj',
-        options: [...opts, 'ongrid', 'EntityEditSelect'],
+        options: [...opts, 'ongrid'],
         object_schema: i.target_schema,
         key_column_name: i.source_key,
         ref_column_name: i.columns,
         schema: i.target_schema,
         object_name: i.source_object,
         object_columns: i.columns,
+        editor: 'EntityEditSelect',
       } as IFieldDefinition;
 
       this.AddField(fieldDefinition);
