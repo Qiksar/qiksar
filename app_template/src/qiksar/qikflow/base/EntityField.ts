@@ -1,10 +1,9 @@
 import { defaultFieldOptions } from 'src/qiksar/qikflow/base/fieldOptions';
 import { t } from 'src/qiksar/Translator/Translator';
 
-import fieldOptions, { onGrid } from './fieldOptions';
+import fieldOptions from './fieldOptions';
 import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
-
 
 export default class EntityField {
   //#region Properties
