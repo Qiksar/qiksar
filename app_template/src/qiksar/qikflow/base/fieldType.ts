@@ -1,15 +1,16 @@
 type fieldType =
-  | 'id'
-  | 'alias'
-  | 'arr'
-  | 'obj'
   | 'text'
-  | 'markdown'
   | 'number'
+  | 'money'
   | 'date'
   | 'email'
   | 'mobile'
   | 'image'
-  | 'json';
+  | 'markdown'
+  | 'json'
+  | 'id'
+  | 'alias'
+  | 'arr'
+  | 'obj';
 
 export default fieldType;

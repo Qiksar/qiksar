@@ -1,4 +1,6 @@
+import { FieldValidatorBuilder } from './FieldValidatorBuilder';
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import { defaultFieldOptions } from 'src/qiksar/qikflow/base/fieldOptions';
 import { t } from 'src/qiksar/Translator/Translator';
@@ -8,9 +10,16 @@ import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
 
 export default class EntityField {
+  validationRules: any[];
+
   constructor(private readonly definition: IFieldDefinition) {
     if ('arr obj'.includes(this.Type) && !this.ObjectSchema)
       throw `Invalid field definition ${this.Name} - ${this.Type} must specify a schema`;
+
+    this.validationRules = FieldValidatorBuilder.BuildValidators(
+      this.Type,
+      definition.validationRules || {}
+    );
   }
 
   get Name(): string {
@@ -74,23 +83,20 @@ export default class EntityField {
     return this.definition.editor ?? 'EntityEditText';
   }
   get Autofocus(): boolean {
-    return this.definition.autofocus as boolean ?? false;
+    return (this.definition.autofocus as boolean) ?? false;
   }
   get Clearable(): boolean {
-    return this.definition.clearable as boolean ?? true;
+    return (this.definition.clearable as boolean) ?? true;
   }
   get Help(): string {
-    return t(this.definition.helpText as string ?? '');
+    return t((this.definition.helpText as string) ?? '');
   }
   get Placeholder(): string {
-    return t(this.definition.placeholder as string ?? '');
+    return t((this.definition.placeholder as string) ?? '');
   }
 
-  get ValidationRules(): any[] | undefined {
-    return this.definition.validation &&
-      this.definition.validation.quasar_validation_rules
-      ? this.definition.validation.quasar_validation_rules
-      : undefined;
+  get ValidationRules(): any[] {
+    return this.validationRules;
   }
 
   // returns the actual field which is updated if the value of this field is altered

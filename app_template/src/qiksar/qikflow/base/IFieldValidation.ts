@@ -1,9 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+
 /**
  * Wrap validation rules for a field
  */
 export default interface IFieldValidation {
-    quasar_validation_rules?: any[];
-    defaultValue?: any;
+  required?: boolean;
+
+  min?: any;
+  max?: any;
+
+  minLength?: any;
+  maxLength?: any;
+
+  oneOf?: any[];
+  pattern?: RegExp;
+
+  quasar_validation_rules?: any[];
 }
+
+

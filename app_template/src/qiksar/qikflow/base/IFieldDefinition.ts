@@ -19,7 +19,7 @@ export default interface IFieldDefinition {
   autofocus?: boolean;
   clearable?: boolean;
   placeholder?: string;
-  validation?: IFieldValidation;
+  validationRules?: IFieldValidation;
 
   key_column_name?: string | undefined;
   object_name?: string | undefined;
