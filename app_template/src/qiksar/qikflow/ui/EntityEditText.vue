@@ -21,8 +21,6 @@
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
 import { GqlRecord } from '../base/GqlTypes';
-import { ref } from 'vue';
-
 
 const props = defineProps<{
   field: EntityField;
@@ -33,8 +31,6 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
-
-const validation = ref(props.field.ValidationRules);
 
 function onUpdate(value: string) {
   emit('update:modelValue', value);

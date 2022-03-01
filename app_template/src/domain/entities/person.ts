@@ -2,6 +2,22 @@
 
 import { onGrid } from 'src/qiksar/qikflow/base/fieldOptions';
 import IFieldDefinition from 'src/qiksar/qikflow/base/IFieldDefinition';
+import { t } from 'src/qiksar/Translator/Translator';
+
+const isRequired = (v: any) => !!v || t('A value is required');
+
+function minLength(l: number, v: any) {
+  return (
+    (v as string).length >= l ||
+    t('The minimum number of characters is') + `: ${l}`
+  );
+}
+
+const nameRules = [isRequired, (v: any) => minLength(4, v)];
+
+const nameValidation = {
+  quasar_validation_rules: nameRules,
+};
 
 const firstname: IFieldDefinition = {
   name: 'firstname',
@@ -12,13 +28,7 @@ const firstname: IFieldDefinition = {
   placeholder: 'First name (e.g. Bill)',
   helpText: 'Enter name with at least 4 characters',
   autofocus: true,
-  validation: {
-    quasar_validation_rules: [
-      (v: any) => !!v || 'A value is required',
-      (v: any) =>
-        (v as string).length >= 4 || 'Please enter at least 4 characters',
-    ],
-  },
+  validation: nameValidation,
 };
 
 const lastname: IFieldDefinition = {
@@ -27,15 +37,9 @@ const lastname: IFieldDefinition = {
   column: 'lastname',
   editor: 'EntityEditText',
   options: onGrid,
-  helpText: 'Enter name with at least 4 characters',
   placeholder: 'Enter surname (last name or family name)',
-  validation: {
-    quasar_validation_rules: [
-      (v: any) => !!v || 'A value is required',
-      (v: any) =>
-        (v as string).length >= 4 || 'Please enter at least 4 characters',
-    ],
-  },
+  helpText: 'Enter name with at least 4 characters',
+  validation: nameValidation,
 };
 
 const email: IFieldDefinition = {
