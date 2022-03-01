@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { defaultFieldOptions } from 'src/qiksar/qikflow/base/fieldOptions';
 import { t } from 'src/qiksar/Translator/Translator';
 
@@ -6,113 +8,89 @@ import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
 
 export default class EntityField {
-  //#region Properties
-  private _label: string;
-  private _name: string;
-  private _type: fieldType;
-  private _options: fieldOptions[];
-  private _key_column_name: string | undefined = undefined;
-  private _object_name: string | undefined = undefined;
-  private _object_columns: string | undefined = undefined;
-  private _object_schema: string | undefined = undefined;
-  private _sortable: boolean;
-  private _on_grid: boolean;
-  private _readonly: boolean;
-  private _required: boolean;
-  private _is_enum: boolean;
-  private _heavy: boolean;
-  private _locale: boolean;
-  private _writeonce: boolean;
-  private _editor: string;
-  //#endregion
-
-  constructor(def: IFieldDefinition) {
-    this._name = def.column;
-    this._label = def.label;
-    this._type = def.type ?? 'text';
-    this._options = def.options ?? defaultFieldOptions;
-
-    this._key_column_name = def.key_column_name;
-    this._object_name = def.object_name;
-    this._object_columns = def.object_columns;
-    this._object_schema = def.object_schema;
-
-    if ('arr obj'.includes(this.Type) && !this._object_schema)
+  constructor(private readonly definition: IFieldDefinition) {
+    if ('arr obj'.includes(this.Type) && !this.ObjectSchema)
       throw `Invalid field definition ${this.Name} - ${this.Type} must specify a schema`;
-
-    this._sortable = this.Options.includes('sortable');
-    this._on_grid = this.Options.includes('ongrid');
-    this._readonly = this.Options.includes('readonly');
-    this._required = this.Options.includes('required');
-    this._is_enum = this.Options.includes('isenum');
-    this._heavy = this.Options.includes('heavy');
-    this._locale = this.Options.includes('locale');
-    this._writeonce = this.Options.includes('writeonce') || this.IsKey;
-
-    this._editor = def.editor ?? 'EntityEditText';
   }
 
-  get Editor(): string {
-    return this._editor ?? '';
-  }
   get Name(): string {
-    return this._name;
+    return this.definition.column;
   }
   get Label(): string {
-    return t(this._label);
+    return t(this.definition.label);
   }
   get Type(): fieldType {
-    return this._type;
+    return this.definition.type ?? 'text';
   }
   get Options(): fieldOptions[] {
-    return this._options;
+    return this.definition.options ?? defaultFieldOptions;
   }
-
   get IsOnGrid(): boolean {
-    if (this._on_grid) console.log(this.Name);
-    return this._on_grid;
+    return this.Options.includes('ongrid');
   }
   get IsReadonly(): boolean {
-    return this._readonly;
+    return this.Options.includes('readonly');
   }
   get IsRequired(): boolean {
-    return this._required;
+    return this.Options.includes('required');
   }
   get IsSortable(): boolean {
-    return this._sortable;
+    return this.Options.includes('sortable');
   }
   get IsEnum(): boolean {
-    return this._is_enum;
+    return this.Options.includes('isenum');
   }
   get IsHeavy(): boolean {
-    return this._heavy;
+    return this.Options.includes('heavy');
   }
   get IsLocale(): boolean {
-    return this._locale;
+    return this.Options.includes('locale');
   }
   get IsKey(): boolean {
-    return this._type === 'id';
+    return this.definition.type === 'id';
   }
   get IsRelation(): boolean {
-    return this._type === 'arr' || this._type === 'obj';
+    return this.Type === 'arr' || this.Type === 'obj';
   }
   get IsAlias(): boolean {
-    return this._type === 'alias';
+    return this.Type === 'alias';
   }
   get IsWriteOnce(): boolean {
-    return this._writeonce;
+    return this.Options.includes('writeonce');
   }
   get ObjectName(): string | undefined {
-    return this._object_name;
+    return this.definition.object_name;
   }
   get KeyColumnName(): string | undefined {
-    return this._key_column_name;
+    return this.definition.key_column_name;
   }
   get ObjectColumns(): string | undefined {
-    return this._object_columns;
+    return this.definition.object_columns;
   }
   get ObjectSchema(): string | undefined {
-    return this._object_schema;
+    return this.definition.object_schema;
+  }
+  get Editor(): string {
+    return this.definition.editor ?? 'EntityEditText';
+  }
+  get Autofocus(): boolean {
+    return this.definition.autofocus as boolean ?? false;
+  }
+  get Clearable(): boolean {
+    return this.definition.clearable as boolean ?? true;
+  }
+  get Help(): string {
+    return t(this.definition.helpText as string ?? '');
+  }
+  get Placeholder(): string {
+    return t(this.definition.placeholder as string ?? '');
+  }
+
+  get ValidationRules(): any[] | undefined {
+    return this.definition.validation &&
+      this.definition.validation.quasar_validation_rules
+      ? this.definition.validation.quasar_validation_rules
+      : undefined;
   }
 
   // returns the actual field which is updated if the value of this field is altered

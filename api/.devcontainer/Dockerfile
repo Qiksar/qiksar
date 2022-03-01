@@ -12,3 +12,4 @@ FROM node:16.10.0-bullseye
 # [Optional] Uncomment if you want to install an additional version of node using nvm
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
+RUN su node -c "npm install -g yarn @nestjs/cli"
