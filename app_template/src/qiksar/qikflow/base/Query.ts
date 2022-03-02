@@ -32,7 +32,7 @@ export default class Query {
   private _auto_fetch = true;
   private _offset = 0;
   private _limit: number | undefined;
-  private _sort_by = '';
+  private _order_by = '';
   private _asc = true;
   private _where: string | undefined;
   private _auto_translate = true;
@@ -119,11 +119,11 @@ export default class Query {
     return this._offset;
   }
 
-  set SortBy(sort_by: string) {
-    this._sort_by = sort_by;
+  set OrderBy(sort_by: string) {
+    this._order_by = sort_by;
   }
-  get SortBy(): string {
-    return this._sort_by;
+  get OrderBy(): string {
+    return this._order_by;
   }
 
   set Asc(asc: boolean) {
@@ -222,7 +222,7 @@ export default class Query {
   ) {
     const query = new Query(schema, defaultFetchMode, autoFetch);
 
-    query._sort_by = sort_by ?? schema.Key;
+    query._order_by = sort_by ?? schema.Key;
     query._asc = asc;
     query._limit = limit;
 
@@ -254,14 +254,14 @@ export default class Query {
 
     const query =
       `query {
-		${this.Schema.EntityName} 
+		${this.Schema.EntityName}
 		(` +
       (limit ? `limit: ${limit},` : '') +
       `
-			${this.BuildOrderBy(sortBy ?? this.SortBy, this.Asc)},
+			${this.BuildOrderBy(sortBy ?? this.OrderBy, this.Asc)},
 			offset: ${this.Offset},
 			${this.BuildWhere(where)}
-		)  
+		)
 		{
 			${this.Schema.Columns(fetch_mode, entityStack)}
 		}
@@ -590,7 +590,7 @@ export default class Query {
       this._fetch_mode,
       store,
       true,
-      this._sort_by,
+      this._order_by,
       this.Limit
     );
 
@@ -665,11 +665,11 @@ export default class Query {
                 ${mutation_name} (
                     pk_columns: {
                         ${this.Schema.Key}: "${id}"
-                        }, 
+                        },
                     _set: {
                         ${this.Stringify(data, true)}
                         }
-                    ) 
+                    )
                     { ${this.Schema.Key} ${keys} }
             }`;
 

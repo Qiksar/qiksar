@@ -1,3 +1,5 @@
+// eslint-disable @typescript-eslint/no-unsafe-assignment
+
 import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { defineStore } from 'pinia';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
@@ -8,7 +10,7 @@ interface IGenericStoreState {
   busy: boolean;
   hasRecord: boolean;
   TableColumns: [];
-  view:  Query;
+  view: Query;
 }
 
 export function CreateStore<Id extends string>(name: Id) {
@@ -43,7 +45,7 @@ export function CreateStore<Id extends string>(name: Id) {
       Pagination: (s) => {
         const state = s as IGenericStoreState;
         return {
-        sortBy: state.view.SortBy,
+          sortBy: state.view.OrderBy,
           descending: !state.view.Asc,
           page: 1,
           rowsPerPage: 20,
