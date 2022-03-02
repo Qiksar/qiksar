@@ -15,7 +15,7 @@
       <q-btn
         @click="AddRecord()"
         class="q-mt-xl"
-        :label="store.Busy ? 'Wait...' : `New ${store.view.Schema.Label}`"
+        :label="store.Busy ? 'Wait...' : `New ${store.View.Schema.Label}`"
       />
       <q-btn @click="FetchRows()" class="q-mt-xl" :label="'Reload Data'" />
       <q-btn class="q-mt-xl" to="/" label="Home" />
@@ -55,7 +55,7 @@ function FetchRows() {
   */
 
   // don't fetch translated data for enum views
-  void store.FetchAll(!store.view.IsEnum);
+  void store.FetchAll(!store.View.IsEnum);
 }
 
 function AddRecord() {

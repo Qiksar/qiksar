@@ -1,5 +1,5 @@
 <template>
-  <div v-if="store.RecordLoaded && !store.busy">
+  <div v-if="store.RecordLoaded && !store.Busy">
     <div class="row" v-for="(field, key) in editableFields()" v-bind:key="key">
       <div class="col">
         <component
@@ -86,7 +86,7 @@ function setReactiveRecord(entity: GqlRecord): void {
 // Fetch the entity to edit
 onBeforeMount(async () => {
   if (id && id.length > 0 && id != 'new') {
-    await store.FetchById(id, !store.view.IsEnum).then(() => {
+    await store.FetchById(id, !store.View.IsEnum).then(() => {
       setReactiveRecord(store.CurrentRecord);
     });
   } else {
@@ -97,7 +97,7 @@ onBeforeMount(async () => {
 
 // Get a collection of editable fields
 function editableFields(): Record<string, EntityField> {
-  return store.view.EditableFields as Record<string, EntityField>;
+  return store.View.EditableFields as Record<string, EntityField>;
 }
 
 // Extract the ID of the current entity in the store

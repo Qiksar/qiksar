@@ -1,17 +1,13 @@
-// eslint-disable @typescript-eslint/no-unsafe-assignment
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 
-import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { defineStore } from 'pinia';
+import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
-
-interface IGenericStoreState {
-  Rows: GqlRecords;
-  CurrentRecord: GqlRecord;
-  busy: boolean;
-  hasRecord: boolean;
-  TableColumns: [];
-  view: Query;
-}
 
 export function CreateStore<Id extends string>(name: Id) {
   const createStore = defineStore(name, {
@@ -19,45 +15,40 @@ export function CreateStore<Id extends string>(name: Id) {
       return {
         Rows: [] as GqlRecords,
         CurrentRecord: {} as GqlRecord,
-        busy: false,
-        hasRecord: false,
+        IsBusy: false,
+        HasRecord: false,
         TableColumns: [],
-        view: {} as Query,
+        View: {} as Query,
       };
     },
 
     getters: {
-      Key: (s) => {
-        const state = s as IGenericStoreState;
-        return state.view.Schema.Key;
+      Key: (state) => {
+        return state.View.Schema.Key;
       },
 
-      Busy: (s) => {
-        const state = s as IGenericStoreState;
-        return state.busy;
+      Busy: (state) => {
+        return state.IsBusy;
       },
 
-      RecordLoaded: (s) => {
-        const state = s as IGenericStoreState;
-        return state.hasRecord;
+      RecordLoaded: (state) => {
+        return state.HasRecord;
       },
 
-      Pagination: (s) => {
-        const state = s as IGenericStoreState;
+      Pagination: (state) => {
         return {
-          sortBy: state.view.OrderBy,
-          descending: !state.view.Asc,
+          sortBy: state.View.OrderBy,
+          descending: !state.View.Asc,
           page: 1,
           rowsPerPage: 20,
         };
       },
 
-      NewRecord: (s): GqlRecord => {
-        const state = s as IGenericStoreState;
+      NewRecord: (state): GqlRecord => {
         state.CurrentRecord = {};
 
-        state.busy = false;
-        state.hasRecord = true;
+        state.IsBusy = false;
+        state.HasRecord = true;
 
         return state.CurrentRecord;
       },
@@ -67,17 +58,17 @@ export function CreateStore<Id extends string>(name: Id) {
       //#region initialise setup
 
       SetLoaded(loaded: boolean): void {
-        this.hasRecord = loaded;
+        this.HasRecord = loaded;
       },
 
-      SetBusy(busy = true): void {
-        this.busy = busy;
+      SetBusy(busy: boolean): void {
+        this.IsBusy = busy;
       },
 
       // setup the view and cache the column definitions for table presentation
       SetView(name: string): void {
-        this.view = Query.GetView(name);
-        this.TableColumns = <[]>this.view.TableColumns;
+        this.View = Query.GetView(name);
+        this.TableColumns = <[]>this.View.TableColumns;
       },
 
       //#endregion
@@ -94,14 +85,14 @@ export function CreateStore<Id extends string>(name: Id) {
         if (this.Rows.length == 0)
           console.log(
             'Unable to build Enum Selections from empty dataset: ' +
-              this.view.Schema.EntityName
+              this.View.Schema.EntityName
           );
 
         const selections = [] as GqlRecords;
-        const fields = this.view.Schema.GetTransform(transformName);
+        const fields = this.View.Schema.GetTransform(transformName);
 
         this.Rows.map((r) => {
-          const trn = this.view.Transform(r, fields);
+          const trn = this.View.Transform(r, fields);
           if (trn) selections.push(trn);
         });
 
@@ -118,16 +109,16 @@ export function CreateStore<Id extends string>(name: Id) {
         translate = true,
         fm = defaultFetchMode
       ): Promise<GqlRecord> {
-        const record = await this.view.FetchById(id, fm, this, translate);
+        const record = await this.View.FetchById(id, fm, this, translate);
 
         if (!record)
-          throw `${this.view.Schema.EntityName} not found with id '${id}'`;
+          throw `${this.View.Schema.EntityName} not found with id '${id}'`;
 
         return record;
       },
 
       async FetchAll(translate = true): Promise<GqlRecords> {
-        return await this.view.FetchAll(this, translate);
+        return await this.View.FetchAll(this, translate);
       },
 
       async FetchWhere(
@@ -135,7 +126,7 @@ export function CreateStore<Id extends string>(name: Id) {
         fm = defaultFetchMode,
         translate = true
       ): Promise<GqlRecords> {
-        return await this.view.FetchWhere(where, fm, this, translate);
+        return await this.View.FetchWhere(where, fm, this, translate);
       },
 
       //#endregion
@@ -143,7 +134,7 @@ export function CreateStore<Id extends string>(name: Id) {
       //#region Insert
 
       async Add(record: GqlRecord, fm = defaultFetchMode): Promise<GqlRecord> {
-        return await this.view.Insert(record, fm, this);
+        return await this.View.Insert(record, fm, this);
       },
 
       //#endregion
@@ -167,7 +158,7 @@ export function CreateStore<Id extends string>(name: Id) {
 
         //console.log(JSON.stringify(diff));
 
-        return await this.view.Update(diff, this);
+        return await this.View.Update(diff, this);
       },
 
       //#endregion
@@ -175,11 +166,11 @@ export function CreateStore<Id extends string>(name: Id) {
       //#region Delete
 
       async Delete(id: string): Promise<GqlRecord> {
-        return await this.view.DeleteById(id, this);
+        return await this.View.DeleteById(id, this);
       },
 
       async DeleteWhere(where: string): Promise<GqlRecord> {
-        return await this.view.DeleteWhere(where, this);
+        return await this.View.DeleteWhere(where, this);
       },
 
       //#endregion
