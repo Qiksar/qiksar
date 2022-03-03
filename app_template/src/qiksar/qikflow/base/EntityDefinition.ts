@@ -31,15 +31,15 @@ export default class EntityDefinition {
   //#region Static members
 
   /**
-   * Internal array of schema
+   * Internal array of entities
    */
-  private static _schemas: Array<EntityDefinition> = [];
+  private static _entities: Array<EntityDefinition> = [];
 
   /**
    * Global list of registered schemas
    */
-  static get Schemas(): Array<EntityDefinition> {
-    return this._schemas;
+  static get Entities(): Array<EntityDefinition> {
+    return this._entities;
   }
 
   //#endregion
@@ -145,7 +145,7 @@ export default class EntityDefinition {
    * Resolve references between schema
    */
   static ResolveReferences(): void {
-    this._schemas.map((s) => s.ResolveConnections());
+    this._entities.map((s) => s.ResolveConnections());
   }
 
   /**
@@ -156,7 +156,7 @@ export default class EntityDefinition {
   static GetSchemaForEntity(entityName: string): EntityDefinition | null {
     entityName = entityName.toLowerCase();
 
-    const schemas = this._schemas.filter(
+    const schemas = this._entities.filter(
       (s: EntityDefinition) => s.EntityName === entityName
     );
 
@@ -166,8 +166,8 @@ export default class EntityDefinition {
   /**
    * Create a schema
    *
-   * @param definition Create schema details
-   * @returns Schema
+   * @param definition Create an entity
+   * @returns Entity
    */
   static Create(definition: IEntityDefinition): EntityDefinition {
     const entityName = definition.name.toLowerCase();
@@ -175,32 +175,32 @@ export default class EntityDefinition {
     if (this.GetSchemaForEntity(entityName))
       throw `ERROR: Schema has already been registered for entity type${entityName}`;
 
-    const schema: EntityDefinition = new EntityDefinition(
+    const entity: EntityDefinition = new EntityDefinition(
       entityName,
       definition.key,
       definition.icon,
       definition.label ?? entityName
     );
 
-    schema.SetKey(definition.key);
+    entity.SetKey(definition.key);
 
     definition.fields.map(
       (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
         // Check if the definition is a field or use of an enum
         if ((f as IUseEnumDefinition)['schemaName']) {
-          schema.UseEnum(f as IUseEnumDefinition);
+          entity.UseEnum(f as IUseEnumDefinition);
         } else if ((f as IImportDefinition)['import']) {
-          schema.Fetch(f as IImportDefinition);
+          entity.Fetch(f as IImportDefinition);
         } else {
-          schema.AddField(f as IFieldDefinition);
+          entity.AddField(f as IFieldDefinition);
         }
       }
     );
 
-    definition.transformations?.map((t) => schema.CreateTransform(t));
+    definition.transformations?.map((t) => entity.CreateTransform(t));
 
-    this._schemas.push(schema);
-    return schema;
+    this._entities.push(entity);
+    return entity;
   }
 
   /**
@@ -217,7 +217,7 @@ export default class EntityDefinition {
     if (this.GetSchemaForEntity(entityName))
       throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
 
-    const schema: EntityDefinition = new EntityDefinition(
+    const entity: EntityDefinition = new EntityDefinition(
       entityName,
       key,
       definition.icon,
@@ -225,9 +225,9 @@ export default class EntityDefinition {
       true
     );
 
-    this._schemas.push(schema);
+    this._entities.push(entity);
 
-    return schema
+    return entity
       .SetKey(key, ['sortable'])
       .AddField({
         name: 'name',

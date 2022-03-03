@@ -16,22 +16,22 @@ import EntityDefinition from 'src/qiksar/qikflow/base/EntityDefinition';
  * The method initialises the Apollo client, and provides type policies used the caching.
  *
  *
- * @param schema schema definition
+ * @param domain schema definition
  * @param apolloClient Apollo client for GraphQL
  *
  * @returns Array of routes for dynamically created UI
  */
 export default function InitialiseDomain(
-  schema: IDomainDefinition,
+  domain: IDomainDefinition,
   apolloClient: ApolloClient<NormalizedCacheObject>
 ): RouteRecordRaw[] {
   // Process all of the enumeration types
-  schema.enums.map((e) => {
+  domain.enums.map((e) => {
     Query.CreateQuery(EntityDefinition.CreateEnum(e), true);
   });
 
   // Process all of the more complex entities
-  schema.entities.map((e) => {
+  domain.entities.map((e) => {
     Query.CreateQuery(EntityDefinition.Create(e), true);
   });
 
