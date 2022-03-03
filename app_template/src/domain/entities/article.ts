@@ -47,7 +47,7 @@ const article: IEntityDefinition = {
     {
       name: 'status',
       type: 'enum',
-      schemaName: 'article_status',
+      entity: 'article_status',
       source_id_column: 'status_id',
       preferred_join_name: 'status',
       label: 'Published Status',

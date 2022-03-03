@@ -8,7 +8,7 @@ export default interface IUseEnumDefinition {
   type: enumType;
   name: string;
   label?: string;
-  schemaName: string;
+  entity: string;
   source_id_column: string;
   preferred_join_name: string;
 }

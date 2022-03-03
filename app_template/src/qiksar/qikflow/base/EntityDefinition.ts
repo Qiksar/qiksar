@@ -187,7 +187,7 @@ export default class EntityDefinition {
     definition.fields.map(
       (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
         // Check if the definition is a field or use of an enum
-        if ((f as IUseEnumDefinition)['schemaName']) {
+        if ((f as IUseEnumDefinition)['entity']) {
           entity.UseEnum(f as IUseEnumDefinition);
         } else if ((f as IImportDefinition)['import']) {
           entity.Fetch(f as IImportDefinition);
@@ -389,7 +389,7 @@ export default class EntityDefinition {
    * @returns The schema for fluent API style calls
    */
   UseEnum(definition: IUseEnumDefinition): EntityDefinition {
-    const view = Query.GetView(definition.schemaName);
+    const view = Query.GetView(definition.entity);
     const entity_type = view.Entity.EntityName;
     const label = definition.label ?? view.Entity.Label;
 
