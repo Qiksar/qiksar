@@ -325,19 +325,6 @@ VALUES (
     );
 
 
-
---
--- Assign the keycloak user IDs to the member records, updating the ID so the member ID is the Keycloak user ID
---
-UPDATE
-    membership.members AS MEMBER
-SET
-    member_id = CAST(id AS uuid)
-FROM
-    keycloak.user_entity
-WHERE
-    keycloak.user_entity.email = MEMBER.email;
-
 --
 -- Assign a leader to each group
 --

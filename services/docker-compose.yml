@@ -40,7 +40,7 @@ services:
         env_file: .env
 
         container_name: q_auth
-        image: ghcr.io/marcelcoding/keycloak:latest
+        image: feduxorg/keycloak
         
 
         # mount configuration files
