@@ -14,7 +14,7 @@ import EntityField from './EntityField';
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
  */
-export default class EntitySchema {
+export default class EntityDefinition {
   //#region Properties
 
   private _description: string;
@@ -33,12 +33,12 @@ export default class EntitySchema {
   /**
    * Internal array of schema
    */
-  private static _schemas: Array<EntitySchema> = [];
+  private static _schemas: Array<EntityDefinition> = [];
 
   /**
    * Global list of registered schemas
    */
-  static get Schemas(): Array<EntitySchema> {
+  static get Schemas(): Array<EntityDefinition> {
     return this._schemas;
   }
 
@@ -46,7 +46,7 @@ export default class EntitySchema {
 
   //#region Transformation
 
-  CreateTransform(transformation: ITransformDefinition): EntitySchema {
+  CreateTransform(transformation: ITransformDefinition): EntityDefinition {
     // Force the transformation to use the primary key of the entity as its ID field
     this._transformers[transformation.name] = {
       ...transformation.transform,
@@ -153,11 +153,11 @@ export default class EntitySchema {
    * @param entityName Name of the entity
    * @returns The schema, or null if the schema does not exist
    */
-  static GetSchemaForEntity(entityName: string): EntitySchema | null {
+  static GetSchemaForEntity(entityName: string): EntityDefinition | null {
     entityName = entityName.toLowerCase();
 
     const schemas = this._schemas.filter(
-      (s: EntitySchema) => s.EntityName === entityName
+      (s: EntityDefinition) => s.EntityName === entityName
     );
 
     return schemas.length > 0 ? schemas[0] : null;
@@ -169,13 +169,13 @@ export default class EntitySchema {
    * @param definition Create schema details
    * @returns Schema
    */
-  static Create(definition: IEntityDefinition): EntitySchema {
+  static Create(definition: IEntityDefinition): EntityDefinition {
     const entityName = definition.name.toLowerCase();
 
     if (this.GetSchemaForEntity(entityName))
       throw `ERROR: Schema has already been registered for entity type${entityName}`;
 
-    const schema: EntitySchema = new EntitySchema(
+    const schema: EntityDefinition = new EntityDefinition(
       entityName,
       definition.key,
       definition.icon,
@@ -210,14 +210,14 @@ export default class EntitySchema {
    * @param label Default label
    * @returns Schema
    */
-  static CreateEnum(definition: IEnumDefinition): EntitySchema {
+  static CreateEnum(definition: IEnumDefinition): EntityDefinition {
     const key = 'id';
     const entityName = definition.name.toLowerCase();
 
     if (this.GetSchemaForEntity(entityName))
       throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
 
-    const schema: EntitySchema = new EntitySchema(
+    const schema: EntityDefinition = new EntityDefinition(
       entityName,
       key,
       definition.icon,
@@ -323,7 +323,7 @@ export default class EntitySchema {
 
     entityStack.push(field.ObjectSchema);
 
-    const refSchema = EntitySchema.GetSchemaForEntity(field.ObjectSchema);
+    const refSchema = EntityDefinition.GetSchemaForEntity(field.ObjectSchema);
 
     if (!refSchema)
       throw `!!!! FATAL ERROR: Entity ${this.EntityName} references unknown schema ${field.ObjectName}`;
@@ -352,7 +352,7 @@ export default class EntitySchema {
    * @param fieldDefinition Field definition
    * @returns The schema for fluent API style calls
    */
-  AddField(fieldDefinition: IFieldDefinition): EntitySchema {
+  AddField(fieldDefinition: IFieldDefinition): EntityDefinition {
     this._fields.push(new EntityField(fieldDefinition));
 
     return this;
@@ -367,7 +367,7 @@ export default class EntitySchema {
   private SetKey(
     fieldName: string,
     fo: fieldOptions[] = hideField
-  ): EntitySchema {
+  ): EntityDefinition {
     this._key = fieldName;
 
     return this.AddField({
@@ -388,7 +388,7 @@ export default class EntitySchema {
    * @param preferred_join_name The field name on the parent used to refer to the enumeration
    * @returns The schema for fluent API style calls
    */
-  UseEnum(definition: IUseEnumDefinition): EntitySchema {
+  UseEnum(definition: IUseEnumDefinition): EntityDefinition {
     const view = Query.GetView(definition.schemaName);
     const entity_type = view.Schema.EntityName;
     const label = definition.label ?? view.Schema.Label;
@@ -422,7 +422,7 @@ export default class EntitySchema {
    * @param required_columns List of columns to fetch from the child
    * @returns The schema for fluent API style calls
    */
-  Fetch(include: IImportDefinition): EntitySchema {
+  Fetch(include: IImportDefinition): EntityDefinition {
     this._includes.push(include);
 
     return this;
@@ -470,7 +470,7 @@ export default class EntitySchema {
     schemaName: string,
     ref_type: string,
     ref_columns: string
-  ): EntitySchema {
+  ): EntityDefinition {
     const view = Query.GetView(schemaName);
 
     const def = {
@@ -490,7 +490,7 @@ export default class EntitySchema {
    * @param definition Definition of the columns to merge in from the source object
    * @returns The schema for fluent API style calls
    */
-  Flatten(definition: IImportFieldDefinition): EntitySchema {
+  Flatten(definition: IImportFieldDefinition): EntityDefinition {
     const def = {
       label: definition.label,
       column: definition.column_name,

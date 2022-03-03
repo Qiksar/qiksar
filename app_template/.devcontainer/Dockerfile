@@ -11,4 +11,5 @@ FROM node:16.10.0-bullseye
 # ARG EXTRA_NODE_VERSION=10
 # RUN su node -c "source /usr/local/share/nvm/nvm.sh && nvm install ${EXTRA_NODE_VERSION}"
 
-RUN su node -c "npm install -g @quasar/cli cordova yarn"
+RUN npm install --force -g npm@8.5.2
+RUN npm install --force -g @quasar/cli cordova yarn

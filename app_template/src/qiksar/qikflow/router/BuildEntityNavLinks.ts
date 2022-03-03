@@ -1,10 +1,10 @@
 import IEntityLink from 'src/qiksar/qikflow/base/IEntityLink';
-import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
+import EntityDefinition from 'src/qiksar/qikflow/base/EntityDefinition';
 
 export default function BuildEntityNavLinks(): IEntityLink[] {
   const links: IEntityLink[] = [];
 
-  EntitySchema.Schemas.map((s: EntitySchema) => {
+  EntityDefinition.Schemas.map((s: EntityDefinition) => {
     links.push({
       title: s.Label,
       caption: `View ${s.Label}`,

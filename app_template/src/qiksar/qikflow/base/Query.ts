@@ -12,7 +12,7 @@ import { t } from 'src/qiksar/Translator/Translator';
 import { fromJSON, toJSON } from 'flatted';
 import EntityField from './EntityField';
 import fieldType from './fieldType';
-import EntitySchema from './EntitySchema';
+import EntityDefinition from './EntityDefinition';
 import { GqlRecords } from './GqlTypes';
 import IGridColumn from './IGridColumn';
 import fetchMode from './fetchMode';
@@ -27,7 +27,7 @@ export const defaultFetchMode: fetchMode = 'heavy';
 export default class Query {
   //#region properties
 
-  private _schema: EntitySchema;
+  private _schema: EntityDefinition;
   private _fetch_mode: fetchMode;
   private _auto_fetch = true;
   private _offset = 0;
@@ -98,7 +98,7 @@ export default class Query {
 
   //#region Getters/Setters
 
-  get Schema(): EntitySchema {
+  get Schema(): EntityDefinition {
     return this._schema;
   }
   get IsEnum(): boolean {
@@ -198,7 +198,7 @@ export default class Query {
 
   //#region constructor
 
-  constructor(schema: EntitySchema, fetch_mode: fetchMode, auto_fetch = true) {
+  constructor(schema: EntityDefinition, fetch_mode: fetchMode, auto_fetch = true) {
     this._schema = schema;
     this._fetch_mode = fetch_mode;
     this._auto_fetch = auto_fetch;
@@ -214,7 +214,7 @@ export default class Query {
    * @param limit Limit number of rows fetched
    */
   static CreateQuery(
-    schema: EntitySchema,
+    schema: EntityDefinition,
     autoFetch = false,
     sort_by: string | undefined = undefined,
     asc = true,

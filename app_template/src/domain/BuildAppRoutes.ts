@@ -4,7 +4,7 @@ import { RouteRecordRaw } from 'vue-router';
 import InitialiseDomain from '../qiksar/qikflow/InitialiseDomain';
 import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
 import { AuthWrapper } from 'src/boot/qiksar';
-import DomainSchema from './DomainSchema';
+import DomainSchema from './DomainDefinition';
 
 /**
  * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.

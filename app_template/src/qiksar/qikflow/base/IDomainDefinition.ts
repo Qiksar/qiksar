@@ -6,7 +6,7 @@ import IEntityDefinition from './IEntityDefinition';
  *
  * @interface
  */
-export default interface ISchemaDefinition {
+export default interface IDomainDefinition {
   enums: IEnumDefinition[];
   entities: IEntityDefinition[];
 }

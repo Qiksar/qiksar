@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { RouteRecordRaw } from 'vue-router';
-import EntitySchema from 'src/qiksar/qikflow/base/EntitySchema';
+import EntityDefinition from 'src/qiksar/qikflow/base/EntityDefinition';
 
 /**
  * This method generates a set of routes for viewing and editing a specific entity
@@ -48,7 +48,7 @@ function getRoutesForEntity(
 export default function BuildEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
 
-  EntitySchema.Schemas.map((s: EntitySchema) => {
+  EntityDefinition.Schemas.map((s: EntityDefinition) => {
     getRoutesForEntity(s.EntityName, 'tenant_admin').map((r) => routes.push(r));
   });
 
