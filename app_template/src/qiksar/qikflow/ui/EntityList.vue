@@ -15,7 +15,7 @@
       <q-btn
         @click="AddRecord()"
         class="q-mt-xl"
-        :label="store.Busy ? 'Wait...' : `New ${store.View.Schema.Label}`"
+        :label="store.Busy ? 'Wait...' : `New ${store.View.Entity.Label}`"
       />
       <q-btn @click="FetchRows()" class="q-mt-xl" :label="'Reload Data'" />
       <q-btn class="q-mt-xl" to="/" label="Home" />

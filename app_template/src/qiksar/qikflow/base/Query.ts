@@ -27,7 +27,7 @@ export const defaultFetchMode: fetchMode = 'heavy';
 export default class Query {
   //#region properties
 
-  private _schema: EntityDefinition;
+  private _entity: EntityDefinition;
   private _fetch_mode: fetchMode;
   private _auto_fetch = true;
   private _offset = 0;
@@ -69,7 +69,7 @@ export default class Query {
     const tp = {} as GqlRecord;
 
     this._views.map((v) => {
-      tp[v.Schema.EntityName] = { keyFields: [v.Schema.Key] };
+      tp[v.Entity.EntityName] = { keyFields: [v.Entity.Key] };
     });
 
     //console.log(JSON.stringify(tp));
@@ -85,7 +85,7 @@ export default class Query {
    */
   static GetView(entityName: string): Query {
     const views = Query._views.filter(
-      (v) => v.Schema.EntityName === entityName
+      (v) => v.Entity.EntityName === entityName
     );
 
     if (views.length == 0)
@@ -98,11 +98,11 @@ export default class Query {
 
   //#region Getters/Setters
 
-  get Schema(): EntityDefinition {
-    return this._schema;
+  get Entity(): EntityDefinition {
+    return this._entity;
   }
   get IsEnum(): boolean {
-    return this.Schema.IsEnum;
+    return this.Entity.IsEnum;
   }
 
   set Limit(limit: number | undefined) {
@@ -151,7 +151,7 @@ export default class Query {
   get EditableFields(): Record<string, EntityField> {
     const fields = {} as Record<string, EntityField>;
 
-    this.Schema.Fields.filter((f) => {
+    this.Entity.Fields.filter((f) => {
       return f.IsRelation || (!f.IsKey && !f.IsAlias && !f.IsReadonly);
     }).map((f) => (fields[f.Name] = f));
 
@@ -159,7 +159,7 @@ export default class Query {
   }
 
   FieldsOfType(t: fieldType): Array<EntityField> {
-    return this.Schema.Fields.filter((f: EntityField) => {
+    return this.Entity.Fields.filter((f: EntityField) => {
       return f.Type === t;
     });
   }
@@ -168,7 +168,7 @@ export default class Query {
     option: fieldOptions,
     isRequired = true
   ): Array<EntityField> {
-    return this.Schema.Fields.filter((f: EntityField) => {
+    return this.Entity.Fields.filter((f: EntityField) => {
       const isPresent = f.Options.lastIndexOf(option) >= 0;
 
       // true if the caller wants fields that have a specified option
@@ -181,7 +181,7 @@ export default class Query {
   get TableColumns(): IGridColumn[] {
     const columns: IGridColumn[] = [];
 
-    this.Schema.Fields.filter((f) => f.IsOnGrid && !f.IsRelation).map((f) => {
+    this.Entity.Fields.filter((f) => f.IsOnGrid && !f.IsRelation).map((f) => {
       columns.push({
         name: f.Name,
         label: t(f.Label),
@@ -198,8 +198,8 @@ export default class Query {
 
   //#region constructor
 
-  constructor(schema: EntityDefinition, fetch_mode: fetchMode, auto_fetch = true) {
-    this._schema = schema;
+  constructor(entity: EntityDefinition, fetch_mode: fetchMode, auto_fetch = true) {
+    this._entity = entity;
     this._fetch_mode = fetch_mode;
     this._auto_fetch = auto_fetch;
   }
@@ -254,7 +254,7 @@ export default class Query {
 
     const query =
       `query {
-		${this.Schema.EntityName}
+		${this.Entity.EntityName}
 		(` +
       (limit ? `limit: ${limit},` : '') +
       `
@@ -263,7 +263,7 @@ export default class Query {
 			${this.BuildWhere(where)}
 		)
 		{
-			${this.Schema.Columns(fetch_mode, entityStack)}
+			${this.Entity.Columns(fetch_mode, entityStack)}
 		}
 	}`;
 
@@ -344,7 +344,7 @@ export default class Query {
     // Get the data object which contains the rows of data
     const rows = JsonTools.ExtractFromPath<GqlRecords>(result, [
       'data',
-      this.Schema.EntityName,
+      this.Entity.EntityName,
     ]);
 
     // Process the rows with translation and insertion of attributes to entites from related entities
@@ -396,7 +396,7 @@ export default class Query {
 
     // attempt to translate all text fields
     if (translate) {
-      this.Schema.LocaleFields.map((f) => {
+      this.Entity.LocaleFields.map((f) => {
         if (output[f.Name]) {
           const val = output[f.Name] as string;
           if (val.length != 0) output[f.Name] = t(val, true);
@@ -542,12 +542,12 @@ export default class Query {
     store.SetBusy(true);
 
     const entityStack: string[] = [];
-    const query_name = `${this.Schema.EntityName}_by_pk`;
+    const query_name = `${this.Entity.EntityName}_by_pk`;
 
     const query = `{
-			${query_name} (${this.Schema.Key}: "${id}")
+			${query_name} (${this.Entity.Key}: "${id}")
 			{
-				${this.Schema.Columns(fetch_mode, entityStack)}
+				${this.Entity.Columns(fetch_mode, entityStack)}
 			}
 		}
 		`;
@@ -612,15 +612,15 @@ export default class Query {
     const data = this.PrepareRowForSave(row);
 
     // For enums, the ID is always the name
-    if (this.Schema.IsEnum) data['id'] = data['name'];
+    if (this.Entity.IsEnum) data['id'] = data['name'];
 
-    const mutation_name = `insert_${this.Schema.EntityName}`;
+    const mutation_name = `insert_${this.Entity.EntityName}`;
     const mutation = `
             mutation {
                 ${mutation_name} (
                     objects: [{ ${this.Stringify(data)} }]
                 ) {
-                    returning { ${this.Schema.Key}}
+                    returning { ${this.Entity.Key}}
                 }
             }`;
 
@@ -632,7 +632,7 @@ export default class Query {
       mutation_name,
       'returning',
       0,
-      this.Schema.Key,
+      this.Entity.Key,
     ]);
 
     store.CurrentRecord = await this.FetchById(id, fetch_mode, store);
@@ -645,9 +645,9 @@ export default class Query {
     // The data will be manipulated to prevent insertion of primary keys and updates to readonly field
     let data = { ...row };
 
-    const id = data[this.Schema.Key] as string;
+    const id = data[this.Entity.Key] as string;
     if (!id)
-      throw `Unable to get primary key from ${this.Schema.EntityName}:${this.Schema.Key} = "${id}"`;
+      throw `Unable to get primary key from ${this.Entity.EntityName}:${this.Entity.Key} = "${id}"`;
 
     data = this.PrepareRowForSave(data);
 
@@ -659,18 +659,18 @@ export default class Query {
     let keys = '';
     Object.keys(data).map((k) => (keys += `${k} `));
 
-    const mutation_name = `update_${this.Schema.EntityName}_by_pk`;
+    const mutation_name = `update_${this.Entity.EntityName}_by_pk`;
     const doc = `
             mutation {
                 ${mutation_name} (
                     pk_columns: {
-                        ${this.Schema.Key}: "${id}"
+                        ${this.Entity.Key}: "${id}"
                         },
                     _set: {
                         ${this.Stringify(data, true)}
                         }
                     )
-                    { ${this.Schema.Key} ${keys} }
+                    { ${this.Entity.Key} ${keys} }
             }`;
 
     const result = await this.ExecuteMutation(doc, 'update', store);
@@ -683,12 +683,12 @@ export default class Query {
 
   async DeleteById(id: string, store: any): Promise<GqlRecord> {
     if (!id)
-      throw `Unable to get primary key from ${this.Schema.EntityName}:${this.Schema.Key}`;
+      throw `Unable to get primary key from ${this.Entity.EntityName}:${this.Entity.Key}`;
 
-    const mutation = `delete_${this.Schema.EntityName}_by_pk(${this.Schema.Key}: "${id}")`;
+    const mutation = `delete_${this.Entity.EntityName}_by_pk(${this.Entity.Key}: "${id}")`;
     const doc = `
             mutation {
-            	${mutation} { ${this.Schema.Key} }
+            	${mutation} { ${this.Entity.Key} }
             }`;
 
     const res = await this.ExecuteMutation(doc, 'delete_id', store);
@@ -701,12 +701,12 @@ export default class Query {
   }
 
   async DeleteWhere(where: string, store: any): Promise<GqlRecord> {
-    const mutation_name = `delete_${this.Schema.EntityName}`;
+    const mutation_name = `delete_${this.Entity.EntityName}`;
     const doc = `
-            mutation delete_${this.Schema.EntityName}_where {
+            mutation delete_${this.Entity.EntityName}_where {
             ${mutation_name} (where: { ${where} }
             ) {
-                returning { ${this.Schema.Key} }
+                returning { ${this.Entity.Key} }
             }
         }`;
 

@@ -390,13 +390,13 @@ export default class EntityDefinition {
    */
   UseEnum(definition: IUseEnumDefinition): EntityDefinition {
     const view = Query.GetView(definition.schemaName);
-    const entity_type = view.Schema.EntityName;
-    const label = definition.label ?? view.Schema.Label;
+    const entity_type = view.Entity.EntityName;
+    const label = definition.label ?? view.Entity.Label;
 
     return this.Fetch({
       type: 'flatten',
       name: definition.name,
-      label: definition.label ?? view.Schema.Label,
+      label: definition.label ?? view.Entity.Label,
       target_schema: entity_type,
       source_key: definition.source_id_column,
       source_object: definition.preferred_join_name,
@@ -438,7 +438,7 @@ export default class EntityDefinition {
 
       const fieldDefinition = {
         name: i.name,
-        label: i.label ?? view.Schema.Label,
+        label: i.label ?? view.Entity.Label,
         column: i.target_schema,
         type: 'obj',
         options: [...opts, 'ongrid'],
@@ -475,7 +475,7 @@ export default class EntityDefinition {
 
     const def = {
       column: schemaName,
-      label: view.Schema.Label,
+      label: view.Entity.Label,
       type: 'arr',
       object_schema: ref_type,
       object_columns: ref_columns,
