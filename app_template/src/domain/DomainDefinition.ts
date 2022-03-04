@@ -13,6 +13,14 @@ import joins from './joins';
 import IEnumDefinition from 'src/qiksar/qikflow/base/IEnumDefinition';
 import IEntityDefinition from 'src/qiksar/qikflow/base/IEntityDefinition';
 
+/**
+ * Define the application data domain
+ * 
+ * Enums:     Simple data types with a label and description
+ * Entities:  Complex data types
+ * Joins:     Many to many relationships between Entities
+ * 
+ */
 class domainDefinition implements IDomainDefinition {
   public get enums(): IEnumDefinition[] {
     return [tenant, locale, member_status, member_role, article_status];
@@ -26,6 +34,12 @@ class domainDefinition implements IDomainDefinition {
     return joins;
   }
 
+  /**
+   * Fetch a many to many join definition by name
+   * 
+   * @param name name of the join to fetch
+   * @returns 
+   */
   GetJoin(name: string): IManyToManyJoin {
     name = name.toLowerCase().trim();
 
