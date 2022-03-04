@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 type EditComponentType =
   | 'EntityEditText'
   | 'EntityEditImage'

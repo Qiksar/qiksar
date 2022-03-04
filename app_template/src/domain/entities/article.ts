@@ -71,5 +71,6 @@ const article: IEntityDefinition = {
       ],
     },
   ],
+  joins: ['article_tags'],
 };
 export default article;

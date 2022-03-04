@@ -15,4 +15,5 @@ export default interface IEntityDefinition {
   icon: string;
   fields: (IFieldDefinition | IUseEnumDefinition | IImportDefinition)[];
   transformations?: ITransformDefinition[];
+  joins?: string[];
 }
