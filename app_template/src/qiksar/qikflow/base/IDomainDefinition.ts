@@ -8,7 +8,9 @@ import IManyToManyJoin from './IManyToManyJoin';
  * @interface
  */
 export default interface IDomainDefinition {
-  enums: IEnumDefinition[];
-  entities: IEntityDefinition[];
-  joins: IManyToManyJoin[];
+  get enums(): IEnumDefinition[];
+  get entities(): IEntityDefinition[];
+  get joins(): IManyToManyJoin[];
+
+  GetJoin(name: string): IManyToManyJoin;
 }

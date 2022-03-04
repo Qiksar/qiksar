@@ -14,7 +14,7 @@ export default interface IFieldDefinition {
   column: string;
   type?: fieldType;
   options?: fieldOptions[];
-  editor: EditComponentType;
+  editor?: EditComponentType;
   helpText?: string;
   autofocus?: boolean;
   clearable?: boolean;

@@ -8,6 +8,7 @@ import IFieldDefinition from './IFieldDefinition';
 import IImportFieldDefinition from './IImportFieldDefinition';
 import ITransformDefinition from './ITransformDefinition';
 import IUseEnumDefinition from './IUseEnumDefinition';
+import IManyToManyJoin from 'src/qiksar/qikflow/base/IManyToManyJoin';
 import Query, { defaultFetchMode } from './Query';
 import EntityField from './EntityField';
 
@@ -25,6 +26,12 @@ export default class EntityDefinition {
   private _is_enum: boolean;
   private _includes: IImportDefinition[];
   private _transformers: Record<string, GqlRecord>;
+  private _joins: IManyToManyJoin[];
+  private _is_join = false;
+
+  get IsJoin() {
+    return this._is_join;
+  }
 
   //#endregion
 
@@ -40,6 +47,126 @@ export default class EntityDefinition {
    */
   static get Entities(): Array<EntityDefinition> {
     return this._entities;
+  }
+
+  /**
+   * Resolve references between schema
+   */
+  static ResolveReferences(): void {
+    this._entities.map((s) => s.ResolveConnections());
+  }
+
+  /**
+   * Get the schema for a specified entity
+   * @param entityName Name of the entity
+   * @returns The schema, or null if the schema does not exist
+   */
+  static GetSchemaForEntity(entityName: string): EntityDefinition | null {
+    entityName = entityName.toLowerCase();
+
+    const schemas = this._entities.filter(
+      (s: EntityDefinition) => s.EntityName === entityName
+    );
+
+    return schemas.length > 0 ? schemas[0] : null;
+  }
+
+  /**
+   * Create a schema
+   *
+   * @param definition Create an entity
+   * @param domain Definition of the domain, provides access to joins
+   * @returns Entity
+   */
+  static Create(
+    definition: IEntityDefinition,
+    isJoin: boolean
+  ): EntityDefinition {
+    const entityName = definition.name.toLowerCase();
+
+    if (EntityDefinition.GetSchemaForEntity(entityName))
+      throw `ERROR: Schema has already been registered for entity type${entityName}`;
+
+    const entity: EntityDefinition = new EntityDefinition(
+      entityName,
+      definition.key,
+      definition.icon,
+      definition.label ?? entityName,
+      false,
+      isJoin
+    );
+
+    entity.SetKey(definition.key);
+
+    definition.fields.map(
+      (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
+        // Check if the definition is a field or use of an enum
+        if ((f as IUseEnumDefinition)['entity']) {
+          entity.UseEnum(f as IUseEnumDefinition);
+        } else if ((f as IImportDefinition)['import']) {
+          entity.Fetch(f as IImportDefinition);
+        } else {
+          entity.AddField(f as IFieldDefinition);
+        }
+      }
+    );
+
+    definition.transformations?.map((t) => entity.CreateTransform(t));
+
+    this._entities.push(entity);
+
+    return entity;
+  }
+
+  /**
+   * Create a schema for an enumeration
+   *
+   * @param entityName Name of the entity type
+   * @param label Default label
+   * @returns Schema
+   */
+  static CreateEnum(definition: IEnumDefinition): EntityDefinition {
+    const key = 'id';
+    const entityName = definition.name.toLowerCase();
+
+    if (EntityDefinition.GetSchemaForEntity(entityName))
+      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
+
+    const entity: EntityDefinition = new EntityDefinition(
+      entityName,
+      key,
+      definition.icon,
+      definition.label ?? entityName,
+      true,
+      false
+    );
+
+    this._entities.push(entity);
+
+    return entity
+      .SetKey(key, ['sortable'])
+      .AddField({
+        name: 'name',
+        column: 'name',
+        label: 'Label',
+        editor: 'EntityEditText',
+        options: onGrid,
+      })
+      .AddField({
+        name: 'comment',
+        column: 'comment',
+        label: 'Description',
+        editor: 'EntityEditText',
+        options: onGrid,
+      })
+      .CreateTransform({
+        name: 'selector',
+        transform: {
+          id: 'id',
+          label: 'name',
+          comment: 'comment',
+        },
+      });
   }
 
   //#endregion
@@ -121,6 +248,7 @@ export default class EntityDefinition {
    *
    * @param entityName Unique name for the schema
    * @param keyField Name of the field which is the unique database ID
+   * @param icon Graphic symbol to represent data type
    * @param label Default label
    * @param isEnum Indicates if the table is an enumeration type, which enables it to be quickly used for dropdown selections
    */
@@ -129,7 +257,8 @@ export default class EntityDefinition {
     keyField: string,
     icon: string,
     label: string,
-    isEnum = false
+    isEnum:boolean,
+    isJoin:boolean
   ) {
     this._entityType = entityName.toLowerCase();
     this._key = keyField;
@@ -138,120 +267,12 @@ export default class EntityDefinition {
     this._fields = new Array<EntityField>();
     this._is_enum = isEnum;
     this._includes = [];
+    this._joins = [];
+    this._is_join = isJoin;
     this._transformers = {};
   }
 
-  /**
-   * Resolve references between schema
-   */
-  static ResolveReferences(): void {
-    this._entities.map((s) => s.ResolveConnections());
-  }
-
-  /**
-   * Get the schema for a specified entity
-   * @param entityName Name of the entity
-   * @returns The schema, or null if the schema does not exist
-   */
-  static GetSchemaForEntity(entityName: string): EntityDefinition | null {
-    entityName = entityName.toLowerCase();
-
-    const schemas = this._entities.filter(
-      (s: EntityDefinition) => s.EntityName === entityName
-    );
-
-    return schemas.length > 0 ? schemas[0] : null;
-  }
-
-  /**
-   * Create a schema
-   *
-   * @param definition Create an entity
-   * @returns Entity
-   */
-  static Create(definition: IEntityDefinition): EntityDefinition {
-    const entityName = definition.name.toLowerCase();
-
-    if (this.GetSchemaForEntity(entityName))
-      throw `ERROR: Schema has already been registered for entity type${entityName}`;
-
-    const entity: EntityDefinition = new EntityDefinition(
-      entityName,
-      definition.key,
-      definition.icon,
-      definition.label ?? entityName
-    );
-
-    entity.SetKey(definition.key);
-
-    definition.fields.map(
-      (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
-        // Check if the definition is a field or use of an enum
-        if ((f as IUseEnumDefinition)['entity']) {
-          entity.UseEnum(f as IUseEnumDefinition);
-        } else if ((f as IImportDefinition)['import']) {
-          entity.Fetch(f as IImportDefinition);
-        } else {
-          entity.AddField(f as IFieldDefinition);
-        }
-      }
-    );
-
-    definition.transformations?.map((t) => entity.CreateTransform(t));
-
-    this._entities.push(entity);
-    return entity;
-  }
-
-  /**
-   * Create a schema for an enumeration
-   *
-   * @param entityName Name of the entity type
-   * @param label Default label
-   * @returns Schema
-   */
-  static CreateEnum(definition: IEnumDefinition): EntityDefinition {
-    const key = 'id';
-    const entityName = definition.name.toLowerCase();
-
-    if (this.GetSchemaForEntity(entityName))
-      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
-
-    const entity: EntityDefinition = new EntityDefinition(
-      entityName,
-      key,
-      definition.icon,
-      definition.label ?? entityName,
-      true
-    );
-
-    this._entities.push(entity);
-
-    return entity
-      .SetKey(key, ['sortable'])
-      .AddField({
-        name: 'name',
-        column: 'name',
-        label: 'Label',
-        editor: 'EntityEditText',
-        options: onGrid,
-      })
-      .AddField({
-        name: 'comment',
-        column: 'comment',
-        label: 'Description',
-        editor: 'EntityEditText',
-        options: onGrid,
-      })
-      .CreateTransform({
-        name: 'selector',
-        transform: {
-          id: 'id',
-          label: 'name',
-          comment: 'comment',
-        },
-      });
-  }
+  //#region Methods
 
   /**
    * Get columns, including from nested entities, to support building of a GraphQL query
@@ -455,6 +476,8 @@ export default class EntityDefinition {
 
       i.import.map((f) => this.Flatten(f));
     });
+
+    //this._joins.map((j) => {});
   }
 
   /**
@@ -501,4 +524,6 @@ export default class EntityDefinition {
 
     return this.AddField(def);
   }
+
+  //#endregion
 }

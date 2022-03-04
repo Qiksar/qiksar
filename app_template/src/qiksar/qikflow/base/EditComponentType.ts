@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 type EditComponentType =
   | 'EntityEditText'

@@ -31,8 +31,46 @@ export default function InitialiseDomain(
   });
 
   // Process all of the more complex entities
-  domain.entities.map((e) => {
-    Query.CreateQuery(EntityDefinition.Create(e), true);
+  domain.entities.map((entityDefinition) => {
+    Query.CreateQuery(EntityDefinition.Create(entityDefinition, false), true);
+
+    if (entityDefinition.joins) {
+      entityDefinition.joins.map((name) => {
+        // If the join entity has not already been created
+        const schema = EntityDefinition.GetSchemaForEntity(name);
+
+        if (schema === null) {
+          const join = domain.GetJoin(name);
+
+          if (!join) {
+            console.log('WHOOOOOOOOOOOOOOOOPS');
+            throw `Error: Domain does not have a  definition named: '${name}'`;
+          }
+
+          const joinDefinition = {
+            name: join.table_name,
+            label: join.table_name,
+            icon: 'none',
+            key: join.table_name + '_id',
+            fields: [
+              {
+                name: join.master_entity,
+                label: join.master_entity,
+                column: join.master_entity + '_id',
+              },
+              {
+                name: join.secondary_entity,
+                label: join.secondary_entity,
+                column: join.secondary_entity + '_id',
+              },
+            ],
+          };
+
+          const joinEntity = EntityDefinition.Create(joinDefinition, true);
+          Query.CreateQuery(joinEntity, false);
+        }
+      });
+    }
   });
 
   // Connect schema that reference each other, e.g. members->groups   groups->leaders

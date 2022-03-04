@@ -4,7 +4,9 @@ import EntityDefinition from 'src/qiksar/qikflow/base/EntityDefinition';
 export default function BuildEntityNavLinks(): IEntityLink[] {
   const links: IEntityLink[] = [];
 
-  EntityDefinition.Entities.map((s: EntityDefinition) => {
+  EntityDefinition.Entities.filter((e) => {
+    return !e.IsJoin;
+  }).map((s: EntityDefinition) => {
     links.push({
       title: s.Label,
       caption: `View ${s.Label}`,

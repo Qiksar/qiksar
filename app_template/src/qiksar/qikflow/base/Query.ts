@@ -198,7 +198,11 @@ export default class Query {
 
   //#region constructor
 
-  constructor(entity: EntityDefinition, fetch_mode: fetchMode, auto_fetch = true) {
+  constructor(
+    entity: EntityDefinition,
+    fetch_mode: fetchMode,
+    auto_fetch = true
+  ) {
     this._entity = entity;
     this._fetch_mode = fetch_mode;
     this._auto_fetch = auto_fetch;
@@ -215,7 +219,7 @@ export default class Query {
    */
   static CreateQuery(
     schema: EntityDefinition,
-    autoFetch = false,
+    autoFetch: boolean,
     sort_by: string | undefined = undefined,
     asc = true,
     limit: number | undefined = undefined

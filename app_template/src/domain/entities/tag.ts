@@ -1,6 +1,5 @@
 import { onGrid } from 'src/qiksar/qikflow/base/fieldOptions';
 import IEntityDefinition from 'src/qiksar/qikflow/base/IEntityDefinition';
-import IEnumDefinition from 'src/qiksar/qikflow/base/IEnumDefinition';
 
 const tag: IEntityDefinition = {
   name: 'tags',

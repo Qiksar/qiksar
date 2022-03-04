@@ -48,8 +48,12 @@ function getRoutesForEntity(
 export default function BuildEntityRoutes(): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = [];
 
-  EntityDefinition.Entities.map((s: EntityDefinition) => {
-    getRoutesForEntity(s.EntityName, 'tenant_admin').map((r) => routes.push(r));
+  EntityDefinition.Entities.filter((e) => {
+    return !e.IsJoin;
+  }).map((entity: EntityDefinition) => {
+    getRoutesForEntity(entity.EntityName, 'tenant_admin').map((r) =>
+      routes.push(r)
+    );
   });
 
   return routes;
