@@ -27,10 +27,11 @@ import EntityField from '../base/EntityField';
 import { GqlRecord, GqlRecords } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
+import FormContext from '../forms/FormContext';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
 
@@ -65,7 +66,7 @@ onBeforeMount(async () => {
   const store = CreateStore(props.field.ObjectSchema);
   await store.FetchAll().then(() => {
     const fieldName = props.field?.AffectedFieldName ?? '';
-    const fieldValue = props.entity[fieldName];
+    const fieldValue = props.formContext.Root.CurrentRecord[fieldName] as string;
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
     options.value = store.TransformRows('selector');

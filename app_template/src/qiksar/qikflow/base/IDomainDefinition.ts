@@ -1,6 +1,6 @@
 import IEnumDefinition from './IEnumDefinition';
 import IEntityDefinition from './IEntityDefinition';
-import IManyToManyJoin from './IManyToManyJoin';
+import IJoinDefinition from './IJoinDefinition';
 
 /**
  * Define a schema comprising enum types and more complex entity types
@@ -10,7 +10,7 @@ import IManyToManyJoin from './IManyToManyJoin';
 export default interface IDomainDefinition {
   get enums(): IEnumDefinition[];
   get entities(): IEntityDefinition[];
-  get joins(): IManyToManyJoin[];
+  get joins(): IJoinDefinition[];
 
-  GetJoin(name: string): IManyToManyJoin;
+  GetJoin(name: string): IJoinDefinition;
 }

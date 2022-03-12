@@ -8,9 +8,9 @@ import IFieldDefinition from './IFieldDefinition';
 import IImportFieldDefinition from './IImportFieldDefinition';
 import ITransformDefinition from './ITransformDefinition';
 import IUseEnumDefinition from './IUseEnumDefinition';
-import IManyToManyJoin from 'src/qiksar/qikflow/base/IManyToManyJoin';
 import Query, { defaultFetchMode } from './Query';
 import EntityField from './EntityField';
+import IJoinUsage from './IJoinUsage';
 
 /**
  * Describes the structure of a GraphQL object, including its fields, field types and relationships to other GraphQL objects.
@@ -26,7 +26,6 @@ export default class EntityDefinition {
   private _is_enum: boolean;
   private _includes: IImportDefinition[];
   private _transformers: Record<string, GqlRecord>;
-  private _joins: IManyToManyJoin[];
   private _is_join = false;
 
   get IsJoin() {
@@ -72,11 +71,11 @@ export default class EntityDefinition {
   }
 
   /**
-   * Create a schema
+   * Create an EntityDefinition which is an object schema
    *
-   * @param definition Create an entity
+   * @param definition Description of the entity schema
    * @param domain Definition of the domain, provides access to joins
-   * @returns Entity
+   * @returns EntityDefinition
    */
   static Create(
     definition: IEntityDefinition,
@@ -99,12 +98,20 @@ export default class EntityDefinition {
     entity.SetKey(definition.key);
 
     definition.fields.map(
-      (f: IFieldDefinition | IUseEnumDefinition | IImportDefinition) => {
+      (
+        f:
+          | IFieldDefinition
+          | IUseEnumDefinition
+          | IImportDefinition
+          | IJoinUsage
+      ) => {
         // Check if the definition is a field or use of an enum
         if ((f as IUseEnumDefinition)['entity']) {
           entity.UseEnum(f as IUseEnumDefinition);
         } else if ((f as IImportDefinition)['import']) {
           entity.Fetch(f as IImportDefinition);
+        } else if ((f as IJoinUsage)['join_table']) {
+          entity.AddField(f as IJoinUsage);
         } else {
           entity.AddField(f as IFieldDefinition);
         }
@@ -257,8 +264,8 @@ export default class EntityDefinition {
     keyField: string,
     icon: string,
     label: string,
-    isEnum:boolean,
-    isJoin:boolean
+    isEnum: boolean,
+    isJoin: boolean
   ) {
     this._entityType = entityName.toLowerCase();
     this._key = keyField;
@@ -267,7 +274,6 @@ export default class EntityDefinition {
     this._fields = new Array<EntityField>();
     this._is_enum = isEnum;
     this._includes = [];
-    this._joins = [];
     this._is_join = isJoin;
     this._transformers = {};
   }
@@ -283,7 +289,9 @@ export default class EntityDefinition {
    */
   Columns(fetch_mode: fetchMode, entityStack: string[]): string {
     let columns = '';
-    let fields = this.Fields;
+    
+    // don't process fields which represent many to many joins 
+    let fields = this.Fields.filter(f => !f.IsJoin);
 
     switch (fetch_mode) {
       case 'grid':
@@ -347,13 +355,14 @@ export default class EntityDefinition {
     const refSchema = EntityDefinition.GetSchemaForEntity(field.ObjectSchema);
 
     if (!refSchema)
-      throw `!!!! FATAL ERROR: Entity ${this.EntityName} references unknown schema ${field.ObjectName}`;
+      throw `Error: Entity '${this.EntityName}' references unknown entity '${field.ObjectName}'`;
 
     // when a referenced object is required the object's key is required in addition to the object
     // and it's nominated fields. e.g. role_id role {name comment}
     // role_id can then be edited in the UI and updated
     const related_object_key = field.KeyColumnName ?? '';
     // fetch only the nominated columns, or if none are nominated, fetch all
+
     if (field.ObjectColumns)
       field_definition = `${related_object_key} ${field.ObjectName} { ${field.ObjectColumns} }`;
     else
@@ -373,7 +382,7 @@ export default class EntityDefinition {
    * @param fieldDefinition Field definition
    * @returns The schema for fluent API style calls
    */
-  AddField(fieldDefinition: IFieldDefinition): EntityDefinition {
+  AddField(fieldDefinition: IFieldDefinition | IJoinUsage): EntityDefinition {
     this._fields.push(new EntityField(fieldDefinition));
 
     return this;
@@ -476,8 +485,6 @@ export default class EntityDefinition {
 
       i.import.map((f) => this.Flatten(f));
     });
-
-    //this._joins.map((j) => {});
   }
 
   /**

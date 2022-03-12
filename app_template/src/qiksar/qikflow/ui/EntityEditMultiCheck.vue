@@ -3,7 +3,7 @@
     <div class="col">
       <label>
         <b>{{ props.field.Label }}</b>
-        <p>Build a multiselect list</p>
+        <p>Build a multiselect checkbox list</p>
       </label>
     </div>
   </div>
@@ -16,18 +16,16 @@ import EntityField from '../base/EntityField';
 import { GqlRecord, GqlRecords } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
 import { ref, onBeforeMount } from 'vue';
+import FormContext from '../forms/FormContext';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
 
-if (!props.field.IsRelation)
-  throw `Field ${props.field.Label} can not be used a data source for selectors, field type must = 'obj'`;
-
-if (!props.field.ObjectSchema)
-  throw `Field ${props.field.Label} does not reference a schema so can not be used as a data source for selectors`;
+if (!props.field.IsJoin)
+  throw `Error: Field ${props.field.Label} must have IsJoin= true`;
 
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,7 +42,7 @@ onBeforeMount(async () => {
   const store = CreateStore(props.field.ObjectSchema);
   await store.FetchAll().then(() => {
     const fieldName = props.field?.AffectedFieldName ?? '';
-    const fieldValue = props.entity[fieldName];
+    const fieldValue = props.formContext.Root.CurrentRecord[fieldName];
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
     selection_records.value = store.TransformRows('selector');

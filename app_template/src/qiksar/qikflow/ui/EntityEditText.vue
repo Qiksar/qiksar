@@ -7,7 +7,7 @@
         :rules="props.field.ValidationRules"
         :label="props.field.Label"
         :placeholder="props.field.Placeholder"
-        :model-value="props.entity[props.field.Name] as string"
+        :model-value="props.formContext.Root.CurrentRecord[props.field.Name] as string"
         :autofocus="props.field.Autofocus"
         :clearable="props.field.Clearable"
         :hint="props.field.Help"
@@ -20,11 +20,11 @@
 
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/GqlTypes';
+import FormContext from '../forms/FormContext';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
 
@@ -32,7 +32,8 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string): void;
 }>();
 
-function onUpdate(value: string) {
-  emit('update:modelValue', value);
+function onUpdate(value: string | number | null) {
+  if (value)
+    emit('update:modelValue', value.toString());
 }
 </script>

@@ -19,12 +19,12 @@
 </template>
 
 <script lang="ts">
-import { AuthWrapper } from 'src/boot/qiksar';
+import Qiksar from 'src/qiksar/qiksar';
 
 export default {
   name: 'PageLoggedOut',
   beforeCreate() {
-    void AuthWrapper.Logout();
+    void Qiksar.AuthWrapper.Logout();
   },
   setup() {
     return {};

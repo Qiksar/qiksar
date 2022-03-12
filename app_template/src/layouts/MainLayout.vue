@@ -14,16 +14,16 @@
         <q-toolbar-title>QIKSAR DEMO APP</q-toolbar-title>
 
         <q-btn-dropdown
-          v-if="AuthWrapper?.IsAuthenticated()"
+          v-if="Qiksar.AuthWrapper?.IsAuthenticated()"
           color="primary"
           icon="account_circle"
-          :label="AuthWrapper?.User.username ?? ''"
+          :label="Qiksar.AuthWrapper?.User.username ?? ''"
         >
           <q-list>
             <q-item>
               <q-item-section>
                 <q-item-label
-                  >Locale: {{ AuthWrapper.User.locale }}</q-item-label
+                  >Locale: {{ Qiksar.AuthWrapper.User.locale }}</q-item-label
                 >
               </q-item-section>
             </q-item>
@@ -73,7 +73,7 @@
 import EssentialLink from 'components/EssentialLink.vue';
 import { defineComponent, ref } from 'vue';
 import BuildEntityNavLinks from 'src/qiksar/qikflow/router/BuildEntityNavLinks';
-import { AuthWrapper } from 'src/boot/qiksar';
+import Qiksar from 'src/qiksar/qiksar';
 
 const linksList = [
   {
@@ -107,17 +107,17 @@ export default defineComponent({
         // console.log('Clicked on an Item')
       },
       onLogInClick() {
-        AuthWrapper.Login('/');
+        Qiksar.AuthWrapper.Login('/');
       },
       onLogoutClick() {
-        AuthWrapper.Logout();
+        Qiksar.AuthWrapper.Logout();
       },
       essentialLinks: linksList,
       leftDrawerOpen,
       toggleLeftDrawer() {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
-      AuthWrapper,
+      Qiksar,
     };
   },
 });

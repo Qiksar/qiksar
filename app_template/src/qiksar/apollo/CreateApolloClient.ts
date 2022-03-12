@@ -12,7 +12,7 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { setContext } from '@apollo/client/link/context';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-import { AuthWrapper } from 'src/boot/qiksar';
+import Qiksar from 'src/qiksar/qiksar';
 import QiksarAuthWrapper from 'src/qiksar/auth/QiksarAuthWrapper';
 import Query from 'src/qiksar/qikflow/base/Query';
 
@@ -53,7 +53,7 @@ export default function CreateApolloClient(
     reconnectionAttempts: 3,
     timeout: 30000,
     connectionParams: () => {
-      const accessToken = AuthWrapper.GetAuthToken();
+      const accessToken = Qiksar.AuthWrapper.GetAuthToken();
       return accessToken ? { bearer: accessToken } : {};
     },
   });

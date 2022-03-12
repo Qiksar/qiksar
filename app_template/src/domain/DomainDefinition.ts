@@ -1,4 +1,4 @@
-import IManyToManyJoin from 'src/qiksar/qikflow/base/IManyToManyJoin';
+import IJoinDefinition from 'src/qiksar/qikflow/base/IJoinDefinition';
 import IDomainDefinition from 'src/qiksar/qikflow/base/IDomainDefinition';
 import article from './entities/article';
 import group from './entities/group';
@@ -15,11 +15,11 @@ import IEntityDefinition from 'src/qiksar/qikflow/base/IEntityDefinition';
 
 /**
  * Define the application data domain
- * 
+ *
  * Enums:     Simple data types with a label and description
  * Entities:  Complex data types
  * Joins:     Many to many relationships between Entities
- * 
+ *
  */
 class domainDefinition implements IDomainDefinition {
   public get enums(): IEnumDefinition[] {
@@ -30,20 +30,20 @@ class domainDefinition implements IDomainDefinition {
     return [article, tag, member, group];
   }
 
-  public get joins(): IManyToManyJoin[] {
+  public get joins(): IJoinDefinition[] {
     return joins;
   }
 
   /**
    * Fetch a many to many join definition by name
-   * 
+   *
    * @param name name of the join to fetch
-   * @returns 
+   * @returns
    */
-  GetJoin(name: string): IManyToManyJoin {
+  GetJoin(name: string): IJoinDefinition {
     name = name.toLowerCase().trim();
 
-    const joins = this.joins.filter((j) => name === j.table_name);
+    const joins = this.joins.filter((j) => name === j.source);
 
     if (joins && joins.length > 0) {
       return joins[0];

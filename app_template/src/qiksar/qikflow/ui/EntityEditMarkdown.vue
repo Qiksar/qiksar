@@ -51,11 +51,7 @@
               @click="toggleFullscreen"
             />
           </div>
-          <q-markdown
-            :plugins="markdownPlugins"
-            :src="decodeBlock()"
-            class="overflow-auto"
-          />
+          <q-markdown :plugins="markdownPlugins" :src="decodeBlock()" class="overflow-auto" />
         </div>
       </template>
     </q-splitter>
@@ -64,9 +60,11 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
+// TODO - Should we use this bversion: https://www.npmjs.com/package/@wekanteam/markdown-it-mermaid
+// because is seems to be more up to date
 import markdownItMermaid from '@datatraccorporation/markdown-it-mermaid';
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/GqlTypes';
+import FormContext from '../forms/FormContext';
 
 type TMarkdownBlock = {
   label: string;
@@ -79,8 +77,8 @@ interface IProxy {
 }
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
 
@@ -119,7 +117,8 @@ const emit = defineEmits<{
 }>();
 
 function decodeBlock(): string {
-  let text: string = (props.entity[props.field.Name] ?? '') as string;
+  let text: string = (props.formContext.Root.CurrentRecord[props.field.Name] ??
+    '') as string;
 
   text = text.replace(/\{\%0A\}/g, '\n');
   text = text.replace(/\{\%0D\}/g, '\r');
@@ -130,8 +129,8 @@ function decodeBlock(): string {
   return text;
 }
 
-function onUpdate(value: string) {
-  if (!value) return;
+function onUpdate(value: string | number | null) {
+  if (!value || typeof value === 'number') return;
 
   let save = value.replace(/\'/g, '{%SQ}');
   save = save.replace(/\"/g, '{%DQ}');
@@ -177,8 +176,10 @@ function insertBlock(block: string) {
 function toggleFullscreen() {
   if (fullscreen.value) {
     setTimeout(() => {
-      const refProxy = qMarkdownInput.value as HTMLElement;
-      refProxy.scrollIntoView();
+      if (qMarkdownInput.value) {
+        const refProxy = qMarkdownInput.value as HTMLElement;
+        refProxy.scrollIntoView();
+      }
     }, 100);
   }
 

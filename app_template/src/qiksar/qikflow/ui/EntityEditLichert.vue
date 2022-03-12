@@ -19,12 +19,12 @@
 
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/GqlTypes';
 import { computed } from 'vue';
+import FormContext from '../forms/FormContext';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
 
@@ -34,7 +34,11 @@ const emit = defineEmits<{
 
 const radio_value = computed({
   get() {
-    return (props.entity[props.field.Name] as number)?.toString() ?? '';
+    return (
+      (
+        props.formContext.Root.CurrentRecord[props.field.Name] as number
+      )?.toString() ?? ''
+    );
   },
   set(newValue: string) {
     emit('update:modelValue', parseInt(newValue, 10));

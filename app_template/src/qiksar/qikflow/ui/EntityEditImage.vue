@@ -3,11 +3,9 @@
 <template>
   <div class="row q-mt-lg q-mb-lg">
     <div class="column">
-      <label>
-        {{ props.field.Label }}
-      </label>
+      <label>{{ props.field.Label }}</label>
       <q-img
-        :src="(props.entity[props.field.Name] as string)"
+        :src="(props.formContext.Root.CurrentRecord[props.field.Name] as string)"
         class="q-mt-lg q-mb-lg"
         style="height: 140px; max-width: 150px"
       />
@@ -26,7 +24,7 @@
         </template>
       </q-file>
       <q-input
-        :model-value="(props.entity[props.field.Name] as string)"
+        :model-value="(props.formContext.Root.CurrentRecord[props.field.Name] as string)"
         @update:modelValue="onUpdate($event)"
         class="hidden"
       />
@@ -38,29 +36,31 @@
 import { ref } from 'vue';
 import Compressor from 'compressorjs';
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/GqlTypes';
+import FormContext from '../forms/FormContext';
 
 const IMAGE_QUALITY = 0.6;
 const defaultPreview = 'https://via.placeholder.com/300x300';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly?: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
+  (e: 'update:modelValue', value: string | number): void;
 }>();
+
+const preview = props.formContext.Root.CurrentRecord[props.field.Name] as string || defaultPreview;
 
 const state = ref({
   imageFile: null,
-  imagePreview: props.entity[props.field.Name] || defaultPreview,
-  originalPreview: props.entity[props.field.Name] || defaultPreview,
+  imagePreview: preview,
+  originalPreview: preview,
 });
 
-function onUpdate(value: string) {
-  if (!value) return;
+function onUpdate(value: string | number | null) {
+  if (value === null) return;
 
   emit('update:modelValue', value);
 }
@@ -72,7 +72,7 @@ function onChange() {
 
   const on_read_complete = (event: ProgressEvent) => {
     const target = event.target as FileReader;
-    state.value.imagePreview = target.result;
+    state.value.imagePreview = target.result ? target.result as string : '';
 
     // Call update model value
     emit('update:modelValue', target.result as string);
@@ -105,6 +105,6 @@ function onRemove() {
       ? state.value.originalPreview
       : '';
 
-  emit('update:modelValue', value as string);
+  emit('update:modelValue', value);
 }
 </script>

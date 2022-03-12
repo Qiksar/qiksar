@@ -6,7 +6,7 @@
     <div class="col">
       <label>
         <b>{{ props.field.Label }}</b>
-        <p>Build a multitag selector</p>
+        <p>Build a multi-tag selector</p>
       </label>
     </div>
   </div>
@@ -14,54 +14,43 @@
 
 <script lang="ts" setup>
 import EntityField from '../base/EntityField';
-import { GqlRecord, GqlRecords } from '../base/GqlTypes';
+import { GqlRecord } from '../base/GqlTypes';
 import { CreateStore } from '../store/GenericStore';
-import { ref, onBeforeMount } from 'vue';
+import { onBeforeMount } from 'vue';
+import FormContext from '../forms/FormContext';
+import IJoinUsage from '../base/IJoinUsage';
 
 const props = defineProps<{
+  formContext: FormContext;
   field: EntityField;
-  entity: GqlRecord;
   readonly: boolean;
 }>();
-
-if (!props.field.IsRelation)
-  throw `Field ${props.field.Label} can not be used a data source for selectors, field type must = 'obj'`;
-
-if (!props.field.ObjectSchema)
-  throw `Field ${props.field.Label} does not reference a schema so can not be used as a data source for selectors`;
 
 const emit = defineEmits<{
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (e: 'update:modelValue', value: string): void;
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-let selectedObject = ref({});
-let options = ref([] as GqlRecords);
+if (!props.field.IsJoin)
+  throw `Error: Field ${props.field.Label} must have IsJoin= true`;
+
 
 onBeforeMount(async () => {
-  if (!props.field?.ObjectSchema) return;
 
-  const store = CreateStore(props.field.ObjectSchema);
-  await store.FetchAll().then(() => {
-    const fieldName = props.field?.AffectedFieldName ?? '';
-    const fieldValue = props.entity[fieldName];
+  const parent_id = props.formContext.Root.CurrentRecordId;
+  const join = (props.field.FieldDefinition as unknown) as IJoinUsage;
+  const store = CreateStore(join.join_table);
+  console.log('Parent ID: ', parent_id)
 
-    // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
-    options.value = store.TransformRows('selector');
-    selectedObject.value = options.value.filter(
-      (f: GqlRecord) => f['id'] == fieldValue
-    )[0];
+  const where_clause = `article_id: {_eq: "${parent_id}"}`;
+  // TODO have to serialise JSON without keynames being quoted. Can we just use gql ``?
+  //const where_clause = { article_id: { _eq: parent_id } };
 
-    //console.log(`${props.field.Name} has ${store.Rows.length} selections,  current = ${fieldValue}`);
-  });
+  const rows = await store.FetchWhere(where_clause);
+
+  // Here are all the tags connected to the current article
+  console.log('Here are all child records connected to the parent record');
+  rows.map((r: GqlRecord) => console.log(JSON.stringify(r)))
 });
 
-function selectionChanged(value: GqlRecord) {
-  if (!value) return;
-
-  selectedObject.value = value;
-  const key = value['id'] as string;
-  emit('update:modelValue', key);
-}
 </script>

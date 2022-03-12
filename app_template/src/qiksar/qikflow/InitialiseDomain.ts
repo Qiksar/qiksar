@@ -43,25 +43,24 @@ export default function InitialiseDomain(
           const join = domain.GetJoin(name);
 
           if (!join) {
-            console.log('WHOOOOOOOOOOOOOOOOPS');
             throw `Error: Domain does not have a  definition named: '${name}'`;
           }
 
           const joinDefinition = {
-            name: join.table_name,
-            label: join.table_name,
+            name: join.source,
+            label: join.source,
             icon: 'none',
-            key: join.table_name + '_id',
+            key: 'row_id',
             fields: [
               {
                 name: join.master_entity,
                 label: join.master_entity,
-                column: join.master_entity + '_id',
+                column: join.master_key,
               },
               {
                 name: join.secondary_entity,
                 label: join.secondary_entity,
-                column: join.secondary_entity + '_id',
+                column: join.secondary_key,
               },
             ],
           };

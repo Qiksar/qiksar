@@ -70,7 +70,11 @@ const article: IEntityDefinition = {
         },
       ],
     },
+    {
+      join_table: 'article_tags',
+      label: 'Tags',
+      editor: 'EntityEditTags',
+    },
   ],
-  joins: ['article_tags'],
 };
 export default article;

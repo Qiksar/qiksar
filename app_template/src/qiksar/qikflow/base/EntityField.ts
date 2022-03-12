@@ -8,32 +8,54 @@ import { t } from 'src/qiksar/Translator/Translator';
 import fieldOptions from './fieldOptions';
 import fieldType from './fieldType';
 import IFieldDefinition from './IFieldDefinition';
+import IJoinUsage from './IJoinUsage';
 
 export default class EntityField {
-  validationRules: any[];
+  _is_join = false;
+  validationRules: any[] = [];
 
-  constructor(private readonly definition: IFieldDefinition) {
+  constructor(private readonly definition: IFieldDefinition | IJoinUsage) {
+    // If the definition relates to the usage of a many to many join...
+    if ((this.definition as IJoinUsage)['join_table']) {
+      this._is_join = true;
+      return;
+    }
+
+    // Otherwise process a normal field definition
     if ('arr obj'.includes(this.Type) && !this.ObjectSchema)
       throw `Invalid field definition ${this.Name} - ${this.Type} must specify a schema`;
 
     this.validationRules = FieldValidatorBuilder.BuildValidators(
       this.Type,
-      definition.validationRules || {}
+      this.FieldDefinition.validationRules || {}
     );
   }
 
+  get FieldDefinition(): IFieldDefinition {
+    return this.definition as IFieldDefinition;
+  }
+
+  get IsJoin(): boolean {
+    return this._is_join;
+  }
+  
+  get JoinName(): string {
+    return (this.definition as IJoinUsage).join_table;
+  }
+
   get Name(): string {
-    return this.definition.column;
+    return this.FieldDefinition.column;
   }
   get Label(): string {
-    return t(this.definition.label);
+    return t(this.FieldDefinition.label);
   }
   get Type(): fieldType {
-    return this.definition.type ?? 'text';
+    return this.FieldDefinition.type ?? 'text';
   }
   get Options(): fieldOptions[] {
-    return this.definition.options ?? defaultFieldOptions;
+    return this.FieldDefinition.options ?? defaultFieldOptions;
   }
+
   get IsOnGrid(): boolean {
     return this.Options.includes('ongrid');
   }
@@ -56,7 +78,7 @@ export default class EntityField {
     return this.Options.includes('locale');
   }
   get IsKey(): boolean {
-    return this.definition.type === 'id';
+    return this.FieldDefinition.type === 'id';
   }
   get IsRelation(): boolean {
     return this.Type === 'arr' || this.Type === 'obj';
@@ -68,31 +90,31 @@ export default class EntityField {
     return this.Options.includes('writeonce');
   }
   get ObjectName(): string | undefined {
-    return this.definition.object_name;
+    return this.FieldDefinition.object_name;
   }
   get KeyColumnName(): string | undefined {
-    return this.definition.key_column_name;
+    return this.FieldDefinition.key_column_name;
   }
   get ObjectColumns(): string | undefined {
-    return this.definition.object_columns;
+    return this.FieldDefinition.object_columns;
   }
   get ObjectSchema(): string | undefined {
-    return this.definition.object_schema;
+    return this.FieldDefinition.object_schema;
   }
   get Editor(): string {
-    return this.definition.editor ?? 'EntityEditText';
+    return this.FieldDefinition.editor ?? 'EntityEditText';
   }
   get Autofocus(): boolean {
-    return (this.definition.autofocus as boolean) ?? false;
+    return (this.FieldDefinition.autofocus as boolean) ?? false;
   }
   get Clearable(): boolean {
-    return (this.definition.clearable as boolean) ?? true;
+    return (this.FieldDefinition.clearable as boolean) ?? true;
   }
   get Help(): string {
-    return t((this.definition.helpText as string) ?? '');
+    return t((this.FieldDefinition.helpText as string) ?? '');
   }
   get Placeholder(): string {
-    return t((this.definition.placeholder as string) ?? '');
+    return t((this.FieldDefinition['placeholder'] as string) ?? '');
   }
 
   get ValidationRules(): any[] {

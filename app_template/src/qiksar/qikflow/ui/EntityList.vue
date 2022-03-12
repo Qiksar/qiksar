@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 <template>
   <q-page>
     <div class="row">
@@ -25,9 +24,10 @@
 
 <script lang="ts" setup>
 import { onBeforeMount } from 'vue';
+import Qiksar from 'src/qiksar/qiksar';
+
 import { GqlRecord } from 'src/qiksar/qikflow/base/GqlTypes';
 import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
-import { Router } from 'src/router';
 
 const props = defineProps<{
   entity_type: string;
@@ -44,23 +44,18 @@ const onRowClick = (event: any, row: GqlRecord): void => {
   if (event) {
     const key = store.Key;
     const path = `/${props.entity_type}/edit/${row[key] as string}`;
-    void Router.push(path);
+    void Qiksar.Router.push(path);
   }
 };
 
 function FetchRows() {
-  /* TODO move to filters section above grid
-    void entityStore.fetchWhere(`_or: [ {group: {state: {_eq: "WA"}}}, 
-                                      {  group: {state: {_eq: "NSW"}}}]`, 'grid');
-  */
-
   // don't fetch translated data for enum views
   void store.FetchAll(!store.View.IsEnum);
 }
 
 function AddRecord() {
   const path = `/${props.entity_type}/edit/new`;
-  void Router.push(path);
+  void Qiksar.Router.push(path);
 }
 
 /*

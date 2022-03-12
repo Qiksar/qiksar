@@ -1,0 +1,8 @@
+Child entity editor raises notifications to parent with events
+insert, update, delete
+
+Parent builds cache, then parent can commit all the changes to the DB
+
+Build the context to wrap the store and have all persistence logic outside of VUE
+Use TDD 
+

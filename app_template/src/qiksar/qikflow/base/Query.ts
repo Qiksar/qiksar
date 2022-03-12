@@ -34,33 +34,30 @@ export default class Query {
   private _limit: number | undefined;
   private _order_by = '';
   private _asc = true;
-  private _where: string | undefined;
+  private _where: Record<string, any> | string | undefined;
   private _auto_translate = true;
 
-  private static _apollo: ApolloClient<NormalizedCacheObject>;
+  //#endregion
+
+  //#region Apollo Client
+
+  private static apollo: ApolloClient<NormalizedCacheObject>;
 
   /**
    * Global Apollo client used by all queries
    */
   public static set Apollo(client: ApolloClient<NormalizedCacheObject>) {
-    Query._apollo = client;
+    Query.apollo = client;
   }
 
   /**
    * Global Apollo client used by all queries
    */
   public static get Apollo(): ApolloClient<NormalizedCacheObject> {
-    if (!Query._apollo) throw `${typeof Query}: Apollo client not specified`;
+    if (!Query.apollo) throw `${typeof Query}: Apollo client not specified`;
 
-    return Query._apollo;
+    return Query.apollo;
   }
-
-  //#endregion
-
-  //#region static members
-
-  // Static array of all views
-  private static _views: Array<Query> = [];
 
   /**
    * Build type policies that inform the behviour of the cache
@@ -76,6 +73,13 @@ export default class Query {
 
     return tp as TypePolicies;
   }
+
+  //#endregion
+
+  //#region static members
+
+  // Static array of all views
+  private static _views: Array<Query> = [];
 
   /**
    * Return the view for the specified entity
@@ -152,7 +156,12 @@ export default class Query {
     const fields = {} as Record<string, EntityField>;
 
     this.Entity.Fields.filter((f) => {
-      return f.IsRelation || (!f.IsKey && !f.IsAlias && !f.IsReadonly);
+      return (
+        // TODO join fields have to be represented by an edit component that relates multiple child entities to a parent, like tags on a blog post
+        // HAK at the moment we exclude fields where f.IsJoin == true
+        f.IsRelation ||
+        (!f.IsKey && !f.IsAlias && !f.IsReadonly) /*&& !f.IsJoin*/
+      );
     }).map((f) => (fields[f.Name] = f));
 
     return fields;
@@ -247,7 +256,7 @@ export default class Query {
    * @returns
    */
   private BuildQuery(
-    where: string | undefined,
+    where: Record<string, any> | string | undefined,
     fetch_mode: fetchMode = defaultFetchMode,
     sortBy: string | undefined = undefined,
     limit: number | undefined = undefined
@@ -288,9 +297,17 @@ export default class Query {
    * @param where Optional where clause, permits dynamic query building where this clause may or may not be required
    * @returns where clause as a string
    */
-  private BuildWhere(where: string | undefined): string {
-    const where_statement = (where ?? '').trim();
-    return where_statement.length > 0 ? `where: { ${where_statement} }, ` : '';
+  private BuildWhere(where: Record<string, any> | string | undefined): string {
+    if (!where) return '';
+
+    const where_clause =
+      typeof where === 'object'
+        ? `where: ${JSON.stringify(where)}`
+        : `where: { ${where.trim()} },`;
+
+    //console.log(where_clause);
+    
+    return where_clause;
   }
 
   /**
@@ -465,7 +482,7 @@ export default class Query {
     const doc = this.BuildQuery(undefined, undefined, undefined, limit);
 
     const result = await Query.Apollo.query(doc).catch((e: string) => {
-      if (e.indexOf('not found in type'))
+      if (JSON.stringify(e).indexOf('not found in type'))
         throw `FetchAll - Check the permissions metadata related to this error: ${e}`;
       else throw `FetchAll - Exception ${e}`;
     });
@@ -492,7 +509,7 @@ export default class Query {
    * @returns
    */
   async FetchWhere(
-    where: string | undefined,
+    where: Record<string, any> | string | undefined,
     fetch_mode: fetchMode | undefined,
     store: any,
     translate: boolean | undefined,
@@ -566,10 +583,10 @@ export default class Query {
     const record = this.ProcessRow(raw_record, translate);
 
     if (record) {
-      store.CurrentRecord = record;
+      store.SetCurrentRecord(record);
       store.SetLoaded(true);
     } else {
-      store.CurrentRecord = {};
+      store.SetCurrentRecord({});
       store.SetLoaded(false);
     }
 
@@ -696,8 +713,8 @@ export default class Query {
             }`;
 
     const res = await this.ExecuteMutation(doc, 'delete_id', store);
+    store.SetCurrentRecord({});
 
-    store.CurrentRecord = {};
     store.SetBusy(false);
     store.SetLoaded(false);
 
@@ -716,7 +733,8 @@ export default class Query {
 
     const res = await this.ExecuteMutation(doc, 'delete_multi', store);
 
-    store.CurrentRecord = {};
+    store.SetCurrentRecord({});
+
     store.SetBusy(false);
     store.SetLoaded(false);
 

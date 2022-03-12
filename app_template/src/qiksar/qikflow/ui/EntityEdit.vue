@@ -1,39 +1,31 @@
 <template>
-  <div v-if="store.RecordLoaded && !store.Busy">
-    <div class="row" v-for="(field, key) in editableFields()" v-bind:key="key">
+  <div v-if="context.Root.HasRecord && !context.Root.IsBusy">
+    <div v-for="(field, key) in context.EditableFields()" v-bind:key="key" class="row">
       <div class="col">
         <component
           :is="components[field.Editor]"
+          :formContext="context"
           :field="field"
-          :entity="reactive_record"
           :readonly="ReadOnly(field)"
-          @update:modelValue="updateEntity(field, $event)"
+          @update:modelValue="realtimeUpdate(field, $event)"
         />
       </div>
     </div>
   </div>
 
   <div class="row">
-    <q-btn
-      v-if="!currentRecordId()"
-      @click="insertEntity()"
-      class="q-mt-xl"
-      label="Save"
-    />
-    <q-btn
-      v-if="currentRecordId()"
-      @click="deleteEntity()"
-      class="q-mt-xl"
-      label="Delete"
-    />
+    <q-btn v-if="!context.RootRecordId" @click="insertEntity()" class="q-mt-xl" label="Save" />
+    <q-btn v-if="context.RootRecordId" @click="deleteEntity()" class="q-mt-xl" label="Delete" />
     <q-btn to="/" class="q-mt-xl" label="Home" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount, ref, Ref } from 'vue';
-import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
-import { Dictionary, GqlRecord } from '../base/GqlTypes';
+import { ref } from 'vue';
+import { Dictionary } from '../base/GqlTypes';
+
+import EntityField from '../base/EntityField';
+import FormContext from '../forms/FormContext';
 
 import EntityEditImage from './EntityEditImage.vue';
 import EntityEditLichert from './EntityEditLichert.vue';
@@ -43,7 +35,6 @@ import EntityEditTags from './EntityEditTags.vue';
 import EntityEditText from './EntityEditText.vue';
 import EntityEditMarkdown from './EntityEditMarkdown.vue';
 
-import EntityField from '../base/EntityField';
 
 const components = {
   EntityEditImage,
@@ -63,63 +54,41 @@ const props = defineProps<{
   };
 }>();
 
-// eslint-disable-next-line vue/no-setup-props-destructure
-let id: string = props.context.entity_id;
+// Start with an empty record
+const current_record = ref({});
 
 // Indicates if a record is being inserted or updated
 const UpdateMode = ref(false);
 
 function ReadOnly(field: EntityField): boolean {
-  const readonly = (UpdateMode.value && field.IsWriteOnce) || field.IsReadonly;
-  return readonly;
+  return (UpdateMode.value && field.IsWriteOnce) || field.IsReadonly;
 }
 
-// create store for the required view/schema
-const store = CreateStore(props.context.entity_type);
+// Create a context for the form, where the top level entity is the root, and any related entities (through many to many joins) can get line of sight to the parent.
+// This way, tags on a blog article can get the id of the article, and can be filtered according to the article id, from the many to many join (article_tags)
+const context = new FormContext();
+void context.Initialise(props.context.entity_type, props.context.entity_id).then(r => {
+  current_record.value = r;
+})
 
-const reactive_record = ref({} as GqlRecord) as Ref<GqlRecord>;
+//#region CRUD wrappers
 
-function setReactiveRecord(entity: GqlRecord): void {
-  reactive_record.value = entity;
-}
-
-// Fetch the entity to edit
-onBeforeMount(async () => {
-  if (id && id.length > 0 && id != 'new') {
-    await store.FetchById(id, !store.View.IsEnum).then(() => {
-      setReactiveRecord(store.CurrentRecord);
-    });
-  } else {
-    // prepare a new record for insert
-    setReactiveRecord(store.NewRecord);
-  }
-});
-
-// Get a collection of editable fields
-function editableFields(): Record<string, EntityField> {
-  return store.View.EditableFields as Record<string, EntityField>;
-}
-
-// Extract the ID of the current entity in the store
-function currentRecordId(): string | undefined {
-  const id = reactive_record.value[store.Key] as string;
-  return id;
-}
+// These methods help to make the template code cleaner by wrapping access to the form context
 
 async function insertEntity(): Promise<void> {
-  reactive_record.value = await store.Add(reactive_record.value);
+  current_record.value = await context.Add(current_record.value);
   UpdateMode.value = true;
 }
 
-function updateEntity(field: EntityField, value: unknown): void {
-  const original = { ...store.CurrentRecord };
-  store.CurrentRecord[field.AffectedFieldName] = value;
-
-  if (props.context.real_time && currentRecordId())
-    void store.Update(store.CurrentRecord, original);
+async function realtimeUpdate(field: EntityField, value: string | number | undefined): Promise<void> {
+  if (props.context.real_time)
+    current_record.value = await context.Update(field.Name, value);
 }
 
 function deleteEntity() {
-  void store.Delete(reactive_record.value[store.Key] as string);
+  void context.Delete();
 }
+
+//#endregion
+
 </script>

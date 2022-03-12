@@ -3,8 +3,8 @@
 import { RouteRecordRaw } from 'vue-router';
 import InitialiseDomain from '../qiksar/qikflow/InitialiseDomain';
 import CreateApolloClient from 'src/qiksar/apollo/CreateApolloClient';
-import { AuthWrapper } from 'src/boot/qiksar';
 import DomainDefinition from './DomainDefinition';
+import Qiksar from 'src/qiksar/qiksar';
 
 /**
  * A critical function in the app startup process which returns the routes for pages, blended with automatically generated routes for the data view/edit screens.
@@ -13,7 +13,7 @@ import DomainDefinition from './DomainDefinition';
  */
 export default function BuildAppRoutes(): RouteRecordRaw[] {
   // Create the apollo client, then initialise the domain with the schema and get the dynamically created routes
-  const apolloClient = CreateApolloClient(AuthWrapper);
+  const apolloClient = CreateApolloClient(Qiksar.AuthWrapper);
   const dynamicRoutes = InitialiseDomain(DomainDefinition, apolloClient);
 
   // At this point the dynamicRoutes can be further manipulated to add routes from other generators, resort the items into a different order than the default sequence, etc.

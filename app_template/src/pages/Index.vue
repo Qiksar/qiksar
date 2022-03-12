@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { AuthWrapper } from 'src/boot/qiksar';
+import Qiksar from 'src/qiksar/qiksar';
 
 export default defineComponent({
   name: 'PageIndex',
@@ -15,7 +15,7 @@ export default defineComponent({
   setup() {
     return {
       logout: () => {
-        void AuthWrapper.Logout();
+        void Qiksar.AuthWrapper.Logout();
       },
     };
   },

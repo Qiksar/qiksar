@@ -8,17 +8,33 @@
 import { defineStore } from 'pinia';
 import Query, { defaultFetchMode } from 'src/qiksar/qikflow/base/Query';
 import { GqlRecords, GqlRecord } from '../base/GqlTypes';
+import DataRecordState from '../base/DataRecordState';
+
+export interface IQiksarStore {
+  Rows: GqlRecords;
+  CurrentRecord: GqlRecord;
+  CurrentRecordId: string;
+  CurrentRecordState: DataRecordState;
+  IsValid: boolean;
+  TableColumns: [];
+  View: Query;
+  HasRecord: boolean;
+  IsBusy: boolean;
+}
 
 export function CreateStore<Id extends string>(name: Id) {
   const createStore = defineStore(name, {
-    state: () => {
+    state: (): IQiksarStore => {
       return {
         Rows: [] as GqlRecords,
         CurrentRecord: {} as GqlRecord,
-        IsBusy: false,
-        HasRecord: false,
+        CurrentRecordId: '',
+        CurrentRecordState: DataRecordState.None,
+        IsValid: false,
         TableColumns: [],
         View: {} as Query,
+        HasRecord: false,
+        IsBusy: false,
       };
     },
 
@@ -31,10 +47,6 @@ export function CreateStore<Id extends string>(name: Id) {
         return state.IsBusy;
       },
 
-      RecordLoaded: (state) => {
-        return state.HasRecord;
-      },
-
       Pagination: (state) => {
         return {
           sortBy: state.View.OrderBy,
@@ -45,10 +57,13 @@ export function CreateStore<Id extends string>(name: Id) {
       },
 
       NewRecord: (state): GqlRecord => {
-        state.CurrentRecord = {};
+        store.SetCurrentRecord({});
+
+        state.CurrentRecordId = '';
 
         state.IsBusy = false;
         state.HasRecord = true;
+        state.CurrentRecordState = DataRecordState.New;
 
         return state.CurrentRecord;
       },
@@ -56,6 +71,16 @@ export function CreateStore<Id extends string>(name: Id) {
 
     actions: {
       //#region initialise setup
+
+      SetCurrentRecord(record: GqlRecord) {
+        this.CurrentRecord = record;
+        const id = record[this.View.Entity.Key];
+        this.CurrentRecordId = (id as string) ?? '';
+      },
+
+      SetValid(isValid: boolean): void {
+        this.IsValid = isValid;
+      },
 
       SetLoaded(loaded: boolean): void {
         this.HasRecord = loaded;
@@ -114,6 +139,8 @@ export function CreateStore<Id extends string>(name: Id) {
         if (!record)
           throw `${this.View.Entity.EntityName} not found with id '${id}'`;
 
+        this.CurrentRecordState = DataRecordState.Unchanged;
+
         return record;
       },
 
@@ -122,7 +149,7 @@ export function CreateStore<Id extends string>(name: Id) {
       },
 
       async FetchWhere(
-        where: string,
+        where: Record<string, any> | string,
         fm = defaultFetchMode,
         translate = true
       ): Promise<GqlRecords> {
@@ -134,6 +161,8 @@ export function CreateStore<Id extends string>(name: Id) {
       //#region Insert
 
       async Add(record: GqlRecord, fm = defaultFetchMode): Promise<GqlRecord> {
+        this.CurrentRecordState = DataRecordState.Unchanged;
+
         return await this.View.Insert(record, fm, this);
       },
 
@@ -148,7 +177,7 @@ export function CreateStore<Id extends string>(name: Id) {
         const diff = {} as GqlRecord;
 
         // Get the primary key
-        diff[this.Key] = this.CurrentRecord[this.Key] as string;
+        diff[this.Key] = this.CurrentRecordId;
 
         // Get only the fields which have changed value
         Object.keys(current).map((k: string) => {
@@ -158,7 +187,10 @@ export function CreateStore<Id extends string>(name: Id) {
 
         //console.log(JSON.stringify(diff));
 
-        return await this.View.Update(diff, this);
+        const updated_record = await this.View.Update(diff, this);
+        this.CurrentRecordState = DataRecordState.Unchanged;
+
+        return updated_record;
       },
 
       //#endregion
@@ -166,7 +198,12 @@ export function CreateStore<Id extends string>(name: Id) {
       //#region Delete
 
       async Delete(id: string): Promise<GqlRecord> {
-        return await this.View.DeleteById(id, this);
+        if (id.length == 0) throw 'Error: id is not a valid record id';
+
+        const record = await this.View.DeleteById(id, this);
+        this.CurrentRecordState = DataRecordState.None;
+
+        return record;
       },
 
       async DeleteWhere(where: string): Promise<GqlRecord> {
