@@ -137,7 +137,7 @@ export default class EntityDefinition {
     const entityName = definition.name.toLowerCase();
 
     if (EntityDefinition.GetSchemaForEntity(entityName))
-      throw `!!!! FATAL ERROR: Schema has already been registered for entity type${entityName}`;
+      throw `Error: Schema has already been registered for entity type${entityName}`;
 
     const entity: EntityDefinition = new EntityDefinition(
       entityName,

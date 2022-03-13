@@ -1,4 +1,3 @@
-import { GqlRecord } from './GqlTypes';
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
@@ -7,17 +6,18 @@ import { GqlRecord } from './GqlTypes';
 import { ApolloClient, NormalizedCacheObject } from '@apollo/client/core';
 import gql from 'graphql-tag';
 import { TypePolicies } from '@apollo/client/core';
-import { t } from 'src/qiksar/Translator/Translator';
 
 import { fromJSON, toJSON } from 'flatted';
+import JsonTools from './JsonTools';
+import fetchMode from './fetchMode';
+import fieldOptions from './fieldOptions';
 import EntityField from './EntityField';
 import fieldType from './fieldType';
 import EntityDefinition from './EntityDefinition';
-import { GqlRecords } from './GqlTypes';
+import { GqlRecord, GqlRecords } from './GqlTypes';
 import IGridColumn from './IGridColumn';
-import fetchMode from './fetchMode';
-import JsonTools from './JsonTools';
-import fieldOptions from './fieldOptions';
+import IJoinDefinition from './IJoinDefinition';
+import { t } from 'src/qiksar/Translator/Translator';
 
 export const defaultFetchMode: fetchMode = 'heavy';
 
@@ -34,7 +34,7 @@ export default class Query {
   private _limit: number | undefined;
   private _order_by = '';
   private _asc = true;
-  private _where: Record<string, any> | string | undefined;
+  private _where: string | undefined;
   private _auto_translate = true;
 
   //#endregion
@@ -80,6 +80,7 @@ export default class Query {
 
   // Static array of all views
   private static _views: Array<Query> = [];
+  private static _joins: Array<IJoinDefinition> = [];
 
   /**
    * Return the view for the specified entity
@@ -93,9 +94,33 @@ export default class Query {
     );
 
     if (views.length == 0)
-      throw `!!!! FATAL ERROR: Schema for entity type ${entityName} has not been registered`;
+      throw `Error: Schema for entity type ${entityName} has not been registered`;
 
     return views[0];
+  }
+
+  /**
+   * Store reference to join definition for rapid retrieval
+   *
+   * @param joinDefinition join definition
+   */
+  static RegisterJoinDefnition(joinDefinition: IJoinDefinition): void {
+    Query._joins.push(joinDefinition);
+  }
+
+  /**
+   * Retrieve a join definition based on the name of the join table
+   *
+   * @param join_table_name table name
+   * @returns join definition
+   */
+  static GetJoinDefinition(join_table_name: string): IJoinDefinition {
+    const joins = Query._joins.filter((j) => j.source === join_table_name);
+
+    if (joins.length == 0)
+      throw `Error: Join '${join_table_name}' has not been registered`;
+
+    return joins[0];
   }
 
   //#endregion
@@ -306,7 +331,7 @@ export default class Query {
         : `where: { ${where.trim()} },`;
 
     //console.log(where_clause);
-    
+
     return where_clause;
   }
 
@@ -509,7 +534,7 @@ export default class Query {
    * @returns
    */
   async FetchWhere(
-    where: Record<string, any> | string | undefined,
+    where: string | undefined,
     fetch_mode: fetchMode | undefined,
     store: any,
     translate: boolean | undefined,

@@ -6,7 +6,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 
 import EntityField from '../base/EntityField';
-import { GqlRecord } from '../base/GqlTypes';
+import { GqlRecord, GqlRecords } from '../base/GqlTypes';
+import IJoinUsage from '../base/IJoinUsage';
+import Query from '../base/Query';
 import { CreateStore, IQiksarStore } from '../store/GenericStore';
 
 /**
@@ -82,6 +84,33 @@ export default class FormContext {
     } else {
       return store.NewRecord;
     }
+  }
+
+  /**
+   *
+   * @param entityField Once the root record has been acquired, call this method with an entity field
+   * that utilisies a many to many join,
+   *
+   * The matching child records will be automatically acquired and returned.
+   * pseudo code: return article_tags where article_id == id of RootRecord
+   *              article_tags is the many to many join table in the database
+   *              article_tags.article_id matches to the context's RootRecordId
+   *
+   * @returns Child records
+   */
+  public async FetchChildren(entityField: EntityField): Promise<GqlRecords> {
+    if (!this.RootRecordId) throw 'Error: No root record has been acquired';
+
+    // The field tells us which join is being used
+    const joinUsage = entityField.FieldDefinition as unknown as IJoinUsage;
+    
+    // Retrieve the join definition
+    const joinDefinition = Query.GetJoinDefinition(joinUsage.join_table);
+    
+    // Now we can get the key field from the join which matches to the ID of the root record
+    const where_clause = `${joinDefinition.master_key}: {_eq: "${this.RootRecordId}"}`;
+
+    return await CreateStore(joinUsage.join_table).FetchWhere(where_clause);
   }
 
   /**

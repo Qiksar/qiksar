@@ -149,7 +149,7 @@ export function CreateStore<Id extends string>(name: Id) {
       },
 
       async FetchWhere(
-        where: Record<string, any> | string,
+        where: string,
         fm = defaultFetchMode,
         translate = true
       ): Promise<GqlRecords> {

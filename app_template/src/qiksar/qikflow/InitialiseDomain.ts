@@ -46,7 +46,9 @@ export default function InitialiseDomain(
             throw `Error: Domain does not have a  definition named: '${name}'`;
           }
 
-          const joinDefinition = {
+          Query.RegisterJoinDefnition(join);
+
+          const entityFieldDefinition = {
             name: join.source,
             label: join.source,
             icon: 'none',
@@ -65,7 +67,7 @@ export default function InitialiseDomain(
             ],
           };
 
-          const joinEntity = EntityDefinition.Create(joinDefinition, true);
+          const joinEntity = EntityDefinition.Create(entityFieldDefinition, true);
           Query.CreateQuery(joinEntity, false);
         }
       });
