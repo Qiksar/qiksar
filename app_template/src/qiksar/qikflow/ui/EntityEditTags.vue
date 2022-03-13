@@ -28,7 +28,7 @@ const emit = defineEmits<{
 }>();
 
 if (!props.field.IsJoin)
-  throw `Error: Field definition for '${props.field.Label}'' must have IsJoin= true`;
+  throw `Error: Field definition for '${props.field.Label}' must have IsJoin= true`;
 
 // TODO move to mixin?
 const rows = ref({});
