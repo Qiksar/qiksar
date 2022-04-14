@@ -53,6 +53,15 @@ CREATE TABLE
     );
 
 CREATE TABLE
+    membership.charts (
+        chart_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+        name text NOT NULL UNIQUE,
+        chart text NOT NULL,
+        created_at timestamptz DEFAULT now() NOT NULL,
+        updated_at timestamptz
+    );
+
+CREATE TABLE
     membership.members (
         member_id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
         tenant_id VARCHAR NOT NULL REFERENCES membership.tenants,

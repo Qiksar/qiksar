@@ -2,6 +2,7 @@ import IJoinDefinition from 'src/qiksar/qikflow/base/IJoinDefinition';
 import IDomainDefinition from 'src/qiksar/qikflow/base/IDomainDefinition';
 import article from './entities/article';
 import group from './entities/group';
+import chart from './entities/chart';
 import member from './entities/member';
 import tag from './entities/tag';
 import article_status from './enums/article_status';
@@ -27,7 +28,7 @@ class domainDefinition implements IDomainDefinition {
   }
 
   public get entities(): IEntityDefinition[] {
-    return [article, tag, member, group];
+    return [article, tag, member, group, chart];
   }
 
   public get joins(): IJoinDefinition[] {

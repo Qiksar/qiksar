@@ -26,6 +26,8 @@ yarn add --silent @apollo/client apollo@next apollo-link-ws subscriptions-transp
 yarn add --silent compressorjs 
 yarn add --silent @datatraccorporation/markdown-it-mermaid
 yarn add --silent apexcharts vue3-apexcharts 
+yarn add --silent @braks/vue-flow
+
 echo
 echo
 

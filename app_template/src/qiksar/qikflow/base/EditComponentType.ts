@@ -8,5 +8,6 @@ type EditComponentType =
   | 'EntityEditMarkdown'
   | 'EntityEditSelect'
   | 'EntityEditLichert'
-  | 'EntityEditTags';
+  | 'EntityEditTags'
+  | 'EditFlowchart';
 export default EditComponentType;

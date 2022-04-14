@@ -3,4 +3,4 @@
 #
 # We import in order to ensure everyone shares the same configuration for dev, test and prod.
 #
-hasura --database-name default --project "${PWD}/hasura/hasura-migrations" metadata apply
+hasura --project "${PWD}/hasura/hasura-migrations" metadata apply

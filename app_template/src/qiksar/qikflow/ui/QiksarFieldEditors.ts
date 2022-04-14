@@ -13,6 +13,7 @@ import EntityEditSelect from './EntityEditSelect.vue';
 import EntityEditTags from './EntityEditTags.vue';
 import EntityEditText from './EntityEditText.vue';
 import EntityEditMarkdown from './EntityEditMarkdown.vue';
+import EditFlowchart from './EditFlowchart.vue';
 
 const components = {
   EntityEditImage,
@@ -22,6 +23,7 @@ const components = {
   EntityEditTags,
   EntityEditText,
   EntityEditMarkdown,
+  EditFlowchart,
 } as Dictionary;
 
 export default components;

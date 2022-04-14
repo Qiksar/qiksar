@@ -60,22 +60,23 @@ cd ${TARGET}
 
 echo
 echo
+echo "Invoke the Quasar CLI"
+echo
+echo "IMPORTANT - When prompted, the only FEATURES you need to select are ESLINT and Typescript."
+echo "Do not select any others as Qiksar takes care of everything else."
+echo "Other than the features, you simply press ENTER to accept the Quasar defaults"
+yarn create quasar .
+
+TARGET=$1/quasar-project
+
+echo
+echo
 echo "Copy environment variables to new app"
 cp ${SOURCE_LOCATION}/services/.env ${TARGET}/.env
 
 echo
 echo "Import environment variables from .env file"
 export $(cat ${TARGET}/.env | xargs)
-
-
-echo
-echo
-echo "Invoke the Quasar CLI"
-echo
-echo "IMPORTANT - When prompted, the only FEATURES you need to select are ESLINT and Typescript."
-echo "Do not select any others as Qiksar takes care of everything else."
-echo "Other than the features, you simply press ENTER to accept the Quasar defaults"
-quasar create .
 
 echo
 echo
@@ -91,12 +92,12 @@ echo "Copy remote dev container config "
 cp -Ra ${SOURCE_LOCATION}/app_template/.devcontainer ${TARGET}
 
 echo
-echo "Rename quasar.conf.js -> quasar.conf.js.keep"
-mv ${TARGET}/quasar.conf.js ${TARGET}/quasar.conf.js.keep
+echo "Rename quasar.config.js -> quasar.config.js.keep"
+mv ${TARGET}/quasar.config.js ${TARGET}/quasar.config.js.keep
 
 echo
 echo "Installing quasar.conf.js"
-cp ${SOURCE_LOCATION}/app_template/quasar.conf.js ${TARGET}/quasar.conf.js
+cp ${SOURCE_LOCATION}/app_template/quasar.config.js ${TARGET}/quasar.config.js
 echo
 
 echo
@@ -110,14 +111,24 @@ cp ${SOURCE_LOCATION}/app_template/tsconfig.json ${TARGET}/tsconfig.json
 
 echo "Cleanup obsolete files"
 rm ${TARGET}/src/components/models.ts 
-rm ${TARGET}/src/components/CompositionComponent.vue 
+rm ${TARGET}/src/components/ExampleComponent.vue 
 rm ${TARGET}/src/router/routes.ts 
+rm ${TARGET}/src/pages/IndexPage.vue 
+
+echo "Move all project files to target folder and clean-up"
 
 echo
 echo Installing app packages...
 cd ${TARGET}
 chmod u+x ./qiksar_install.sh
 ./qiksar_install.sh
+
+mv * .. 
+mv .* ..
+
+cd ..
+
+rmdir quasar-project
 
 echo
 echo
@@ -134,5 +145,5 @@ echo
 echo 
 
 read -p "Press CTRL-C to end the process, or ENTER to run the new app..."
-cd $TARGET
+
 quasar dev

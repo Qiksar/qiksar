@@ -8,6 +8,20 @@
 --
 -- Having a human readable ID column also makes it easy to seed the data, where assigning enum ids to other records becomes trivial.
 --
+
+INSERT INTO membership.charts("name", "chart")
+VALUES('Chart 1', '[
+  { id: ''1'', type: ''input'', label: ''Import Redcap'', position: { x: 250, y: 5 } },
+  { id: ''2'', label: ''PI Match'', position: { x: 100, y: 100 }, },
+  { id: ''3'', label: ''Deidentify'', position: { x: 400, y: 100 } },
+  { id: ''4'', type: ''Send to AWS'', label: ''Node 4'', position: { x: 400, y: 200 } },
+  { id: ''e1-2'', source: ''1'', target: ''2'', animated: true }
+  { id: ''e2-3'', source: ''2'', target: ''3'', animated: true }
+  { id: ''e3-4'', source: ''3'', target: ''4'', animated: true }
+  ]
+');
+
+
 INSERT INTO membership.tenants ("id", "name", "comment")
 VALUES 
 ('default',  'default',  'B2B Platform'), 

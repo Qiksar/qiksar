@@ -1,6 +1,7 @@
 - "!include membership_article_status.yaml"
 - "!include membership_article_tags.yaml"
 - "!include membership_articles.yaml"
+- "!include membership_charts.yaml"
 - "!include membership_groups.yaml"
 - "!include membership_iot_device_types.yaml"
 - "!include membership_iot_devices.yaml"
