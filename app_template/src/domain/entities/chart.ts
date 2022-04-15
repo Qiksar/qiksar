@@ -20,7 +20,7 @@ const chart: IEntityDefinition = {
       label: 'Chart',
       editor: 'EditFlowchart',
     },
-   ],
+  ],
   transformations: [
     {
       name: 'selector',

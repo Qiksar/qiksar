@@ -33,10 +33,9 @@ if (!props.field.IsJoin)
 // TODO move to mixin?
 const rows = ref({});
 async function fetch(): Promise<GqlRecords> {
-  return await props.formContext.FetchChildren(props.field)
+  return await props.formContext.FetchChildren(props.field);
 }
 onBeforeMount(async () => {
   rows.value = await fetch();
 });
-
 </script>

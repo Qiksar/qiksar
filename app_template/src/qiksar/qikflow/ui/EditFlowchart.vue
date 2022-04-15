@@ -1,10 +1,20 @@
 // https://vueflow.dev
 
 <template>
-  <div class="row">
-    <template>
-      <VueFlow v-model="elements" />
-    </template>
+  <div style="height: 500px">
+    <p>iCore Flow</p>
+    <VueFlow
+      style="height: 1000"
+      :nodes-connectable="true"
+      :nodes="nodes"
+      :edges="edges"
+      :default-zoom="zoom"
+      :snap-to-grid="true"
+      :snap-grid="[50, 50]"
+    >
+      <MiniMap />
+      <Controls />
+    </VueFlow>
   </div>
 </template>
 
@@ -12,7 +22,7 @@
 import { ref } from 'vue';
 import EntityField from '../base/EntityField';
 import FormContext from '../forms/FormContext';
-import { VueFlow  } from '@braks/vue-flow'
+import { VueFlow, MiniMap, Controls } from '@braks/vue-flow';
 
 const props = defineProps<{
   formContext: FormContext;
@@ -25,28 +35,45 @@ const emit = defineEmits<{
 }>();
 
 function onUpdate(value: string | number | null) {
-  if (value)
-    emit('update:modelValue', value.toString());
+  if (value) emit('update:modelValue', value.toString());
 }
 
-const elements = ref([
-  // Nodes
-  // An input node, specified by using `type: 'input'`
-  { id: '1', type: 'input', label: 'Node 1', position: { x: 250, y: 5 } },
+const zoom = ref(1.0);
 
-  // Default nodes, you can omit `type: 'default'`
-  { id: '2', label: 'Node 2', position: { x: 100, y: 100 }, },
-  { id: '3', label: 'Node 3', position: { x: 400, y: 100 } },
+const nodes = ref([
+  { id: '1', type: 'input', label: 'Read PACS', position: { x: 100, y: 0 } },
+  { id: '2', type: 'input', label: 'PI Match', position: { x: 100, y: 100 } },
+  {
+    id: '3',
+    type: 'input',
+    label: 'Approve PI Match',
+    position: { x: 100, y: 200 },
+  },
+  {
+    id: '4',
+    type: 'input',
+    label: 'De-Identify',
+    position: { x: 100, y: 300 },
+  },
+  {
+    id: '5',
+    type: 'output',
+    label: 'Store in AWS',
+    position: { x: 100, y: 400 },
+  },
+  {
+    id: '6',
+    type: 'output',
+    label: 'Update SEAL',
+    position: { x: 100, y: 500 },
+  },
+]);
 
-  // An output node, specified by using `type: 'output'`
-  { id: '4', type: 'output', label: 'Node 4', position: { x: 400, y: 200 } },
-
-  // Edges
-  // Most basic edge, only consists of an id, source-id and target-id
-  { id: 'e1-3', source: '1', target: '3' },
-
-  // An animated edge
-  { id: 'e1-2', source: '1', target: '2', animated: true },
-])
-
+const edges = ref([
+  { id: 'e1-2', source: '1', target: '2' },
+  { id: 'e2-3', source: '2', target: '3' },
+  { id: 'e3-4', source: '3', target: '4' },
+  { id: 'e4-5', source: '4', target: '5' },
+  { id: 'e5-6', source: '5', target: '6' },
+]);
 </script>

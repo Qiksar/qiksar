@@ -103,10 +103,10 @@ export default class FormContext {
 
     // The field tells us which join is being used
     const joinUsage = entityField.FieldDefinition as unknown as IJoinUsage;
-    
+
     // Retrieve the join definition
     const joinDefinition = Query.GetJoinDefinition(joinUsage.join_table);
-    
+
     // Now we can get the key field from the join which matches to the ID of the root record
     const where_clause = `${joinDefinition.master_key}: {_eq: "${this.RootRecordId}"}`;
 

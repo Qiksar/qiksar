@@ -289,9 +289,9 @@ export default class EntityDefinition {
    */
   Columns(fetch_mode: fetchMode, entityStack: string[]): string {
     let columns = '';
-    
-    // don't process fields which represent many to many joins 
-    let fields = this.Fields.filter(f => !f.IsJoin);
+
+    // don't process fields which represent many to many joins
+    let fields = this.Fields.filter((f) => !f.IsJoin);
 
     switch (fetch_mode) {
       case 'grid':

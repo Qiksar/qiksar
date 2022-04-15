@@ -67,7 +67,10 @@ export default function InitialiseDomain(
             ],
           };
 
-          const joinEntity = EntityDefinition.Create(entityFieldDefinition, true);
+          const joinEntity = EntityDefinition.Create(
+            entityFieldDefinition,
+            true
+          );
           Query.CreateQuery(joinEntity, false);
         }
       });

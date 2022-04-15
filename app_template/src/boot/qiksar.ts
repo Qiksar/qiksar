@@ -7,7 +7,6 @@ import VueApexCharts from 'vue3-apexcharts';
 import Qiksar from 'src/qiksar/qiksar';
 import { Router } from 'src/router';
 
-
 export default boot(async ({ app }) => {
   app.use(createPinia());
   app.use(VueApexCharts);

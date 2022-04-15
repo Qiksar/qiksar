@@ -1,6 +1,10 @@
 <template>
   <div v-if="context.Root.HasRecord && !context.Root.IsBusy">
-    <div v-for="(field, key) in context.EditableFields()" v-bind:key="key" class="row">
+    <div
+      v-for="(field, key) in context.EditableFields()"
+      v-bind:key="key"
+      class="row"
+    >
       <div class="col">
         <component
           :is="QiksarFieldEditors[field.Editor]"
@@ -58,9 +62,11 @@ function ReadOnly(field: EntityField): boolean {
 // Create a context for the form, where the top level entity is the root, and any related entities (through many to many joins) can get line of sight to the parent.
 // This way, tags on a blog article can get the id of the article, and can be filtered according to the article id, from the many to many join (article_tags)
 const context = new FormContext();
-void context.Initialise(props.context.entity_type, props.context.entity_id).then((r) => {
-  current_record.value = r;
-});
+void context
+  .Initialise(props.context.entity_type, props.context.entity_id)
+  .then((r) => {
+    current_record.value = r;
+  });
 
 //#region CRUD wrappers
 

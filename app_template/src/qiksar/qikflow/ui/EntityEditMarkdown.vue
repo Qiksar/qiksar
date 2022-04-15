@@ -51,7 +51,11 @@
               @click="toggleFullscreen"
             />
           </div>
-          <q-markdown :plugins="markdownPlugins" :src="decodeBlock()" class="overflow-auto" />
+          <q-markdown
+            :plugins="markdownPlugins"
+            :src="decodeBlock()"
+            class="overflow-auto"
+          />
         </div>
       </template>
     </q-splitter>

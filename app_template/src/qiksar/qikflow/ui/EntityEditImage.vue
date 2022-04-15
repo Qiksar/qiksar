@@ -51,7 +51,9 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: string | number): void;
 }>();
 
-const preview = props.formContext.Root.CurrentRecord[props.field.Name] as string || defaultPreview;
+const preview =
+  (props.formContext.Root.CurrentRecord[props.field.Name] as string) ||
+  defaultPreview;
 
 const state = ref({
   imageFile: null,
@@ -72,7 +74,7 @@ function onChange() {
 
   const on_read_complete = (event: ProgressEvent) => {
     const target = event.target as FileReader;
-    state.value.imagePreview = target.result ? target.result as string : '';
+    state.value.imagePreview = target.result ? (target.result as string) : '';
 
     // Call update model value
     emit('update:modelValue', target.result as string);

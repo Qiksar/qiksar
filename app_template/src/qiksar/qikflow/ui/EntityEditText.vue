@@ -33,7 +33,6 @@ const emit = defineEmits<{
 }>();
 
 function onUpdate(value: string | number | null) {
-  if (value)
-    emit('update:modelValue', value.toString());
+  if (value) emit('update:modelValue', value.toString());
 }
 </script>

@@ -38,7 +38,7 @@ export default class EntityField {
   get IsJoin(): boolean {
     return this._is_join;
   }
-  
+
   get JoinName(): string {
     return (this.definition as IJoinUsage).join_table;
   }

@@ -66,7 +66,9 @@ onBeforeMount(async () => {
   const store = CreateStore(props.field.ObjectSchema);
   await store.FetchAll().then(() => {
     const fieldName = props.field?.AffectedFieldName ?? '';
-    const fieldValue = props.formContext.Root.CurrentRecord[fieldName] as string;
+    const fieldValue = props.formContext.Root.CurrentRecord[
+      fieldName
+    ] as string;
 
     // Get the records in selection format and set the currently selected object in the store to match the ID of the selected object
     options.value = store.TransformRows('selector');
