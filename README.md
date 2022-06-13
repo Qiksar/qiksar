@@ -134,13 +134,11 @@ At this stage you are fully prepared to follow the simple steps to build the dem
 ## Build the supporting services
 
 ```
-cd services
-chmod u+x ./rebuild.sh
-./rebuild.sh
-cd ..
+chmod u+x ./build_services.sh
+./build_services.sh
 ```
 
-**Note**: In the above commands, we use chmod to ensure that the shell script is executable.
+**Note**: In the above commands, we use chmod to ensure that the `build_services.sh` script is executable.
 
 ## Scaffold a new app
 

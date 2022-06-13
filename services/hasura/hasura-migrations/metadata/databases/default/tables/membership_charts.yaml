@@ -27,7 +27,7 @@ insert_permissions:
 select_permissions:
 - permission:
     columns:
-    - id
+    - chart_id
     - chart
     - name
     - created_at
@@ -36,7 +36,7 @@ select_permissions:
   role: member
 - permission:
     columns:
-    - id
+    - chart_id
     - chart
     - name
     - created_at
