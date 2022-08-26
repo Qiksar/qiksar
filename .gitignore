@@ -1,5 +1,5 @@
 # Ignore the app being created by the template kit
-app/
+/app/
 
 #ignore the generated Keycloak realm
 **/initkc/kc_data/realm.json
