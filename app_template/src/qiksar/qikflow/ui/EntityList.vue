@@ -23,11 +23,11 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeMount } from 'vue';
-import Qiksar from 'src/qiksar/qiksar';
+import { onBeforeMount } from "vue";
+import Qiksar from "src/qiksar/qiksar";
 
-import { GqlRecord } from 'src/qiksar/qikflow/base/GqlTypes';
-import { CreateStore } from 'src/qiksar/qikflow/store/GenericStore';
+import { GqlRecord } from "src/qiksar/qikflow/base/GqlTypes";
+import { CreateStore } from "src/qiksar/qikflow/store/GenericStore";
 
 const props = defineProps<{
   entity_type: string;
