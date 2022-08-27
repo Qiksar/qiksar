@@ -1,0 +1,32 @@
+[
+  {
+    "_id": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "colName": "API",
+    "created": "2022-02-26T04:48:39.535Z",
+    "sortNum": 30000,
+    "folders": [],
+    "settings": {
+      "headers": [],
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{access_token}}"
+      },
+      "tests": []
+    }
+  },
+  {
+    "_id": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "colName": "Keycloak Admin",
+    "created": "2022-02-27T02:06:05.280Z",
+    "sortNum": 20000,
+    "folders": [],
+    "settings": {
+      "headers": [],
+      "auth": {
+        "type": "bearer",
+        "bearer": "{{kc_admin_token}}"
+      },
+      "tests": []
+    }
+  }
+]

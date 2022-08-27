@@ -2,7 +2,7 @@ import { Body, Controller, Delete, HttpException, Post, Req } from '@nestjs/comm
 import { Http2ServerRequest } from 'http2';
 import { Roles } from 'nest-keycloak-connect';
 
-import { GetAdminAuthToken } from 'src/config/AuthConfig';
+import { GetAdminAuthToken } from '../config/AuthConfig';
 import AuthService from '../auth/auth.service';
 import CreateUserDto from './dto/create_user.dto';
 

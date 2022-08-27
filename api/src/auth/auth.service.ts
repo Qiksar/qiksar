@@ -2,12 +2,12 @@ import axios from 'axios';
 import { HttpException, Injectable } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 
-import HttpHelper from 'src/common/HttpHelper';
-import DataTypeValidator from 'src/common/DataTypeValidator';
+import HttpHelper from '../common/HttpHelper';
+import DataTypeValidator from '../common/DataTypeValidator';
 
-import getRealmDefinition from 'src/config/getRealmDefinition';
-import { GetAdminAuthToken } from 'src/config/AuthConfig';
-import CreateUserDto from 'src/tenant/dto/create_user.dto';
+import getRealmDefinition from '../config/getRealmDefinition';
+import { GetAdminAuthToken } from '../config/AuthConfig';
+import CreateUserDto from '../tenant/dto/create_user.dto';
 
 @Injectable()
 export default class AuthService {

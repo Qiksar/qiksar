@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 
 import TenantController from './tenant.controller';
-import AuthService from 'src/auth/auth.service';
-import HttpHelper from 'src/common/HttpHelper';
+import AuthService from '../auth/auth.service';
+import HttpHelper from '../common/HttpHelper';
 
 @Module({
   controllers: [TenantController],

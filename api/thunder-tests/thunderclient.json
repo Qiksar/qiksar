@@ -1,0 +1,628 @@
+[
+  {
+    "_id": "8bc44265-66e9-490e-abdb-b0e0705cdd95",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Login App Tenant Admin",
+    "url": "{{api_endpoint}}/auth/login",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-02-26T04:52:16.301Z",
+    "modified": "2022-02-27T10:54:12.277Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"realm\": \"{{kc_app_realm}}\",\n  \"username\": \"oz_app_admin\",\n  \"password\": \"{{kc_user_password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.access_token",
+        "action": "setto",
+        "value": "{{access_token}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.refresh_token",
+        "action": "setto",
+        "value": "{{refresh_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "9c061bb7-b5d6-4104-b329-6ca6077e809e",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Get Tenant Admin Details",
+    "url": "{{api_endpoint}}/auth/me",
+    "method": "GET",
+    "sortNum": 12500,
+    "created": "2022-02-26T04:52:16.301Z",
+    "modified": "2022-02-26T12:08:30.079Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "realm",
+          "value": "{{kc_app_realm}}"
+        },
+        {
+          "name": "client_id",
+          "value": "{{kc_app_client}}"
+        },
+        {
+          "name": "username",
+          "value": "oz_app_admin"
+        },
+        {
+          "name": "password",
+          "value": "{{kc_user_password}}"
+        }
+      ]
+    },
+    "tests": []
+  },
+  {
+    "_id": "b9f797a7-7cd3-416c-a160-809880839fc8",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Create App Tenant User",
+    "url": "{{api_endpoint}}/tenant/create_user",
+    "method": "POST",
+    "sortNum": 35000,
+    "created": "2022-02-26T05:00:57.490Z",
+    "modified": "2022-02-27T10:55:12.763Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{ \n\n        \"username\": \"thunder_user\",\n        \"password\": \"{{kc_user_password}}\",\n        \"email\": \"thunder_user@thunder.com\",\n        \"firstname\": \"Thunder\",\n        \"lastname\": \"User\",\n        \"temporary_password\": false,\n        \"admin\": false\n    \n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "12ab6948-8e74-4d80-b2ba-d752f8ec6d2b",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Create Tenant",
+    "url": "{{api_endpoint}}/tenant/create_tenant",
+    "method": "POST",
+    "sortNum": 15000,
+    "created": "2022-02-26T05:03:15.522Z",
+    "modified": "2022-02-27T10:41:33.323Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{ \n    \"name\": \"thunder_realm\",\n    \"locale\": \"en-AU\",\n    \"user\":{\n        \"username\": \"thunder_user\",\n        \"password\": \"{{kc_user_password}}\",\n        \"email\": \"thunder_user@thunder.com\",\n        \"firstname\": \"Thunder\",\n        \"lastname\": \"User\",\n        \"temporary_password\": false,\n        \"admin\": true\n    }\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "9c0af1e9-d7b7-4c28-9384-d2a59207a57e",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Delete Tenant",
+    "url": "{{api_endpoint}}/tenant/delete_tenant",
+    "method": "DELETE",
+    "sortNum": 17500,
+    "created": "2022-02-26T11:03:12.722Z",
+    "modified": "2022-02-26T12:08:26.375Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "name",
+          "value": "thunder_realm"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      }
+    ]
+  },
+  {
+    "_id": "5568c2e2-8acf-4233-8f7e-a8510faee735",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Login App Tenant User",
+    "url": "{{api_endpoint}}/auth/login",
+    "method": "POST",
+    "sortNum": 36250,
+    "created": "2022-02-26T11:24:15.950Z",
+    "modified": "2022-02-27T10:54:26.852Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"realm\": \"{{kc_app_realm}}\",\n  \"username\": \"thunder_user\",\n  \"password\": \"{{kc_user_password}}\"\n}",
+      "form": []
+    },
+    "auth": {
+      "type": "none"
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.access_token",
+        "action": "setto",
+        "value": "{{thunder_access_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "34b3fef2-bc3b-43bc-a211-c3f067f6a020",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Get App Tenant User Details",
+    "url": "{{api_endpoint}}/auth/me",
+    "method": "GET",
+    "sortNum": 37500,
+    "created": "2022-02-26T11:25:52.654Z",
+    "modified": "2022-02-26T12:01:03.126Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{thunder_access_token}}"
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.sub",
+        "action": "setto",
+        "value": "{{new_tenant_user_id}}"
+      }
+    ]
+  },
+  {
+    "_id": "a96c560c-101d-464b-92a9-b7c4c475e212",
+    "colId": "a47a0fe7-6d87-421a-8bb2-59dfc64403b3",
+    "containerId": "",
+    "name": "Delete App Tenant User",
+    "url": "{{api_endpoint}}/tenant/delete_user",
+    "method": "DELETE",
+    "sortNum": 38125,
+    "created": "2022-02-26T11:51:20.658Z",
+    "modified": "2022-02-26T12:02:38.506Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "userid",
+          "value": "{{new_tenant_user_id}}"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "200"
+      }
+    ]
+  },
+  {
+    "_id": "0ab3b2ad-46ad-449b-a7ed-8ff02674f213",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Login as Admin",
+    "url": "{{auth_host}}/auth/realms/{{kc_admin_realm}}/protocol/openid-connect/token",
+    "method": "POST",
+    "sortNum": 58437.5,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "username",
+          "value": "{{kc_admin_user}}"
+        },
+        {
+          "name": "password",
+          "value": "{{kc_admin_password}}"
+        },
+        {
+          "name": "client_id",
+          "value": "{{kc_admin_client}}"
+        },
+        {
+          "name": "grant_type",
+          "value": "password"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "type": "res-body",
+        "custom": "",
+        "action": "contains",
+        "value": "access_token"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.access_token",
+        "action": "setto",
+        "value": "{{kc_admin_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "123287d3-4a91-47e3-8229-9c3082da64e3",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Get Admin User Details",
+    "url": "{{auth_host}}/auth/realms/{{kc_admin_realm}}/protocol/openid-connect/userinfo",
+    "method": "GET",
+    "sortNum": 11250,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.sub",
+        "action": "setto",
+        "value": "{{kc_admin_user_id}}"
+      }
+    ]
+  },
+  {
+    "_id": "2340ba3f-ac6d-410b-9abe-db06eb44a511",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Get App Realm Details",
+    "url": "{{auth_host}}/auth/admin/realms",
+    "method": "GET",
+    "sortNum": 30000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "json-query",
+        "custom": "json[0].id",
+        "action": "equal",
+        "value": "master"
+      }
+    ]
+  },
+  {
+    "_id": "5bba4e79-0cc4-47c0-be0a-4c8429fcb7a5",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Get Realms",
+    "url": "{{auth_host}}/auth/realms/{{kc_app_realm}}",
+    "method": "GET",
+    "sortNum": 20000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "json-query",
+        "custom": "json.realm",
+        "action": "equal",
+        "value": "app"
+      }
+    ]
+  },
+  {
+    "_id": "5fcf1054-e1db-4612-8d5f-0eba78b36524",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Get User Details",
+    "url": "{{auth_host}}/auth/realms/{{kc_app_realm}}/protocol/openid-connect/userinfo",
+    "method": "GET",
+    "sortNum": 57500,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{kc_user_token}}"
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.sub",
+        "action": "setto",
+        "value": "{{kc_new_user_id}}"
+      }
+    ]
+  },
+  {
+    "_id": "77e6e94a-4c05-4198-a3ea-5b7a4095f8e3",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Set Password Policy",
+    "url": "{{auth_host}}/auth/admin/realms/{{kc_app_realm}}",
+    "method": "PUT",
+    "sortNum": 15000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"realm\": \"{{kc_app_realm}}\",\n  \"passwordPolicy\": \"passwordHistory(3) and length(8) and notUsername(undefined) and notEmail(undefined) and upperCase(1) and lowerCase(1) and digits(1)\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "204"
+      }
+    ]
+  },
+  {
+    "_id": "787ca73d-bd6b-4663-85ce-c532566bef60",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Delete User",
+    "url": "{{auth_host}}/auth/admin/realms/{{kc_app_realm}}/users/{{kc_new_user_id}}",
+    "method": "DELETE",
+    "sortNum": 58750,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "204"
+      }
+    ]
+  },
+  {
+    "_id": "798f854a-457d-439e-9b3d-5ddc780c8bb1",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Logout Admin",
+    "url": "{{auth_host}}/auth/admin/realms/{{kc_admin_realm}}/users/{{kc_admin_user_id}}/logout",
+    "method": "POST",
+    "sortNum": 52500,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "204"
+      }
+    ]
+  },
+  {
+    "_id": "99fc54ba-c4ec-4733-87c6-701b96f0080e",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Login as New User",
+    "url": "{{auth_host}}/auth/realms/{{kc_app_realm}}/protocol/openid-connect/token",
+    "method": "POST",
+    "sortNum": 55000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "username",
+          "value": "{{kc_new_username}}"
+        },
+        {
+          "name": "password",
+          "value": "{{kc_user_password}}"
+        },
+        {
+          "name": "client_id",
+          "value": "{{kc_app_client}}"
+        },
+        {
+          "name": "grant_type",
+          "value": "password"
+        }
+      ]
+    },
+    "auth": {
+      "type": "none"
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.access_token",
+        "action": "setto",
+        "value": "{{kc_user_token}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.refresh_token",
+        "action": "setto",
+        "value": "{{kc_user_refresh_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "a208c124-c657-415a-89a0-73cc2bc1a6b8",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Login as Admin",
+    "url": "{{auth_host}}/auth/realms/{{kc_admin_realm}}/protocol/openid-connect/token",
+    "method": "POST",
+    "sortNum": 10000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "username",
+          "value": "{{kc_admin_user}}"
+        },
+        {
+          "name": "password",
+          "value": "{{kc_admin_password}}"
+        },
+        {
+          "name": "client_id",
+          "value": "{{kc_admin_client}}"
+        },
+        {
+          "name": "grant_type",
+          "value": "password"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "type": "res-body",
+        "custom": "",
+        "action": "contains",
+        "value": "access_token"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.access_token",
+        "action": "setto",
+        "value": "{{kc_admin_token}}"
+      }
+    ]
+  },
+  {
+    "_id": "d77591d6-a019-41be-8d93-7ad010b1408d",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Create App User",
+    "url": "{{auth_host}}/auth/admin/realms/{{kc_app_realm}}/users",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n    \"firstName\":\"Post\",\n    \"lastName\":\"Man\", \n    \"email\":\"{{kc_new_username}}@thunder.com\", \n    \"enabled\":\"true\", \n    \"username\":\"{{kc_new_username}}\",\n    \"credentials\":[{\"type\":\"password\",\"value\":\"{{kc_user_password}}\",  \"temporary\": false}],\n    \"attributes\":{\n        \"tenant_id\": \"perth\",\n        \"tenant_role\": \"tenant_user\",\n        \"locale\":\"en-AU\",\n        \"mobile_phone\":\"\"\n    }\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "201"
+      },
+      {
+        "type": "custom-header",
+        "custom": "Location",
+        "action": "istype",
+        "value": "string"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "header.location",
+        "action": "setto",
+        "value": "{{header_location}}"
+      }
+    ]
+  },
+  {
+    "_id": "e956bc52-0202-4e2d-9aea-3840874d2f92",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Logout User",
+    "url": "{{auth_host}}/auth/realms/{{kc_app_realm}}/protocol/openid-connect/logout",
+    "method": "POST",
+    "sortNum": 58125,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "formencoded",
+      "raw": "",
+      "form": [
+        {
+          "name": "refresh_token",
+          "value": "{{kc_user_refresh_token}}"
+        },
+        {
+          "name": "client_id",
+          "value": "{{kc_app_client}}"
+        }
+      ]
+    },
+    "auth": {
+      "type": "bearer",
+      "bearer": "{{kc_user_token}}"
+    },
+    "tests": [
+      {
+        "type": "res-code",
+        "custom": "",
+        "action": "equal",
+        "value": "204"
+      }
+    ]
+  },
+  {
+    "_id": "fde965a4-d3b7-4c26-9726-14f3465d62a1",
+    "colId": "59d4de0c-76ee-4812-903d-13d875df6d80",
+    "containerId": "",
+    "name": "Get Role IDs",
+    "url": "{{auth_host}}/auth/admin/realms/{{kc_app_realm}}/roles",
+    "method": "GET",
+    "sortNum": 40000,
+    "created": "2022-02-27T02:06:05.288Z",
+    "modified": "2022-02-27T02:06:05.288Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "json-query",
+        "custom": "json[0].name",
+        "action": "equal",
+        "value": "offline_access"
+      }
+    ]
+  }
+]

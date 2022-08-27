@@ -5,7 +5,7 @@ import { APP_GUARD } from '@nestjs/core';
 
 import AuthConfig from '../config/AuthConfig';
 import TenantModule from '../tenant/tenant.module';
-import AuthModule from 'src/auth/auth.module';
+import AuthModule from '../auth/auth.module';
 
 @Module({
   imports: [AuthModule, TenantModule, KeycloakConnectModule.register(AuthConfig)],

@@ -27,39 +27,19 @@ You can learn all about Quasar through the amazing online documentation.
 Visit : (https://quasar.dev)
 
 
-# VISIT THE QIKSAR DEMO APP
-
-Imagine a global platform that enables member based organisations to bring people together. This is what we imagine the Qiksar demo app does.
-
-In the example, one organisation and membership group exists in Australia, whilst another exists in Scotland. 
-
-Our *multi-tenanted* app, enables an Australian administrator to login and manage the Australian members, whilst the Scottish administrator looks after members in Scotland.
-
-The demo app, provides a very basic example of how a multi-tenanted platform can be built using Postgres, Hasura GraphQL, Keycloak and Quasar. 
-
-Browse to: https://app.qiksar.com
-
-```
-User details:
-
-username: **oz_app_admin**
-or
-username: **scot_app_admin**
-
-password: **Password123**
-```
-
-**SECURITY NOTICE:**
-
-Please do the right thing...browse the data, make small edits, create your own records so that you can delete them. Don't spoil the system, and the demonstration data for everybody. Don't put any secret information in the worlds worst example of a secure app!!! Everybody has the passwords :)
-
-If you destroy the data then you just spoil it for everybody and we will have to lock the app or take it down.
-
 # PREPARE TO BUILD THE DEMO APP
 
 ## Pre-requisites
 
-You will need some important pre-requisites installed, including VSCODE, Docker and some command line tools.
+You will need some important pre-requisites installed, including VSCODE and Docker.
+
+### Important - use Node LTS
+
+Use Node LTS version which is required by some NPM packages
+
+Refer here for how to use nvm to manage multiple node versions installed side by side:
+https://blog.logrocket.com/how-switch-node-js-versions-nvm/
+
 
 ### Host file
 
@@ -71,7 +51,7 @@ Add your machine's IP address like so...
 
 **host file**
 ```
-Windows path: C:\Windows\System32\drivers\etc
+Windows path: C:\Windows\System32\drivers\etc\hosts
 ```
 
 ```
@@ -91,7 +71,8 @@ Install VS Code on your computer for the best editing experience.
 
 ## Clone the Qiksar project
 
-**Note for Windows Users**: Use Windows Subsystem for Linux. Open your WSL instance, and simply follow the remainder of the instructions.
+**Note for Windows Users: Use Windows Subsystem for Linux.**
+Open your WSL instance, and simply follow the remainder of the instructions.
 
 Ensure you are in your home folder:
 
@@ -114,8 +95,6 @@ Use your preferred method to clone the Qiksar repository. In this example we use
 ```
 git clone git@github.com:chrisnurse/qiksar.git 
 ```
-
-**Note for Windows Users**: As the source code is now on the WSL filesystem, VS Code will be extremely quick when using remote dev containers. If you do not do it this way, VSCODE is extremely slow, as when VSCODE is running solely in the Windows environment, it has to reach inside WSL to get the source files, which makes it painfully slow.
 
 ## Install Command Line Tools
 

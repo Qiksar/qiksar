@@ -2,8 +2,8 @@ import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Http2ServerRequest } from 'http2';
 import { Unprotected, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
 
-import HttpHelper from 'src/common/HttpHelper';
-import { DefaultAuthClient } from 'src/config/AuthConfig';
+import HttpHelper from '../common/HttpHelper';
+import { DefaultAuthClient } from '../config/AuthConfig';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import AuthService from './auth.service';
