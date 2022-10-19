@@ -16,7 +16,7 @@ echo
 echo
 echo "2. You must have DOCKER installed"
 [ ! "docker ps" ] && echo "Docker was not detected, exiting." && exit 1
-[ "docker ps" ] && echo "Docker detected." && exit 1
+[ "docker ps" ] && echo "Docker detected."
 
 echo
 echo
